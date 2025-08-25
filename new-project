@@ -18,27 +18,6 @@ find . -type f -name "CMakeLists.txt.in" -exec mv {} $(dirname {})/CMakeLists.tx
 
 find . -type f -name ".gitignore.template" -exec mv {} .gitignore \;
 
-LIBRARIES_DIR="lib"
-PYBIND11_DIR="$LIBRARIES_DIR/pybind11"
-PYBIND11_REPO="https://github.com/pybind/pybind11.git"
-
-echo "Инициализируем git для проекта..."
-git init
-
-if [ ! -d "$PYBIND11_DIR" ]; then
-    echo "Добавляем pybind11 как git submodule в $PYBIND11_DIR..."
-    git submodule add -f "$PYBIND11_REPO" "$PYBIND11_DIR"
-    
-    if [ $? -eq 0 ]; then
-        echo "pybind11 успешно добавлен как submodule"
-    else
-        echo "Подмодуль уже существует или ошибка при добавлении"
-    fi
-else
-    echo "📁 Папка $PYBIND11_DIR уже существует, пропускаем клонирование"
-fi
-
-git config core.fileMode false
 
 echo "Создаём виртуальное окружение .venv..."
 python3 -m venv .venv
@@ -69,8 +48,5 @@ if [ $? -eq 0 ]; then
 else
     echo "Ошибка при установке numpy/cython (необходимо установить вручную)"
 fi
-
-git add .
-git commit -m "Initial commit from template with pybind11 submodule and .venv"
 
 echo "Проект '$PROJECT_NAME' создан в $DEST, открой его в CLion"
