@@ -46,46 +46,55 @@ new-project MyHybridApp
 ---
 
 ### 2. Активируй виртуальное окружение и установи зависимости
-
+```
 cd MyHybridApp
 source .venv/bin/activate  # Linux/macOS
+```
 # или
+```
 .venv\Scripts\activate     # Windows
 
 pip install numpy pybind11
+```
 
 ---
 
 ### 3. Собери проект
-
+```
 mkdir build && cd build
 cmake ..
 make
-
+```
 → Бинарники появятся в ../bin/.
 
 ---
 
 ### 4. Запусти Python-скрипт
-
+```
 python ../python/main.py
-
+```
 ---
 
 ## 🧩 Пример: вызов C++ из Python через Cython
 
 **C++:**
+```
 // src/cpp/math.cpp
 int add(int a, int b) { return a + b; }
+```
 
 **Cython:**
+```
 # cython/wrapper.pyx
 cpdef int call_add(int a, int b):
     return cpp_add(a, b)
+```
 
 **Python:**
+```
 import wrapper
 print(wrapper.call_add(2, 3))  # 5
+```
 
 ---
 
@@ -93,27 +102,33 @@ print(wrapper.call_add(2, 3))  # 5
 
 Передача массивов без копирования:
 
+```
 def process_array(np.ndarray[np.int32_t, ndim=1] arr):
     cdef int* data = <int*>arr.data
     cdef int size = arr.shape[0]
     process_in_c(data, size)  # C-функция
+```
 
 ---
 
 ## 🔗 Как обновить pybind11
 
-cd libraries/pybind11
+```
+cd lib/pybind11
 git pull origin master
 cd ../..
 git add libraries/pybind11
 git commit -m "chore: update pybind11"
+```
 
 ---
 
 ## 📦 Упаковка в standalone-приложение
 
+```
 pip install pyinstaller
 pyinstaller --onefile --paths=bin python/main.py
+```
 
 → Создаст dist/main — можно запускать без Python.
 
