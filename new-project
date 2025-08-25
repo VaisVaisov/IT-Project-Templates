@@ -29,7 +29,7 @@ git init
 
 if [ ! -d "$PYBIND11_DIR" ]; then
     echo "📥 Добавляем pybind11 как git submodule в $PYBIND11_DIR..."
-    git submodule add "$PYBIND11_REPO" "$PYBIND11_DIR" -f
+    git submodule add -f "$PYBIND11_REPO" "$PYBIND11_DIR"
     
     if [ $? -eq 0 ]; then
         echo "pybind11 успешно добавлен как submodule"
