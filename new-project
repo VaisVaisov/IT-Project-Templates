@@ -1,0 +1,51 @@
+#!/bin/bash
+
+PROJECT_NAME=$1
+if [ -z "$PROJECT_NAME" ]; then
+  echo "Использование: new-project <имя_проекта>"
+  exit 1
+fi
+
+TEMPLATE="$HOME/clion-templates/c-cpp-cython-python-universal"
+DEST="$HOME/CLionProjects/$PROJECT_NAME"
+
+cp -r "$TEMPLATE" "$DEST"
+
+cd "$DEST" || exit 1
+
+find . -type f -name "CMakeLists.txt.in" -exec sed -i "s/@PROJECT_NAME@/$PROJECT_NAME/g" {} \;
+
+find . -type f -name "CMakeLists.txt.in" -exec mv {} $(dirname {})/CMakeLists.txt \;
+
+find . -type f -name ".gitignore.template" -exec mv {} .gitignore \;
+
+
+LIBRARIES_DIR="libraries"
+PYBIND11_DIR="$LIBRARIES_DIR/pybind11"
+PYBIND11_REPO="https://github.com/pybind/pybind11.git"
+
+echo "Инициализируем git для проекта..."
+git init
+
+if [ ! -d "$PYBIND11_DIR" ]; then
+    echo "📥 Добавляем pybind11 как git submodule в $PYBIND11_DIR..."
+    git submodule add "$PYBIND11_REPO" "$PYBIND11_DIR"
+    
+    if [ $? -eq 0 ]; then
+        echo "pybind11 успешно добавлен как submodule"
+    else
+        echo "Подмодуль уже существует или ошибка при добавлении (возможно, уже инициализирован)"
+    fi
+else
+    echo "Папка $PYBIND11_DIR уже существует, пропускаем клонирование"
+fi
+
+git config core.fileMode false
+
+
+git add .
+git commit -m "Initial commit from template with pybind11 submodule"
+
+echo "Проект '$PROJECT_NAME' создан в $DEST"
+echo "Открой его в CLion. При первом запуске сборки — submodule будет готов."
+echo "Если переносишь проект: git clone --recurse-submodules ..."
