@@ -5,7 +5,6 @@
 - ✅ Cython (ускорение Python)
 - ✅ Интеграция C/C++ → Python
 - ✅ Умные указатели, STL, RAII
-- ✅ Pybind11 (локально через git submodule)
 - ✅ Чистая структура: src/, include/, cython/, python/, bin/
 - ✅ Сборка через CMake
 - ✅ Поддержка NumPy
@@ -108,19 +107,6 @@ def process_array(np.ndarray[np.int32_t, ndim=1] arr):
     cdef int size = arr.shape[0]
     process_in_c(data, size)  # C-функция
 ```
-
----
-
-## 🔗 Как обновить pybind11
-
-```
-cd lib/pybind11
-git pull origin master
-cd ../..
-git add libraries/pybind11
-git commit -m "chore: update pybind11"
-```
-
 ---
 
 ## 📦 Упаковка в standalone-приложение
