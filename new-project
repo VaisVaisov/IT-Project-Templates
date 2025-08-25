@@ -20,7 +20,7 @@ find . -type f -name "CMakeLists.txt.in" -exec mv {} $(dirname {})/CMakeLists.tx
 find . -type f -name ".gitignore.template" -exec mv {} .gitignore \;
 
 
-LIBRARIES_DIR="libraries"
+LIBRARIES_DIR="lib"
 PYBIND11_DIR="$LIBRARIES_DIR/pybind11"
 PYBIND11_REPO="https://github.com/pybind/pybind11.git"
 
