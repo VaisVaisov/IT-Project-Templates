@@ -40,8 +40,8 @@ fi
 
 echo "pip обновлён"
 
-echo "Устанавливаем основные пакеты: numpy, cython"
-pip install numpy cython
+echo "Устанавливаем основные пакеты: numpy, cython, setuptools"
+pip install numpy cython setuptools
 
 if [ $? -eq 0 ]; then
     echo "numpy и cython установлены в .venv"
