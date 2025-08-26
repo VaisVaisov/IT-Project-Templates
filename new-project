@@ -44,7 +44,7 @@ echo "Устанавливаем основные пакеты: numpy, cython, s
 pip install numpy cython setuptools
 
 if [ $? -eq 0 ]; then
-    echo "numpy и cython установлены в .venv"
+    echo "numpy, cython, setuptools установлены в .venv"
 else
     echo "Ошибка при установке numpy/cython (необходимо установить вручную)"
 fi
