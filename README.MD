@@ -94,7 +94,6 @@ project/
 ├── .gitignore
 ├── CMakeLists.txt.in   # Шаблон CMakeLists.txt
 ├── CMakePresets.json   # CMake-профили для CLion
-├── Doxyfile            # Шаблон Doxyfile
 ├── README.MD
 └── requirements.txt    # Зависимости для Python
 ```
