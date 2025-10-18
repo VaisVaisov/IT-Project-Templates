@@ -1,0 +1,47 @@
+{
+  "version": 4,
+  "configurePresets": [
+    {
+      "name": "linux-debug",
+      "displayName": "Linux Debug",
+      "description": "Сборка под Linux с отладкой",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/cmake-build-linux-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++"
+      },
+      "environment": {
+        "CC": "clang",
+        "CXX": "clang++"
+      }
+    },
+    {
+      "name": "linux-release",
+      "displayName": "Linux Release",
+      "description": "Оптимизированная сборка под Linux",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/cmake-build-linux-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++"
+      },
+      "environment": {
+        "CC": "clang",
+        "CXX": "clang++"
+      }
+    },
+    {
+      "name": "windows-cross",
+      "displayName": "Cross-compile to Windows (.exe)",
+      "description": "Кросс-компиляция в .exe с помощью Clang + MinGW",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/cmake-build-windows",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/toolchain-windows.cmake"
+      }
+    }
+  ]
+}

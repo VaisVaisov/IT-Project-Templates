@@ -1,0 +1,24 @@
+# Dockerfile.doc
+FROM ubuntu:22.04
+
+LABEL maintainer="you@example.com"
+
+RUN apt-get update && \
+    apt-get install -y \
+    doxygen \
+    python3-pip \
+    git \
+    --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install --no-cache-dir \
+    sphinx \
+    sphinx-rtd-theme \
+    breathe \
+    exhale
+
+WORKDIR /docs
+
+COPY docs/cpp/Doxyfile Doxyfile
+
+CMD ["sh", "-c", "echo 'Используй: docker run --rm -v \$(pwd):/docs docs-builder <команда>'; echo '  doxygen Doxyfile'; echo '  make -C docs/python html'"]

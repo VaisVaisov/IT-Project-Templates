@@ -1,108 +1,298 @@
 #!/bin/bash
 
-PROJECT_NAME=$1
-if [ -z "$PROJECT_NAME" ]; then
-  echo "Использование: new-project <имя_проекта>"
-  exit 1
+set -euo pipefail
+
+# 📁 Пути
+TEMPLATES_DIR="$HOME/IT-Project-Templates"
+CLION_PROJECTS="$HOME/CLionProjects"
+PYCHARM_PROJECTS="$HOME/PyCharmProjects"
+
+# 🎨 Цвета
+GREEN="✅"
+RED="❌"
+BLUE="📁"
+YELLOW="⚠️"
+
+# ========================================
+# 🔧 Функции
+# ========================================
+
+show_usage() {
+    echo "Использование: $0 <имя_проекта> [флаги]"
+    echo ""
+    echo "Основные флаги:"
+    echo "  --clion            Создать в CLionProjects"
+    echo "  --pycharm          Создать в PyCharmProjects"
+    echo ""
+    echo "Типы проектов:"
+    echo "  --pure-c-cpp       Чистый C/C++"
+    echo "  --pure-py          Чистый Python"
+    echo "  --jupyter          Jupyter Notebook + Conda"
+    echo "  --hybrid           Гибридный (Cython + C/C++)"
+    echo "  --platformio       Embedded (Arduino, ESP32 и др.)"
+    echo ""
+    echo "PlatformIO устройства:"
+    echo "  --arduino-nano"
+    echo "  --arduino-pro-micro"
+    echo "  --esp32-devkit"
+    echo "  --stm32f411"
+    echo ""
+    echo "Примеры:"
+    echo "  $0 my_cpp --clion --pure-c-cpp"
+    echo "  $0 ml_notebook --pycharm --jupyter"
+    echo "  $0 sensor_node --clion --platformio --esp32-devkit"
+    exit 1
+}
+
+validate_project_name() {
+    local name="$1"
+    if [ -z "$name" ]; then
+        echo "$RED Имя проекта не указано."
+        show_usage
+    fi
+}
+
+setup_conda_env() {
+    local env_name="$1"
+    if command -v conda &> /dev/null; then
+        echo "$BLUE Создаём Conda-окружение: $env_name"
+        conda create -y -n "$env_name" python=3.11 ipykernel jupyter
+        conda run -n "$env_name" python -m ipykernel install --user --name "$env_name" --display-name "Python ($env_name)"
+    else
+        echo "$RED Conda не установлена. Установите Miniconda или Anaconda."
+        exit 1
+    fi
+}
+
+replace_placeholders() {
+    local project_name="$1"
+    find . -type f \( -name "*.in" -o -name "*.template" \) -exec sed -i "s|@PROJECT_NAME@|$project_name|g" {} \;
+    find . -type f -name "*.in" -exec sh -c 'mv "$1" "$(dirname "$1")/$(basename "$1" .in)"' _ {} \;
+    find . -type f -name "*.template" -exec sh -c 'mv "$1" "$(dirname "$1")/$(basename "$1" .template)"' _ {} \;
+}
+init_git() {
+    git init
+    echo "$BLUE Инициализируем Git..."
+    
+    if [ ! -d "libraries/googletest" ] && [ "$CLION" == "true" ]; then
+        git submodule add https://github.com/google/googletest.git libraries/googletest
+        echo "$GREEN googletest добавлен как submodule"
+    fi
+
+    git add .
+    git commit -m "feat: initial commit from template"
+}
+
+build_docker_images() {
+    if [ ! -f "Dockerfile.docs" ]; then
+        echo "$YELLOW Внимание: Dockerfile.docs не найден, пропуск сборки docs-builder"
+        return
+    fi
+
+    if [ ! -f "docs/cpp/Doxyfile" ] && [ ! -f "docs/python/conf.py" ]; then
+        echo "$YELLOW Внимание: Нет файлов документации, пропуск сборки docs-builder"
+        return
+    fi
+
+    echo "$BLUE Собираем образ docs-builder..."
+    if docker build -f Dockerfile.docs -t docs-builder .; then
+      echo "$GREEN Образ docs-builder успешно собран"
+    else
+      echo "$RED Ошибка: не удалось собрать docs-builder"
+      return 1
+      fi
+
+    if [ -f "tools/profiler/Dockerfile" ]; then
+      echo "$BLUE Собираем образ profiler-tool..."
+      if docker build -f tools/profiler/Dockerfile -t profiler-tool .; then
+        echo "$GREEN Образ profiler-tool успешно собран"
+      else
+        echo "$RED Ошибка: не удалось собрать profiler-tool"
+        return 1
+      fi
+    else
+      echo "$YELLOW Внимание: Dockerfile не найден, пропуск сборки profiler-tool"
+    fi
+}
+# ========================================
+# 🚀 Основной поток
+# ========================================
+
+PROJECT_NAME="${1:-}"
+shift 2>/dev/null || true
+
+validate_project_name "$PROJECT_NAME"
+
+# Флаги
+CLION=false
+PYCHARM=false
+PURE_CPP=false
+PURE_PY=false
+JUPYTER=false
+HYBRID=false
+PLATFORMIO=false
+DEVICE=""
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --clion)
+            CLION=true
+            shift
+            ;;
+        --pycharm)
+            PYCHARM=true
+            shift
+            ;;
+        --pure-c-cpp)
+            PURE_CPP=true
+            shift
+            ;;
+        --pure-py)
+            PURE_PY=true
+            shift
+            ;;
+        --jupyter)
+            JUPYTER=true
+            shift
+            ;;
+        --hybrid)
+            HYBRID=true
+            shift
+            ;;
+        --platformio)
+            PLATFORMIO=true
+            shift
+            ;;
+        --arduino-nano)
+            DEVICE="arduino-nano"
+            shift
+            ;;
+        --arduino-pro-micro)
+            DEVICE="arduino-pro-micro"
+            shift
+            ;;
+        --esp32-devkit)
+            DEVICE="esp32-devkit"
+            shift
+            ;;
+        --stm32f411)
+            DEVICE="stm32f411"
+            shift
+            ;;
+        -*)
+            echo "$RED Неизвестный флаг: $1"
+            show_usage
+            ;;
+        *)
+            shift
+            ;;
+    esac
+done
+
+# Определяем IDE и тип
+if $CLION; then
+    DEST="$CLION_PROJECTS/$PROJECT_NAME"
+    TEMPLATES_DIR="$TEMPLATES_DIR/clion"
+elif $PYCHARM; then
+    DEST="$PYCHARM_PROJECTS/$PROJECT_NAME"
+    TEMPLATES_DIR="$TEMPLATES_DIR/pycharm"
+else
+    echo "$RED Укажите --clion или --pycharm"
+    show_usage
 fi
 
-TEMPLATE="$HOME/clion-templates/c-cpp-cython-python-universal"
-DEST="$HOME/CLionProjects/$PROJECT_NAME"
+# Определяем шаблон
+TEMPLATE=""
 
-# Проверка существования шаблона
+if $PURE_CPP; then
+    TEMPLATE="$TEMPLATES_DIR/pure-c-cpp"
+elif $PURE_PY; then
+    TEMPLATE="$TEMPLATES_DIR/pure-python"
+elif $JUPYTER; then
+    TEMPLATE="$TEMPLATES_DIR/jupyter"
+elif $HYBRID; then
+    TEMPLATE="$TEMPLATES_DIR/hybrid"
+elif $PLATFORMIO && [ -n "$DEVICE" ]; then
+    TEMPLATE="$TEMPLATES_DIR/platformio/$DEVICE"
+elif $PLATFORMIO; then
+    echo "$RED Укажите устройство: --arduino-nano, --esp32-devkit и др."
+    show_usage
+else
+    echo "$RED Укажите тип проекта: --pure-c-cpp, --jupyter, --hybrid, --platformio"
+    show_usage
+fi
+
+# Проверка шаблона
 if [ ! -d "$TEMPLATE" ]; then
-  echo "❌ Ошибка: шаблон не найден: $TEMPLATE"
-  exit 1
+    echo "$RED Шаблон не найден: $TEMPLATE"
+    echo "Проверьте папку: $TEMPLATES_DIR"
+    exit 1
 fi
 
 # Создаём проект
+echo "$BLUE Создаём проект: $PROJECT_NAME"
 cp -r "$TEMPLATE" "$DEST"
 cd "$DEST" || exit 1
 
-echo "📁 Создаём проект: $PROJECT_NAME"
+# Замена плейсхолдеров
+replace_placeholders "$PROJECT_NAME"
 
-# Замена @PROJECT_NAME@ в файлах
-find . -type f -name "CMakeLists.txt.in" -exec sed -i "s|@PROJECT_NAME@|$PROJECT_NAME|g" {} \;
-find . -type f -name "CMakeLists.txt.in" -exec mv {} $(dirname {})/CMakeLists.txt \;
-
-find . -type f -name "Doxyfile.in" -exec sed -i "s|@PROJECT_NAME@|$PROJECT_NAME|g" {} \;
-find . -type f -name "Doxyfile.in" -exec mv {} $(dirname {})/Doxyfile \;
-
-find . -type f -name "conf.py.in" -exec sed -i "s|@PROJECT_NAME@|$PROJECT_NAME|g" {} \;
-find . -type f -name "conf.py.in" -exec mv {} $(dirname {})/conf.py \;
-
-find . -type f -name "index.rst" -exec sed -i "s|@PROJECT_NAME@|$PROJECT_NAME|g" {} \;
-
-# .gitignore
-find . -type f -name ".gitignore.template" -exec mv {} .gitignore \;
-
-# Виртуальное окружение
-echo "✅ Создаём виртуальное окружение .venv..."
-python3 -m venv .venv || { echo "❌ Ошибка: python3-venv не установлен"; exit 1; }
-
-source .venv/bin/activate
-python -m pip install --upgrade pip
-
-if [ -f "requirements.txt" ]; then
-    echo "📦 Устанавливаем зависимости..."
-    pip install -r requirements.txt
-else
-    echo "ℹ️  requirements.txt не найден — пропускаем установку"
-fi
-
-# Docker для документации
-if [ ! "$(docker images -q docs-builder 2>/dev/null)" ]; then
-    echo "🐳 Собираем образ docs-builder..."
-    docker build -f Dockerfile.docs -t docs-builder .
-fi
-
-echo "🐳 Собираем Docker-образ для профилирования C/C++..."
-if [ ! "$(docker images -q profiler-tool 2>/dev/null)" ]; then
-    echo "$DOCKERFILE_PROFILER" | docker build -f "tools/profiler/Dockerfile" -t profiler-tool -
-    if [ $? -eq 0 ]; then
-        echo "✅ Docker-образ profiler-tool создан"
-    else
-        echo "⚠️  Не удалось собрать profiler-tool (Docker может быть не установлен)"
+# Виртуальные окружения
+if [[ "$CLION" == "true" && "$HYBRID" == "true" ]] || [[ "$PYCHARM" == "true" && "$PURE_PY" == "true" ]]; then
+    echo "$BLUE Создаём виртуальное окружение .venv"
+    python -m venv .venv
+    source .venv/bin/activate
+    pip install --upgrade pip
+    if [ -f "requirements.txt" ]; then
+        pip install -r requirements.txt
     fi
-else
-    echo "♻️  Docker-образ profiler-tool уже существует"
+fi
+
+if $JUPYTER; then
+    setup_conda_env "$PROJECT_NAME"
 fi
 
 # Git
-git init
-echo "✨ Инициализируем Git..."
+init_git
 
-# Git submodule для googletest
-if [ -d "libraries/googletest" ]; then
-    echo "🔁 googletest уже есть"
-else
-    git submodule add https://github.com/google/googletest.git libraries/googletest
-    echo "✅ googletest добавлен как submodule"
+# Docker (только для CLion)
+if [ "$CLION" == "true" ]; then
+  build_docker_images
 fi
 
-# Первый коммит
-git add .
-git commit -m "feat: initial commit from universal template"
+
+# ========================================
+# 💡 Подсказки
+# ========================================
 
 echo ""
-echo "✅ Проект '$PROJECT_NAME' успешно создан в $DEST"
+echo "$GREEN Проект '$PROJECT_NAME' успешно создан в $DEST"
 echo ""
-echo "💡 Далее:"
-echo "   source .venv/bin/activate"
-echo "   mkdir build && cd build"
-echo "   cmake .. && make"
-echo ""
-echo "   # Тесты"
-echo "   ctest"
-echo "   pytest python/tests/"
-echo ""
-echo "   # Профилирование"
-echo "   scripts/profile-python.sh"
-echo "   scripts/profile-cpp.sh имя_бинарника"
-echo "   snakeviz profile.prof  # визуализация"
-echo ""
-echo "   # Документация"
-echo "   docker run --rm -v \$(pwd):/docs docs-builder doxygen docs/cpp/Doxyfile"
-echo "   docker run --rm -v \$(pwd):/docs docs-builder make -C docs/python html"
+
+if $CLION; then
+    echo "💡 Для CLion:"
+    echo "   mkdir build && cd build"
+    echo "   cmake .."
+    echo "   make"
+    echo "   ctest"
+fi
+
+if $PYCHARM || $JUPYTER || $PURE_PY; then
+    echo "💡 Для Python:"
+    if $JUPYTER; then
+        echo "   conda activate $PROJECT_NAME"
+        echo "   jupyter lab"
+    else
+        echo "   source .venv/bin/activate"
+        echo "   pytest tests/"
+    fi
+fi
+
+if $PLATFORMIO; then
+    echo "💡 PlatformIO:"
+    echo "   platformio run"
+    echo "   platformio device list"
+fi
+
 echo ""
 echo "✨ Удачи в разработке!"

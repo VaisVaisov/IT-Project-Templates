@@ -1,0 +1,62 @@
+name: CI Pipeline
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Установить зависимости
+      run: |
+        sudo pacman -Syu
+        sudo pacman -S -y python3-pip build-essential cmake libgtest-dev doxygen
+        pip install --upgrade pip
+
+    - name: Установить Python-зависимости
+      run: |
+        if [ -f "requirements.txt" ]; then
+          pip install -r requirements.txt
+        fi
+        pip install pytest sphinx sphinx-rtd-theme
+
+    - name: Собрать проект
+      run: |
+        mkdir build && cd build
+        cmake ..
+        make
+
+    - name: Запустить C++ тесты
+      run: |
+        cd build
+        ctest --output-on-failure
+
+    - name: Запустить Python тесты
+      run: |
+        cd build
+        cd ../python/tests
+        python -m pytest -v
+
+    - name: Генерировать C++ документацию через Docker
+      run: |
+        docker run --rm -v ${PWD}:/src -w /src doxygen/doxygen doxygen docs/cpp/Doxyfile
+
+    - name: Генерировать Python документацию через Docker
+      run: |
+        docker run --rm -v ${PWD}:/docs -w /docs \
+          -e PIP_CACHE_DIR=/tmp/pip-cache \
+          python:3.11-slim \
+          /bin/bash -c "pip install sphinx sphinx-rtd-theme && cd docs/python && sphinx-apidoc -o . ../../python --force && make html"
+
+    - name: Опубликовать документацию (GitHub Pages)
+      if: github.ref == 'refs/heads/main'
+      run: |
+        mkdir -p docs/_site
+        cp -r docs/cpp/generated/html docs/_site/cpp
+        cp -r docs/python/_build/html docs/_site/python
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add docs/_site
+        git commit -m "📖 Автообновление документации" || exit 0
+        git subtree push --prefix docs/_site origin gh-pages

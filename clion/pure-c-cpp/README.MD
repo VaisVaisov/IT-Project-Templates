@@ -43,7 +43,7 @@ GitHub Actions запускает:
 - Сборку
 - C++ тесты
 - Python тесты
-- Lокументацию
+- Документацию
 
 Конфиг: .github/workflows/ci.yml
 
@@ -51,16 +51,7 @@ GitHub Actions запускает:
 
 ## 📊 Профилирование
 
-### Python
-python -m cProfile -o profile.out python/main.py
-python -m pstats profile.out
-
-### C++ (Linux)
-perf record -g ./bin/project_name
-perf report
-
-### Память
-valgrind --tool=memcheck --leak-check=full ./bin/project_name
+scripts/profile.sh
 
 ---
 
@@ -79,23 +70,27 @@ pip install -r requirements.txt
 
 ```
 project/
-├── .github             # GitHub Actions (CI/CD)
-├── bin/                # Бинарники
-├── lib/                # Статические и динамические библиотеки
-├── include/            # Заголовочные файлы
-├── src/                # C/C++
-├── cython/             # Cython-модули
-├── python/             # Python-скрипты
-├── tests/              # Все тесты
-├── docs/               # Документация
-├── libraries/          # Сторонние библиотеки
+├── .github                             # GitHub Actions (CI/CD)
+├── bin/                                   # Бинарники
+├── lib/                                    # Статические и динамические библиотеки
+├── include/                          # Заголовочные файлы
+├── src/                                  # C/C++
+├── cython/                          # Cython-модули
+├── python/                         # Python-скрипты
+├── tests/                              # Все тесты
+├── docs/                              # Документация
+├── libraries/                        # Сторонние библиотеки
 ├── .clang-format
 ├── .clang-tidy
 ├── .gitignore
-├── CMakeLists.txt.in   # Шаблон CMakeLists.txt
+├── CMakeLists.txt.in       # Шаблон CMakeLists.txt
 ├── CMakePresets.json   # CMake-профили для CLion
+├── Doxyfile                         # Шаблон Doxyfile
 ├── README.MD
-└── requirements.txt    # Зависимости для Python
+├── requirements.txt       # Зависимости для Python
+├── tools/
+         └── profiler /                # Профилирование
+└── scripts/                           # Скрипты
 ```
 
 ---
