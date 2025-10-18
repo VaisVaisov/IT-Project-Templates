@@ -1,6 +1,4 @@
-pytest
+﻿pytest
 numpy
 cython
-setuptools
-cProfileViz
 snakeviz
