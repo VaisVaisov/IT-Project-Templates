@@ -5,7 +5,7 @@ set -euo pipefail
 # 📁 Пути
 TEMPLATES_DIR="$HOME/IT-Project-Templates"
 CLION_PROJECTS="$HOME/CLionProjects"
-PYCHARM_PROJECTS="$HOME/PyCharmProjects"
+PYCHARM_PROJECTS="$HOME/PycharmProjects"
 
 # 🎨 Цвета
 GREEN="✅"
@@ -22,7 +22,7 @@ show_usage() {
     echo ""
     echo "Основные флаги:"
     echo "  --clion            Создать в CLionProjects"
-    echo "  --pycharm          Создать в PyCharmProjects"
+    echo "  --pycharm          Создать в PycharmProjects"
     echo ""
     echo "Типы проектов:"
     echo "  --pure-c-cpp       Чистый C/C++"
