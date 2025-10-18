@@ -73,8 +73,7 @@ replace_placeholders() {
 init_git() {
     git init
     echo "$BLUE Инициализируем Git..."
-    
-    if [ ! -d "libraries/googletest" ] && [ "$CLION" == "true" ]; then
+    if [ "$CLION" = "true" ] && { [ "$HYBRID" = "true" ] || [ "$PURE_CPP" = "true" ]; }; then
         git submodule add https://github.com/google/googletest.git libraries/googletest
         echo "$GREEN googletest добавлен как submodule"
     fi
@@ -84,23 +83,18 @@ init_git() {
 }
 
 build_docker_images() {
-    if [ ! -f "Dockerfile.docs" ]; then
-        echo "$YELLOW Внимание: Dockerfile.docs не найден, пропуск сборки docs-builder"
-        return
-    fi
 
-    if [ ! -f "docs/cpp/Doxyfile" ] && [ ! -f "docs/python/conf.py" ]; then
-        echo "$YELLOW Внимание: Нет файлов документации, пропуск сборки docs-builder"
-        return
-    fi
-
+    if [ -f "Dockerfile.docs" ] && [ -f "docs/cpp/Doxyfile" ] && [ -f "docs/python/conf.py" ]; then
     echo "$BLUE Собираем образ docs-builder..."
-    if docker build -f Dockerfile.docs -t docs-builder .; then
-      echo "$GREEN Образ docs-builder успешно собран"
-    else
-      echo "$RED Ошибка: не удалось собрать docs-builder"
-      return 1
+      if docker build -f Dockerfile.docs -t docs-builder .; then
+        echo "$GREEN Образ docs-builder успешно собран"
+      else
+        echo "$RED Ошибка: не удалось собрать docs-builder"
+        return 1
       fi
+    else
+      echo "$YELLOW Внимание: Dockerfile не найден, пропуск сборки docs-builder"
+    fi
 
     if [ -f "tools/profiler/Dockerfile" ]; then
       echo "$BLUE Собираем образ profiler-tool..."
@@ -238,7 +232,7 @@ cd "$DEST" || exit 1
 replace_placeholders "$PROJECT_NAME"
 
 # Виртуальные окружения
-if [[ "$CLION" == "true" && "$HYBRID" == "true" ]] || [[ "$PYCHARM" == "true" && "$PURE_PY" == "true" ]]; then
+if { [ "$CLION" = "true" ] && [ "$HYBRID" = "true" ]; } || { [ "$PYCHARM" = "true" ] && [ "$PURE_PY" = "true" ]; }; then
     echo "$BLUE Создаём виртуальное окружение .venv"
     python -m venv .venv
     source .venv/bin/activate
