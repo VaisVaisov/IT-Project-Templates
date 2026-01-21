@@ -1,0 +1,83 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Claude YOLO",
+      "type": "shell",
+      "command": "claude --dangerously-skip-permissions",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "clear": false,
+        "focus": true
+      }
+    },
+    {
+      "label": "PIO: Build",
+      "type": "shell",
+      "command": "pio run",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "PIO: Upload",
+      "type": "shell",
+      "command": "pio run -t upload",
+      "problemMatcher": ["$gcc"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "PIO: Monitor",
+      "type": "shell",
+      "command": "pio device monitor",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      }
+    },
+    {
+      "label": "PIO: Build + Upload + Monitor",
+      "type": "shell",
+      "command": "pio run -t upload && pio device monitor",
+      "problemMatcher": ["$gcc"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      }
+    },
+    {
+      "label": "PIO: Clean",
+      "type": "shell",
+      "command": "pio run -t clean",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "PIO: List Devices",
+      "type": "shell",
+      "command": "pio device list",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    }
+  ]
+}

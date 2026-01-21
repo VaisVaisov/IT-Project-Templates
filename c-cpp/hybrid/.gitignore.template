@@ -1,0 +1,217 @@
+# ===================================
+# === Операционные системы ===
+# ===================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ===================================
+# === Python ===
+# ===================================
+# Виртуальные окружения
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Byte-compiled / скомпилированные
+__pycache__/
+*.py[co]
+*$py.class
+
+# Распределённые / установленные пакеты
+bin/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+dist/
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# pyenv
+#  Версия Python, установленная локально
+.python-version
+
+# pipenv
+#   Следы pipenv-сессий
+Pipfile.lock
+
+# PEP 582; использует __pypackages__
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+
+# Sphinx
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# Environments
+.environment
+.conda
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ===================================
+# === C / C++ ===
+# ===================================
+# Компиляторы
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+*.dll.a
+*.lib
+
+# Debug
+*.dSYM/
+*.pdb
+*.idb
+*.ilk
+*.map
+*.i_s.res
+
+# Profiling
+*.gcda
+*.gcno
+*.gcov
+
+# Кроссплатформенные артефакты
+*.bin
+*.dat
+*.log
+*.tmp
+*.swp
+*~
+
+# ===================================
+# === CMake / CLion ===
+# ===================================
+# CMake
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+
+# CLion
+.idea/
+*.ipr
+*.iml
+*.iws
+
+# Build directories
+build/
+out/
+bin/
+
+# ===================================
+# === Cython ===
+# ===================================
+# Сгенерированные C-файлы
+Cython/*.c
+Cython/*.cpp
+Cython/*.cc
+Cython/*.cxx
+
+# Python-модули, скомпилированные Cython
+Cython/*.so
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list/
+tramp
+.\#*
+
+# Vim
+.*.swp
+.*.swo
+session.vim
+.netrwhist
+swap/
+backup/
+undo/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Kate
+*.kate-swp
+
+# ===================================
+# === Прочее ===
+# ===================================
+# Логи
+*.log
+
+# Архивы
+*.zip
+*.tar
+*.gz
+*.7z
+*.rar
+
+# Локальные конфиги
+.local/

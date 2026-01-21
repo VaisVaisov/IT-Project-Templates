@@ -1,0 +1,84 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Claude YOLO",
+      "type": "shell",
+      "command": "claude --dangerously-skip-permissions",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "clear": false,
+        "focus": true
+      }
+    },
+    {
+      "label": "CMake: Configure",
+      "type": "shell",
+      "command": "cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "CMake: Build",
+      "type": "shell",
+      "command": "cmake --build build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "CMake: Clean",
+      "type": "shell",
+      "command": "cmake --build build --target clean",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "CMake: Test",
+      "type": "shell",
+      "command": "ctest --test-dir build --output-on-failure",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "CMake: Debug",
+      "type": "shell",
+      "command": "lldb ./build/${input:executableName}",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "executableName",
+      "type": "promptString",
+      "description": "Executable name to debug",
+      "default": "main"
+    }
+  ]
+}

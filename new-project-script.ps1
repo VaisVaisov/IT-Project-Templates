@@ -1,43 +1,25 @@
 #requires -Version 5.1
 
-# 📁 Пути
+# Paths
 $TEMPLATES_DIR = Join-Path $env:USERPROFILE "IT-Project-Templates"
-$CLION_PROJECTS = Join-Path $env:USERPROFILE "CLionProjects"
-$PYCHARM_PROJECTS = Join-Path $env:USERPROFILE "PycharmProjects"
+$PROJECTS_DIR = Join-Path $env:USERPROFILE "Projects"
 
 # ========================================
-# 🔧 Функции
+# Functions
 # ========================================
 
 function Show-Usage {
     Write-Host @"
-Доступные типы проектов:
-  1. Чистый C/C++ (CLion)
-  2. Чистый Python (PyCharm)
-  3. Jupyter Notebook + Conda (PyCharm)
-  4. Гибридный (Cython + C/C++) (CLion)
-  5. Embedded (PlatformIO) → Устройства:
+Available project types:
+  1. Pure C/C++
+  2. Pure Python
+  3. Hybrid (Cython + C/C++)
+  4. Embedded (PlatformIO) -> Devices:
         a) Arduino Nano
         b) Arduino Pro Micro
         c) ESP32 DevKit
         d) STM32F411
 "@
-}
-
-function Test-Conda {
-    $conda = Get-Command conda -ErrorAction SilentlyContinue
-    return $null -ne $conda
-}
-
-function Setup-CondaEnv {
-    param([string]$EnvName)
-    if (-not (Test-Conda)) {
-        Write-Host "❌ Conda не установлена. Установите Miniconda или Anaconda." -ForegroundColor Red
-        exit 1
-    }
-    Write-Host "📁 Создаём Conda-окружение: $EnvName" -ForegroundColor Cyan
-    conda create -y -n $EnvName python=3.11 ipykernel jupyter
-    conda run -n $EnvName python -m ipykernel install --user --name $EnvName --display-name "Python ($EnvName)"
 }
 
 function Replace-Placeholders {
@@ -50,13 +32,13 @@ function Replace-Placeholders {
 }
 
 function Initialize-Git {
-    param([bool]$IsClion, [bool]$IsHybrid, [bool]$IsPureCpp)
+    param([string]$LangType, [bool]$IsHybrid, [bool]$IsPure)
     git init | Out-Null
-    Write-Host "📁 Инициализируем Git..." -ForegroundColor Cyan
+    Write-Host "Initializing Git..." -ForegroundColor Cyan
 
-    if ($IsClion -and ($IsHybrid -or $IsPureCpp)) {
+    if ($LangType -eq 'c-cpp' -and ($IsHybrid -or $IsPure)) {
         git submodule add https://github.com/google/googletest.git libraries/googletest | Out-Null
-        Write-Host "✅ googletest добавлен как submodule" -ForegroundColor Green
+        Write-Host "googletest added as submodule" -ForegroundColor Green
     }
 
     git add . | Out-Null
@@ -64,58 +46,57 @@ function Initialize-Git {
 }
 
 function Build-DockerImages {
-    if (Test-Path "Dockerfile.docs" -and (Test-Path "docs/cpp/Doxyfile") -and (Test-Path "docs/python/conf.py")) {
-        Write-Host "📁 Собираем образ docs-builder..." -ForegroundColor Cyan
+    if ((Test-Path "Dockerfile.docs") -and (Test-Path "docs/cpp/Doxyfile") -and (Test-Path "docs/python/conf.py")) {
+        Write-Host "Building docs-builder image..." -ForegroundColor Cyan
         if (docker build -f Dockerfile.docs -t docs-builder .) {
-            Write-Host "✅ Образ docs-builder успешно собран" -ForegroundColor Green
+            Write-Host "docs-builder image built successfully" -ForegroundColor Green
         } else {
-            Write-Host "❌ Ошибка: не удалось собрать docs-builder" -ForegroundColor Red
+            Write-Host "Error: failed to build docs-builder" -ForegroundColor Red
         }
     } else {
-        Write-Host "⚠️ Внимание: Dockerfile.docs не найден, пропуск сборки docs-builder" -ForegroundColor Yellow
+        Write-Host "Note: Dockerfile.docs not found, skipping docs-builder" -ForegroundColor Yellow
     }
 
     if (Test-Path "tools/profiler/Dockerfile") {
-        Write-Host "📁 Собираем образ profiler-tool..." -ForegroundColor Cyan
+        Write-Host "Building profiler-tool image..." -ForegroundColor Cyan
         if (docker build -f tools/profiler/Dockerfile -t profiler-tool .) {
-            Write-Host "✅ Образ profiler-tool успешно собран" -ForegroundColor Green
+            Write-Host "profiler-tool image built successfully" -ForegroundColor Green
         } else {
-            Write-Host "❌ Ошибка: не удалось собрать profiler-tool" -ForegroundColor Red
+            Write-Host "Error: failed to build profiler-tool" -ForegroundColor Red
         }
     } else {
-        Write-Host "⚠️ Внимание: Dockerfile для profiler не найден, пропуск сборки" -ForegroundColor Yellow
+        Write-Host "Note: profiler Dockerfile not found, skipping" -ForegroundColor Yellow
     }
 }
 
 # ========================================
-# 🚀 Основной поток
+# Main flow
 # ========================================
 
-Write-Host "🚀 Создание нового проекта" -ForegroundColor Magenta
-$ProjectName = Read-Host "Введите имя проекта"
+Write-Host "Creating new project" -ForegroundColor Magenta
+$ProjectName = Read-Host "Enter project name"
 
 if ([string]::IsNullOrWhiteSpace($ProjectName)) {
-    Write-Host "❌ Имя проекта не может быть пустым." -ForegroundColor Red
+    Write-Host "Error: Project name cannot be empty." -ForegroundColor Red
     exit 1
 }
 
 Show-Usage
-$TypeChoice = Read-Host "Выберите тип проекта (1–5)"
+$TypeChoice = Read-Host "Choose project type (1-4)"
 
 switch ($TypeChoice) {
-    '1' { $ProjectType = 'pure-cpp'; $IDE = 'clion' }
-    '2' { $ProjectType = 'pure-py'; $IDE = 'pycharm' }
-    '3' { $ProjectType = 'jupyter'; $IDE = 'pycharm' }
-    '4' { $ProjectType = 'hybrid'; $IDE = 'clion' }
-    '5' {
+    '1' { $ProjectType = 'pure'; $LangType = 'c-cpp' }
+    '2' { $ProjectType = 'pure'; $LangType = 'python' }
+    '3' { $ProjectType = 'hybrid'; $LangType = 'c-cpp' }
+    '4' {
         $ProjectType = 'platformio'
-        $IDE = 'clion'
-        Write-Host "Выберите устройство:" -ForegroundColor Cyan
+        $LangType = 'c-cpp'
+        Write-Host "Choose device:" -ForegroundColor Cyan
         Write-Host "  a) Arduino Nano"
         Write-Host "  b) Arduino Pro Micro"
         Write-Host "  c) ESP32 DevKit"
         Write-Host "  d) STM32F411"
-        $DeviceChoice = Read-Host "Устройство (a–d)"
+        $DeviceChoice = Read-Host "Device (a-d)"
         $DeviceMap = @{
             'a' = 'arduino-nano'
             'b' = 'arduino-pro-micro'
@@ -123,58 +104,57 @@ switch ($TypeChoice) {
             'd' = 'stm32f411'
         }
         if (-not $DeviceMap.ContainsKey($DeviceChoice)) {
-            Write-Host "❌ Неверный выбор устройства." -ForegroundColor Red
+            Write-Host "Error: Invalid device choice." -ForegroundColor Red
             exit 1
         }
         $Device = $DeviceMap[$DeviceChoice]
     }
     default {
-        Write-Host "❌ Неверный тип проекта." -ForegroundColor Red
+        Write-Host "Error: Invalid project type." -ForegroundColor Red
         exit 1
     }
 }
 
-# Определяем папку назначения
-if ($IDE -eq 'clion') {
-    $Dest = Join-Path $CLION_PROJECTS $ProjectName
-    $TemplateBase = Join-Path $TEMPLATES_DIR "clion"
-} else {
-    $Dest = Join-Path $PYCHARM_PROJECTS $ProjectName
-    $TemplateBase = Join-Path $TEMPLATES_DIR "pycharm"
-}
+# Determine destination folder
+$Dest = Join-Path $PROJECTS_DIR $ProjectName
+$TemplateBase = Join-Path $TEMPLATES_DIR $LangType
 
-# Определяем шаблон
+# Determine template
 switch ($ProjectType) {
-    'pure-cpp' { $Template = Join-Path $TemplateBase "pure-c-cpp" }
-    'pure-py'  { $Template = Join-Path $TemplateBase "pure-python" }
-    'jupyter'  { $Template = Join-Path $TemplateBase "jupyter" }
-    'hybrid'   { $Template = Join-Path $TemplateBase "hybrid" }
+    'pure'       { $Template = Join-Path $TemplateBase "pure" }
+    'hybrid'     { $Template = Join-Path $TemplateBase "hybrid" }
     'platformio' { $Template = Join-Path $TemplateBase "platformio" $Device }
 }
 
 if (-not (Test-Path $Template)) {
-    Write-Host "❌ Шаблон не найден: $Template" -ForegroundColor Red
-    Write-Host "Проверьте папку: $TEMPLATES_DIR" -ForegroundColor Yellow
+    Write-Host "Error: Template not found: $Template" -ForegroundColor Red
+    Write-Host "Check folder: $TEMPLATES_DIR" -ForegroundColor Yellow
     exit 1
 }
 
-# Копируем шаблон
-Write-Host "📁 Создаём проект: $ProjectName" -ForegroundColor Cyan
+# Copy template
+Write-Host "Creating project: $ProjectName" -ForegroundColor Cyan
 Copy-Item -Path $Template -Destination $Dest -Recurse
+
+# For PlatformIO, also copy common .devcontainer and .vscode
+if ($ProjectType -eq 'platformio') {
+    $PioBase = Join-Path $TemplateBase "platformio"
+    Copy-Item -Path (Join-Path $PioBase ".devcontainer") -Destination $Dest -Recurse -Force
+    Copy-Item -Path (Join-Path $PioBase ".vscode") -Destination $Dest -Recurse -Force
+}
+
 Set-Location $Dest
 
-# Замена плейсхолдеров
+# Replace placeholders
 Replace-Placeholders -ProjectName $ProjectName
 
-# Виртуальные окружения
-$IsClion = ($IDE -eq 'clion')
-$IsPureCpp = ($ProjectType -eq 'pure-cpp')
+# Virtual environments
+$IsPure = ($ProjectType -eq 'pure')
 $IsHybrid = ($ProjectType -eq 'hybrid')
-$IsPurePy = ($ProjectType -eq 'pure-py')
-$IsJupyter = ($ProjectType -eq 'jupyter')
+$IsPlatformIO = ($ProjectType -eq 'platformio')
 
-if (($IsClion -and $IsHybrid) -or ($IDE -eq 'pycharm' -and $IsPurePy)) {
-    Write-Host "📁 Создаём виртуальное окружение .venv" -ForegroundColor Cyan
+if (($LangType -eq 'c-cpp' -and $IsHybrid) -or ($LangType -eq 'python' -and $IsPure)) {
+    Write-Host "Creating virtual environment .venv" -ForegroundColor Cyan
     python -m venv .venv
     .\.venv\Scripts\Activate.ps1
     python -m pip install --upgrade pip
@@ -183,50 +163,42 @@ if (($IsClion -and $IsHybrid) -or ($IDE -eq 'pycharm' -and $IsPurePy)) {
     }
 }
 
-if ($IsJupyter) {
-    Setup-CondaEnv -EnvName $ProjectName
-}
-
 # Git
-Initialize-Git -IsClion $IsClion -IsHybrid $IsHybrid -IsPureCpp $IsPureCpp
+Initialize-Git -LangType $LangType -IsHybrid $IsHybrid -IsPure $IsPure
 
-# Docker (только для CLion)
-if ($IsClion) {
+# Docker (only for C/C++ non-PlatformIO)
+if ($LangType -eq 'c-cpp' -and -not $IsPlatformIO) {
     Build-DockerImages
 }
 
 # ========================================
-# 💡 Подсказки
+# Tips
 # ========================================
 
 Write-Host ""
-Write-Host "✅ Проект '$ProjectName' успешно создан в $Dest" -ForegroundColor Green
+Write-Host "Project '$ProjectName' successfully created in $Dest" -ForegroundColor Green
 Write-Host ""
 
-if ($IsClion) {
-    Write-Host "💡 Для CLion:" -ForegroundColor Magenta
-    Write-Host "   mkdir build && cd build"
-    Write-Host "   cmake .."
-    Write-Host "   cmake --build ."
-    Write-Host "   ctest"
-}
-
-if ($IDE -eq 'pycharm' -or $IsJupyter -or $IsPurePy) {
-    Write-Host "💡 Для Python:" -ForegroundColor Magenta
-    if ($IsJupyter) {
-        Write-Host "   conda activate $ProjectName"
-        Write-Host "   jupyter lab"
+if ($LangType -eq 'c-cpp') {
+    if ($IsPlatformIO) {
+        Write-Host "Tips for PlatformIO:" -ForegroundColor Magenta
+        Write-Host "   pio run"
+        Write-Host "   pio run -t upload"
+        Write-Host "   pio device monitor"
     } else {
-        Write-Host "   .\.venv\Scripts\Activate.ps1"
-        Write-Host "   pytest tests/"
+        Write-Host "Tips for C/C++:" -ForegroundColor Magenta
+        Write-Host "   mkdir build && cd build"
+        Write-Host "   cmake .."
+        Write-Host "   cmake --build ."
+        Write-Host "   ctest"
     }
 }
 
-if ($ProjectType -eq 'platformio') {
-    Write-Host "💡 PlatformIO:" -ForegroundColor Magenta
-    Write-Host "   platformio run"
-    Write-Host "   platformio device list"
+if ($LangType -eq 'python') {
+    Write-Host "Tips for Python:" -ForegroundColor Magenta
+    Write-Host "   .\.venv\Scripts\Activate.ps1"
+    Write-Host "   pytest tests/"
 }
 
 Write-Host ""
-Write-Host "✨ Удачи в разработке!" -ForegroundColor Green
+Write-Host "Happy coding!" -ForegroundColor Green
