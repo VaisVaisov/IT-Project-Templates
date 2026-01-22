@@ -17,26 +17,26 @@ A collection of ready-to-use project templates with VS Code Dev Containers suppo
 
 ### C/C++ Projects (`c-cpp/`)
 
-| Template | Description |
-|----------|-------------|
-| `pure` | Pure C/C++ with CMake, Ninja, GoogleTest |
-| `hybrid` | C/C++ + Python with Cython support |
+| Template      | Description                                  |
+| ------------- | -------------------------------------------- |
+| `pure`        | Pure C/C++ with CMake, Ninja, GoogleTest     |
+| `hybrid`      | C/C++ + Python with Cython support           |
 | `platformio/` | Embedded development (Arduino, ESP32, STM32) |
 
 ### Python Projects (`python/`)
 
-| Template | Description |
-|----------|-------------|
-| `pure` | Pure Python with pytest, black, pylint, mypy |
+| Template | Description                                  |
+| -------- | -------------------------------------------- |
+| `pure`   | Pure Python with pytest, black, pylint, mypy |
 
 ### PlatformIO Devices (`c-cpp/platformio/`)
 
-| Device | Board |
-|--------|-------|
-| `arduino-nano` | ATmega328P |
-| `arduino-pro-micro` | ATmega32U4 |
-| `esp32-devkit` | ESP32 DevKit |
-| `stm32f411` | STM32F411 BlackPill |
+| Device              | Board               |
+| ------------------- | ------------------- |
+| `arduino-nano`      | ATmega328P          |
+| `arduino-pro-micro` | ATmega32U4          |
+| `esp32-devkit`      | ESP32 DevKit        |
+| `stm32f411`         | STM32F411 BlackPill |
 
 ## Quick Start
 
@@ -46,8 +46,11 @@ A collection of ready-to-use project templates with VS Code Dev Containers suppo
 # Clone the repository
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-# Create a new project
-~/IT-Project-Templates/new-project.sh my_project --c-cpp --pure
+# Create a new project (after installation with PATH configured)
+new-project my_project --c-cpp --pure
+
+# Or with full path
+~/IT-Project-Templates/new-project my_project --c-cpp --pure
 ```
 
 ### Manual setup
@@ -61,19 +64,19 @@ git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Te
 
 ```bash
 # Pure C++ project
-./new-project.sh my_cpp_app --c-cpp --pure
+new-project my_cpp_app --c-cpp --pure
 
 # Python project
-./new-project.sh my_python_app --python --pure
+new-project my_python_app --python --pure
 
 # Hybrid C++/Python project
-./new-project.sh my_hybrid_app --c-cpp --hybrid
+new-project my_hybrid_app --c-cpp --hybrid
 
 # ESP32 embedded project
-./new-project.sh my_sensor --c-cpp --platformio --esp32-devkit
+new-project my_sensor --c-cpp --platformio --esp32-devkit
 
 # Arduino Nano project
-./new-project.sh my_arduino --c-cpp --platformio --arduino-nano
+new-project my_arduino --c-cpp --platformio --arduino-nano
 ```
 
 ## Project Structure
@@ -143,21 +146,69 @@ Minimal setup for general development:
 
 Each template comes with recommended extensions:
 
-| Category | Extensions |
-|----------|------------|
-| **AI** | Claude Code |
-| **C/C++** | C/C++, clangd |
-| **Python** | Python, Pylance, debugpy |
+| Category       | Extensions                      |
+| -------------- | ------------------------------- |
+| **AI**         | Claude Code                     |
+| **C/C++**      | C/C++, clangd                   |
+| **Python**     | Python, Pylance, debugpy        |
 | **PlatformIO** | PlatformIO IDE, Wokwi Simulator |
-| **Git** | GitLens, Git Graph |
-| **Markdown** | Markdown All in One |
-| **General** | Code Runner, IntelliCode |
+| **Git**        | GitLens, Git Graph              |
+| **Markdown**   | Markdown All in One             |
+| **General**    | Code Runner, IntelliCode        |
 
 ## Requirements
 
 - [Docker](https://www.docker.com/)
 - [VS Code](https://code.visualstudio.com/)
 - [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+
+## Installation
+
+### 1. Clone the repository
+
+Choose a location for the templates (recommended: home directory):
+
+```bash
+git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
+cd ~/IT-Project-Templates
+```
+
+### 2. Create symlink for easy access
+
+Create a symlink without the `.sh` extension so you can use it as a regular command:
+
+```bash
+# Create symlink
+ln -s ~/IT-Project-Templates/new-project.sh ~/IT-Project-Templates/new-project
+
+# Make sure the original script is executable
+chmod +x ~/IT-Project-Templates/new-project.sh
+```
+
+### 3. Add to PATH (recommended)
+
+To use the `new-project` command from anywhere, add the repository folder to your PATH:
+
+**For Bash (~/.bashrc):**
+```bash
+echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**For Zsh (~/.zshrc):**
+```bash
+echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+After this, you can use `new-project` command from any directory!
+
+### 4. Verify installation
+
+```bash
+# Should work from any directory now
+new-project
+```
 
 ## License
 
