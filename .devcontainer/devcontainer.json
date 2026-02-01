@@ -1,5 +1,5 @@
 {
-  "name": "Base Dev Container",
+  "name": "${localWorkspaceFolderBasename} - Base Dev Container",
   "build": {
     "dockerfile": "Dockerfile"
   },

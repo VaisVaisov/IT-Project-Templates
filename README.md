@@ -12,6 +12,9 @@ A collection of ready-to-use project templates with VS Code Dev Containers suppo
 - **Claude Code CLI** - AI-powered coding assistant pre-installed
 - **Git & GitHub CLI** - Pre-configured for seamless GitHub integration
 - **Oh My Zsh + Powerlevel10k** - Beautiful and functional terminal
+- **Pre-commit hooks** - Automatic code quality checks before each commit
+- **CI/CD** - GitHub Actions workflows for automated testing and building
+- **C++20 & Python 3.x** - Modern language standards across all templates
 
 ## Available Templates
 
@@ -58,7 +61,9 @@ new-project my_project --c-cpp --pure
 1. Copy desired template to your projects folder
 2. Open in VS Code
 3. Click "Reopen in Container" when prompted
-4. Start coding!
+4. Container automatically named after your project folder
+5. Pre-commit hooks installed automatically
+6. Start coding!
 
 ## Usage Examples
 
@@ -126,15 +131,20 @@ Each container includes:
 - Clang, LLD, LLDB, compiler-rt
 - CMake, Ninja
 - GDB (for compatibility)
+- cppcheck (static analysis)
+- pre-commit (automatic code quality checks)
 
 ### Python containers additionally include:
 - Python 3.x
-- pytest, black, isort, pylint, mypy
+- pytest, black, isort, pylint, mypy, flake8
 - virtualenv
+- pre-commit (automatic code quality checks)
 
 ### PlatformIO containers additionally include:
 - PlatformIO Core
 - USB device access (--privileged)
+- Clang, cppcheck (for code analysis)
+- pre-commit (automatic code quality checks)
 
 ### Base container (`.devcontainer/`)
 Minimal setup for general development:
@@ -191,6 +201,60 @@ Includes both C/C++ and Python extensions listed above
 - **PlatformIO IDE** - Embedded development platform
 - **Wokwi Simulator** - Arduino/ESP32 simulator
 - **C/C++ Tools** - For microcontroller code
+
+## Code Quality & CI/CD
+
+All templates include automated code quality tools and continuous integration:
+
+### Pre-commit Hooks
+
+Pre-commit hooks are **automatically installed** when you open a project in Dev Container. They run before each commit to ensure code quality:
+
+#### C/C++ Projects
+- **clang-format** - Automatic code formatting (LLVM style, 100 char limit)
+- **clang-tidy** - Static analysis for bugs and style issues
+- **cppcheck** - Additional static analysis (memory leaks, null pointers, etc.)
+
+#### Python Projects
+- **black** - Code formatting (PEP 8 compliant)
+- **isort** - Import statement sorting
+- **flake8** - Syntax and style linting
+- **mypy** - Type checking
+- **pylint** - Code quality analysis
+
+#### All Projects
+- YAML validation
+- Large file detection (>1MB)
+- Trailing whitespace removal
+- End-of-file fixer
+- Merge conflict detection
+
+**Note:** If a check fails, the commit is blocked until you fix the issues. This prevents broken code from entering the repository.
+
+### GitHub Actions CI/CD
+
+Each template includes GitHub Actions workflows in `.github/workflows/ci.yml`:
+
+#### C/C++ Pure & Hybrid
+```yaml
+on: [push, pull_request]
+```
+- Build with CMake + Ninja
+- Run GoogleTest suites
+- Generate Doxygen documentation
+- Auto-publish docs to GitHub Pages (main branch only)
+
+#### Python Pure
+- Run pytest test suite
+- Code quality checks (black, isort, flake8, mypy)
+- Test coverage reports
+
+#### PlatformIO
+- Build firmware for each device (Arduino, ESP32, STM32)
+- Run embedded tests (if available)
+- Check firmware size limits
+
+**All workflows run on Arch Linux containers** for consistency with dev environment.
 
 ## Requirements
 

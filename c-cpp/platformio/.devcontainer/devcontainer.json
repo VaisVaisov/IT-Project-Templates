@@ -1,5 +1,5 @@
 {
-  "name": "PlatformIO Dev Container",
+  "name": "${localWorkspaceFolderBasename} - PlatformIO",
   "build": {
     "dockerfile": "Dockerfile"
   },
@@ -49,5 +49,5 @@
     "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
     "DEVCONTAINER": "true"
   },
-  "postCreateCommand": "git config --global credential.helper '!gh auth git-credential' && pio --version && claude --version"
+  "postCreateCommand": "git config --global credential.helper '!gh auth git-credential' && pio --version && claude --version && pre-commit install"
 }

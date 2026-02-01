@@ -1,5 +1,5 @@
 {
-  "name": "Python Dev Container",
+  "name": "${localWorkspaceFolderBasename} - Python",
   "build": {
     "dockerfile": "Dockerfile"
   },
@@ -57,5 +57,5 @@
     "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
     "DEVCONTAINER": "true"
   },
-  "postCreateCommand": "git config --global credential.helper '!gh auth git-credential' && python --version && claude --version"
+  "postCreateCommand": "git config --global credential.helper '!gh auth git-credential' && python --version && claude --version && pre-commit install"
 }

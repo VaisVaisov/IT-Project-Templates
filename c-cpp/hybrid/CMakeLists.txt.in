@@ -1,32 +1,32 @@
 cmake_minimum_required(VERSION 3.24)
 project(@PROJECT_NAME@ LANGUAGES C CXX)
 
-# Стандарты
+# Language standards
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Выходные директории
+# Output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 
-# Поиск Python
+# Find Python
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
-# Путь к виртуальному окружению
+# Path to virtual environment
 if(EXISTS ${CMAKE_SOURCE_DIR}/.venv/bin/python)
     set(PYTHON_EXECUTABLE ${CMAKE_SOURCE_DIR}/.venv/bin/python)
 else()
     set(PYTHON_EXECUTABLE Python3_EXECUTABLE)
 endif()
 
-# Пути к Cython
+# Cython paths
 set(SETUP_PY ${CMAKE_SOURCE_DIR}/cython/setup.py)
 set(CYTHON_BUILD_DIR ${CMAKE_SOURCE_DIR}/cython/build)
 
-# Цель: сборка Cython-модуля
+# Target: build Cython module
 if(EXISTS ${SETUP_PY})
     add_custom_target(
         build_cython ALL
@@ -39,7 +39,7 @@ else()
     message(WARNING "setup.py not found in cython/ — skipping Cython build")
 endif()
 
-# Цель: очистка Cython
+# Target: clean Cython
 add_custom_target(
     clean_cython
     COMMAND ${CMAKE_COMMAND} -E remove_directory ${CYTHON_BUILD_DIR}
@@ -47,10 +47,10 @@ add_custom_target(
     COMMENT "🧹 Cleaning Cython build files..."
 )
 
-# Включаем тесты
+# Enable testing
 enable_testing()
 
-# Подключаем googletest
+# Setup googletest
 if(EXISTS ${CMAKE_SOURCE_DIR}/libraries/googletest)
     add_subdirectory(libraries/googletest)
 else()
@@ -63,26 +63,26 @@ else()
     FetchContent_MakeAvailable(googletest)
 endif()
 
-# Пример C-библиотеки
+# Example C library
 if(EXISTS ${CMAKE_SOURCE_DIR}/src/example_c/example_c.c)
     add_library(example_c SHARED src/example_c/example_c.c)
     target_include_directories(example_c PUBLIC include/example_c)
 endif()
 
-# Пример C++-библиотеки
+# Example C++ library
 if(EXISTS ${CMAKE_SOURCE_DIR}/src/example_lib/example_lib.cpp)
     add_library(example_lib SHARED src/example_lib/example_lib.cpp)
     target_include_directories(example_lib PUBLIC src/example_lib)
 endif()
 
-# Тест C++
+# C++ test
 if(EXISTS ${CMAKE_SOURCE_DIR}/test/test_calculator.cpp)
     add_executable(test_calculator test/test_calculator.cpp)
     target_link_libraries(test_calculator GTest::gtest_main example_lib)
     add_test(NAME test_calculator COMMAND test_calculator)
 endif()
 
-# Тест C
+# C test
 if(EXISTS ${CMAKE_SOURCE_DIR}/test/test_math.c)
     add_executable(test_math test/test_math.c)
     target_link_libraries(test_math GTest::gtest_main example_c)

@@ -1,5 +1,5 @@
 {
-  "name": "Hybrid (C/C++ + Python) Dev Container",
+  "name": "${localWorkspaceFolderBasename} - Hybrid (C/C++ + Python)",
   "build": {
     "dockerfile": "Dockerfile"
   },
@@ -53,5 +53,5 @@
     "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
     "DEVCONTAINER": "true"
   },
-  "postCreateCommand": "git config --global credential.helper '!gh auth git-credential' && clang --version && python --version && claude --version"
+  "postCreateCommand": "git config --global credential.helper '!gh auth git-credential' && clang --version && python --version && claude --version && pre-commit install"
 }

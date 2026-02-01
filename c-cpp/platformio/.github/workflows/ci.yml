@@ -1,0 +1,45 @@
+name: PlatformIO CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    # Note: Ubuntu host is only used to run Docker, all commands execute inside Arch container
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+
+    strategy:
+      matrix:
+        device: [arduino-nano, arduino-pro-micro, esp32-devkit, stm32f411]
+
+    steps:
+    - name: Setup Arch Linux
+      run: |
+        pacman -Syu --noconfirm
+        pacman -S --noconfirm git python python-pip
+
+    - uses: actions/checkout@v4
+
+    - name: Install PlatformIO Core
+      run: |
+        pip install --upgrade pip --break-system-packages
+        pip install platformio --break-system-packages
+
+    - name: Build firmware for ${{ matrix.device }}
+      run: |
+        cd ${{ matrix.device }}
+        pio run
+
+    - name: Run tests (if available)
+      run: |
+        cd ${{ matrix.device }}
+        if [ -d "test" ]; then
+          pio test
+        else
+          echo "No tests found for ${{ matrix.device }}"
+        fi
+
+    - name: Check firmware size
+      run: |
+        cd ${{ matrix.device }}
+        pio run --target size

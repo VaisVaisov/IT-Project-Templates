@@ -4,59 +4,46 @@ on: [push, pull_request]
 
 jobs:
   build:
+    # Note: Ubuntu host is only used to run Docker, all commands execute inside Arch container
     runs-on: ubuntu-latest
+    container: archlinux:latest
     steps:
+    - name: Setup Arch Linux
+      run: |
+        pacman -Syu --noconfirm
+        pacman -S --noconfirm git
+
     - uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
-    - name: Установить зависимости
+    - name: Install dependencies
       run: |
-        sudo pacman -Syu
-        sudo pacman -S -y python3-pip build-essential cmake libgtest-dev doxygen
-        pip install --upgrade pip
+        pacman -S --noconfirm clang cmake ninja gdb doxygen
 
-    - name: Установить Python-зависимости
-      run: |
-        if [ -f "requirements.txt" ]; then
-          pip install -r requirements.txt
-        fi
-        pip install pytest sphinx sphinx-rtd-theme
-
-    - name: Собрать проект
+    - name: Build project
       run: |
         mkdir build && cd build
-        cmake ..
-        make
+        cmake -G Ninja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ ..
+        ninja
 
-    - name: Запустить C++ тесты
+    - name: Run C++ tests
       run: |
         cd build
         ctest --output-on-failure
 
-    - name: Запустить Python тесты
+    - name: Generate C++ documentation
       run: |
-        cd build
-        cd ../python/tests
-        python -m pytest -v
+        doxygen docs/cpp/Doxyfile
 
-    - name: Генерировать C++ документацию через Docker
-      run: |
-        docker run --rm -v ${PWD}:/src -w /src doxygen/doxygen doxygen docs/cpp/Doxyfile
-
-    - name: Генерировать Python документацию через Docker
-      run: |
-        docker run --rm -v ${PWD}:/docs -w /docs \
-          -e PIP_CACHE_DIR=/tmp/pip-cache \
-          python:3.11-slim \
-          /bin/bash -c "pip install sphinx sphinx-rtd-theme && cd docs/python && sphinx-apidoc -o . ../../python --force && make html"
-
-    - name: Опубликовать документацию (GitHub Pages)
+    - name: Publish documentation to GitHub Pages
       if: github.ref == 'refs/heads/main'
       run: |
+        pacman -S --noconfirm openssh
         mkdir -p docs/_site
         cp -r docs/cpp/generated/html docs/_site/cpp
-        cp -r docs/python/_build/html docs/_site/python
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add docs/_site
-        git commit -m "📖 Автообновление документации" || exit 0
+        git commit -m "📖 Auto-update documentation" || exit 0
         git subtree push --prefix docs/_site origin gh-pages

@@ -42,7 +42,8 @@ RUN pacman -S --noconfirm \
         compiler-rt \
         cmake \
         ninja \
-        gdb && \
+        gdb \
+        cppcheck && \
     pacman -Scc --noconfirm
 
 # Install Python and Cython
@@ -53,7 +54,11 @@ RUN pacman -S --noconfirm \
         cython \
         python-numpy \
         python-pytest \
-        python-sphinx && \
+        python-sphinx \
+        python-black \
+        python-isort \
+        python-pylint \
+        python-mypy && \
     pacman -Scc --noconfirm
 
 # Create vscode user with sudo
@@ -84,9 +89,10 @@ RUN mkdir -p ~/.npm-global && \
     npm config set prefix ~/.npm-global && \
     echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
 
-# Install Claude Code CLI
+# Install Claude Code CLI and pre-commit
 RUN export PATH=~/.npm-global/bin:$PATH && \
-    npm install -g @anthropic-ai/claude-code@latest
+    npm install -g @anthropic-ai/claude-code@latest && \
+    pip install --user pre-commit --break-system-packages
 
 # Install oh-my-zsh
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended

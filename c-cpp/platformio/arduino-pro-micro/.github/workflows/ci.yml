@@ -1,0 +1,38 @@
+name: Arduino Pro Micro CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    # Note: Ubuntu host is only used to run Docker, all commands execute inside Arch container
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+
+    steps:
+    - name: Setup Arch Linux
+      run: |
+        pacman -Syu --noconfirm
+        pacman -S --noconfirm git python python-pip
+
+    - uses: actions/checkout@v4
+
+    - name: Install PlatformIO Core
+      run: |
+        pip install --upgrade pip --break-system-packages
+        pip install platformio --break-system-packages
+
+    - name: Build firmware for Arduino Pro Micro
+      run: |
+        pio run
+
+    - name: Run tests (if available)
+      run: |
+        if [ -d "test" ]; then
+          pio test
+        else
+          echo "No tests found"
+        fi
+
+    - name: Check firmware size
+      run: |
+        pio run --target size
