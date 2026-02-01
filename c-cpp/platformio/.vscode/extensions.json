@@ -1,9 +1,20 @@
 {
     "recommendations": [
+        "anthropic.claude-code",
         "platformio.platformio-ide",
         "ms-vscode.cpptools",
         "wokwi.wokwi-vscode",
-        "anthropic.claude-code"
+        "formulahendry.code-runner",
+        "visualstudioexptteam.vscodeintellicode",
+        "yzhang.markdown-all-in-one",
+        "manuth.markdown-converter",
+        "takumii.markdowntable",
+        "redhat.vscode-yaml",
+        "meezilla.json",
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "streetsidesoftware.code-spell-checker",
+        "aaron-bond.better-comments"
     ],
     "unwantedRecommendations": [
         "ms-vscode.cpptools-extension-pack"

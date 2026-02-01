@@ -1,7 +1,18 @@
 {
     "recommendations": [
+        "anthropic.claude-code",
         "ms-vscode.cpptools",
         "llvm-vs-code-extensions.vscode-clangd",
-        "anthropic.claude-code"
+        "formulahendry.code-runner",
+        "visualstudioexptteam.vscodeintellicode",
+        "yzhang.markdown-all-in-one",
+        "manuth.markdown-converter",
+        "takumii.markdowntable",
+        "redhat.vscode-yaml",
+        "meezilla.json",
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "streetsidesoftware.code-spell-checker",
+        "aaron-bond.better-comments"
     ]
 }

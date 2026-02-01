@@ -144,17 +144,53 @@ Minimal setup for general development:
 
 ## VS Code Extensions
 
-Each template comes with recommended extensions:
+All templates include pre-configured extensions that:
+- **Install automatically** when opening project in Dev Container
+- **Show as recommendations** when opening without Docker
 
-| Category       | Extensions                      |
-| -------------- | ------------------------------- |
-| **AI**         | Claude Code                     |
-| **C/C++**      | C/C++, clangd                   |
-| **Python**     | Python, Pylance, debugpy        |
-| **PlatformIO** | PlatformIO IDE, Wokwi Simulator |
-| **Git**        | GitLens, Git Graph              |
-| **Markdown**   | Markdown All in One             |
-| **General**    | Code Runner, IntelliCode        |
+### Common Extensions (all templates)
+
+| Category              | Extension                                  | Purpose                                    |
+| --------------------- | ------------------------------------------ | ------------------------------------------ |
+| **AI & Code Quality** | Claude Code                                | AI-powered coding assistant                |
+|                       | IntelliCode                                | AI-based code suggestions                  |
+|                       | Better Comments                            | Colorful comments (TODO, FIXME, etc.)      |
+|                       | Code Spell Checker                         | Spell checking in code and comments        |
+| **Git**               | GitLens                                    | Advanced Git features (blame, history)     |
+|                       | Git Graph                                  | Visual commit history graph                |
+| **Markdown**          | Markdown All in One                        | Complete Markdown support                  |
+|                       | Markdown Converter                         | Convert Markdown to PDF/HTML/Word          |
+|                       | Markdown Table                             | Table editing in Markdown                  |
+| **Data Formats**      | YAML (Red Hat)                             | YAML file support                          |
+|                       | JSON (Meezilla)                            | Enhanced JSON editing                      |
+| **Code Execution**    | Code Runner                                | Quick code execution                       |
+
+### Language-Specific Extensions
+
+#### C/C++ Templates
+- **C/C++ Tools** - Debugging, IntelliSense
+- **clangd** - Advanced code analysis and navigation
+- **Code Runner** - Quick C/C++ code execution
+
+#### Python Templates
+- **Python** - Core Python support
+- **Pylance** - Fast Python language server
+- **debugpy** - Python debugger
+- **Python Envs** - Virtual environment management
+- **Python Extension Pack** - Collection of useful Python tools
+- **autodocstring** - Auto-generate docstrings
+- **Python Indent** - Smart Python indentation
+- **Python Path** - Python path management
+- **Django** - Django framework support (Pure Python template)
+- **Jinja** - Jinja2 template syntax (Pure Python template)
+
+#### Hybrid (C/C++ + Python) Templates
+Includes both C/C++ and Python extensions listed above
+
+#### PlatformIO Templates
+- **PlatformIO IDE** - Embedded development platform
+- **Wokwi Simulator** - Arduino/ESP32 simulator
+- **C/C++ Tools** - For microcontroller code
 
 ## Requirements
 

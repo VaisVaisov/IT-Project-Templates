@@ -23,7 +23,8 @@
         "meezilla.json",
         "eamodio.gitlens",
         "mhutchie.git-graph",
-        "streetsidesoftware.code-spell-checker"
+        "streetsidesoftware.code-spell-checker",
+        "aaron-bond.better-comments"
       ],
       "settings": {
         "editor.formatOnSave": true,

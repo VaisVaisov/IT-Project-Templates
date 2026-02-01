@@ -1,8 +1,27 @@
 {
     "recommendations": [
+        "anthropic.claude-code",
         "ms-python.python",
         "ms-python.vscode-pylance",
         "ms-python.debugpy",
-        "anthropic.claude-code"
+        "ms-python.vscode-python-envs",
+        "donjayamanne.python-extension-pack",
+        "donjayamanne.python-environment-manager",
+        "njpwerner.autodocstring",
+        "kevinrose.vsc-python-indent",
+        "mgesbert.python-path",
+        "batisteo.vscode-django",
+        "wholroyd.jinja",
+        "formulahendry.code-runner",
+        "visualstudioexptteam.vscodeintellicode",
+        "yzhang.markdown-all-in-one",
+        "manuth.markdown-converter",
+        "takumii.markdowntable",
+        "redhat.vscode-yaml",
+        "meezilla.json",
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "streetsidesoftware.code-spell-checker",
+        "aaron-bond.better-comments"
     ]
 }

@@ -1,9 +1,23 @@
 {
     "recommendations": [
+        "anthropic.claude-code",
         "ms-vscode.cpptools",
         "llvm-vs-code-extensions.vscode-clangd",
         "ms-python.python",
         "ms-python.vscode-pylance",
-        "anthropic.claude-code"
+        "ms-python.debugpy",
+        "njpwerner.autodocstring",
+        "kevinrose.vsc-python-indent",
+        "formulahendry.code-runner",
+        "visualstudioexptteam.vscodeintellicode",
+        "yzhang.markdown-all-in-one",
+        "manuth.markdown-converter",
+        "takumii.markdowntable",
+        "redhat.vscode-yaml",
+        "meezilla.json",
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "streetsidesoftware.code-spell-checker",
+        "aaron-bond.better-comments"
     ]
 }
