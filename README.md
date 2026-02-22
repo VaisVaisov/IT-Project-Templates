@@ -10,6 +10,7 @@ A collection of ready-to-use project templates with VS Code Dev Containers suppo
 - **Arch Linux base** - Rolling release with latest packages
 - **Clang toolchain** - Modern C/C++ compiler with clang-tidy, clang-format
 - **Claude Code CLI** - AI-powered coding assistant pre-installed
+- **Lingma & Kilo Code** - Additional AI assistants available as VS Code extensions
 - **Git & GitHub CLI** - Pre-configured for seamless GitHub integration
 - **Oh My Zsh + Powerlevel10k** - Beautiful and functional terminal
 - **Pre-commit hooks** - Automatic code quality checks before each commit
@@ -46,14 +47,14 @@ A collection of ready-to-use project templates with VS Code Dev Containers suppo
 ### Using the script (recommended)
 
 ```bash
-# Clone the repository
+# Clone the repository anywhere you like
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
 # Create a new project (after installation with PATH configured)
-new-project my_project --c-cpp --pure
+new-project --c-cpp --pure ~/my_project
 
 # Or with full path
-~/IT-Project-Templates/new-project my_project --c-cpp --pure
+~/IT-Project-Templates/new-project --c-cpp --pure ~/my_project
 ```
 
 ### Manual setup
@@ -69,19 +70,19 @@ new-project my_project --c-cpp --pure
 
 ```bash
 # Pure C++ project
-new-project my_cpp_app --c-cpp --pure
+new-project --c-cpp --pure ~/Projects/my_cpp_app
 
 # Python project
-new-project my_python_app --python --pure
+new-project --python --pure ~/Projects/my_python_app
 
 # Hybrid C++/Python project
-new-project my_hybrid_app --c-cpp --hybrid
+new-project --c-cpp --hybrid ~/Projects/my_hybrid_app
 
 # ESP32 embedded project
-new-project my_sensor --c-cpp --platformio --esp32-devkit
+new-project --c-cpp --platformio --esp32-devkit ~/Projects/my_sensor
 
 # Arduino Nano project
-new-project my_arduino --c-cpp --platformio --arduino-nano
+new-project --c-cpp --platformio --arduino-nano ./my_arduino
 ```
 
 ## Project Structure
@@ -110,6 +111,12 @@ IT-Project-Templates/
 │       ├── .devcontainer/
 │       ├── .vscode/
 │       └── ...
+├── meta-template/            # Base template for creating new templates
+│   ├── .devcontainer/
+│   ├── .github/workflows/
+│   ├── .vscode/
+│   ├── .gitignore.template
+│   └── .pre-commit-config.yaml
 ├── new-project.sh            # Linux/macOS script
 ├── new-project-script.ps1    # Windows PowerShell script
 ├── new-project-shell.bat     # Windows batch launcher
@@ -162,10 +169,12 @@ All templates include pre-configured extensions that:
 
 | Category              | Extension                                  | Purpose                                    |
 | --------------------- | ------------------------------------------ | ------------------------------------------ |
-| **AI & Code Quality** | Claude Code                                | AI-powered coding assistant                |
-|                       | IntelliCode                                | AI-based code suggestions                  |
-|                       | Better Comments                            | Colorful comments (TODO, FIXME, etc.)      |
+| **AI**                | Claude Code                                | AI agent (CLI + VS Code)                   |
+|                       | TONGYI Lingma                              | AI assistant and code completion           |
+|                       | Kilo Code                                  | AI agent supporting 400+ models            |
+| **Code Quality**      | Better Comments                            | Colorful comments (TODO, FIXME, etc.)      |
 |                       | Code Spell Checker                         | Spell checking in code and comments        |
+| **Docker**            | Docker                                     | Container management in VS Code            |
 | **Git**               | GitLens                                    | Advanced Git features (blame, history)     |
 |                       | Git Graph                                  | Visual commit history graph                |
 | **Markdown**          | Markdown All in One                        | Complete Markdown support                  |
@@ -266,47 +275,35 @@ on: [push, pull_request]
 
 ### 1. Clone the repository
 
-Choose a location for the templates (recommended: home directory):
+Clone anywhere you like:
 
 ```bash
-git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
-cd ~/IT-Project-Templates
+git clone https://github.com/VaisVaisov/IT-Project-Templates.git /path/to/IT-Project-Templates
 ```
 
-### 2. Create symlink for easy access
+> **Note**: Make sure `new-project.sh` is executable (`chmod +x new-project.sh`). It should already be after cloning.
 
-Create a symlink without the `.sh` extension so you can use it as a regular command:
-
-```bash
-# Create symlink
-ln -s ~/IT-Project-Templates/new-project.sh ~/IT-Project-Templates/new-project
-
-# Make sure the original script is executable
-chmod +x ~/IT-Project-Templates/new-project.sh
-```
-
-### 3. Add to PATH (recommended)
+### 2. Add to PATH (recommended)
 
 To use the `new-project` command from anywhere, add the repository folder to your PATH:
 
 **For Bash (~/.bashrc):**
 ```bash
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.bashrc
+echo 'export PATH="/path/to/IT-Project-Templates:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
 **For Zsh (~/.zshrc):**
 ```bash
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc
+echo 'export PATH="/path/to/IT-Project-Templates:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
 After this, you can use `new-project` command from any directory!
 
-### 4. Verify installation
+### 3. Verify installation
 
 ```bash
-# Should work from any directory now
 new-project
 ```
 

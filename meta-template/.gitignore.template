@@ -1,0 +1,49 @@
+# ===================================
+# === Operating Systems ===
+# ===================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ===================================
+# === Editors ===
+# ===================================
+# Vim
+.*.swp
+.*.swo
+session.vim
+.netrwhist
+swap/
+backup/
+undo/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Kate
+*.kate-swp
+
+# ===================================
+# === TODO: Add language-specific ignores ===
+# ===================================
+# Example for Python:
+# .venv/
+# __pycache__/
+# *.pyc
+
+# ===================================
+# === Misc ===
+# ===================================
+*.log
+*.zip
+*.tar
+*.gz
+*.7z
+*.rar
+.local/

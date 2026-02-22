@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # TODO: Add language-specific setup steps here
+      # Example for C++:
+      # - name: Install dependencies
+      #   run: pacman -Syu --noconfirm clang cmake ninja
+
+      # TODO: Add build/test steps here
+      # Example:
+      # - name: Build
+      #   run: cmake -B build && cmake --build build
+      # - name: Test
+      #   run: ctest --test-dir build

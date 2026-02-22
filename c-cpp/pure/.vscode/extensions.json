@@ -1,15 +1,17 @@
 {
     "recommendations": [
         "anthropic.claude-code",
+        "Alibaba-Cloud.tongyi-lingma",
+        "kilocode.Kilo-Code",
         "ms-vscode.cpptools",
         "llvm-vs-code-extensions.vscode-clangd",
         "formulahendry.code-runner",
-        "visualstudioexptteam.vscodeintellicode",
         "yzhang.markdown-all-in-one",
         "manuth.markdown-converter",
         "takumii.markdowntable",
         "redhat.vscode-yaml",
         "meezilla.json",
+        "ms-azuretools.vscode-docker",
         "eamodio.gitlens",
         "mhutchie.git-graph",
         "streetsidesoftware.code-spell-checker",

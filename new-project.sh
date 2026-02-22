@@ -3,15 +3,14 @@
 set -euo pipefail
 
 # Paths
-TEMPLATES_DIR="$HOME/IT-Project-Templates"
-PROJECTS_DIR="$HOME/Projects"
+TEMPLATES_DIR="$(cd "$(dirname "$(realpath "$0")")" && pwd)"
 
 # ========================================
 # Functions
 # ========================================
 
 show_usage() {
-    echo "Usage: $0 <project_name> [flags]"
+    echo "Usage: new-project [flags] <path>"
     echo ""
     echo "Language flags:"
     echo "  --c-cpp            C/C++ project"
@@ -29,16 +28,17 @@ show_usage() {
     echo "  --stm32f411"
     echo ""
     echo "Examples:"
-    echo "  $0 my_cpp --c-cpp --pure"
-    echo "  $0 my_app --python --pure"
-    echo "  $0 sensor_node --c-cpp --platformio --esp32-devkit"
+    echo "  new-project --c-cpp --pure ./Projects/new-cpp"
+    echo "  new-project --python --pure /home/user/Projects/my-app"
+    echo "  new-project --c-cpp --hybrid ../../work/hybrid-project"
+    echo "  new-project --c-cpp --platformio --esp32-devkit ./embedded/sensor-node"
     exit 1
 }
 
-validate_project_name() {
-    local name="$1"
-    if [ -z "$name" ]; then
-        echo "Error: Project name not specified."
+validate_path() {
+    local path="$1"
+    if [ -z "$path" ] || [[ "$path" == -* ]]; then
+        echo "Error: Project path not specified."
         show_usage
     fi
 }
@@ -88,14 +88,47 @@ build_docker_images() {
     fi
 }
 
+check_deps() {
+    local missing=()
+    for cmd in git realpath; do
+        if ! command -v "$cmd" &>/dev/null; then
+            missing+=("$cmd")
+        fi
+    done
+    if [ ${#missing[@]} -gt 0 ]; then
+        echo "Error: Missing required tools: ${missing[*]}"
+        exit 1
+    fi
+}
+
+cleanup() {
+    local exit_code=$?
+    if [ "$CREATED" = true ] && [ -d "$DEST" ]; then
+        echo ""
+        echo "Error: '$BASH_COMMAND' failed with exit code $exit_code"
+        echo "Cleaning up '$DEST'..."
+        rm -rf "$DEST"
+    fi
+    exit $exit_code
+}
+
 # ========================================
 # Main flow
 # ========================================
 
-PROJECT_NAME="${1:-}"
-shift 2>/dev/null || true
+CREATED=false
+trap cleanup INT TERM ERR
 
-validate_project_name "$PROJECT_NAME"
+check_deps
+
+if [[ $# -lt 1 ]]; then
+    echo "Error: Project path not specified."
+    show_usage
+fi
+
+DEST_ARG="${@: -1}"
+validate_path "$DEST_ARG"
+set -- "${@:1:$(($#-1))}"
 
 # Flags
 LANG_TYPE=""
@@ -159,7 +192,8 @@ if [ -z "$LANG_TYPE" ]; then
 fi
 
 # Determine destination and template
-DEST="$PROJECTS_DIR/$PROJECT_NAME"
+DEST="$(realpath -m "$DEST_ARG")"
+PROJECT_NAME="$(basename "$DEST")"
 TEMPLATE_BASE="$TEMPLATES_DIR/$LANG_TYPE"
 TEMPLATE=""
 
@@ -193,8 +227,13 @@ if [ ! -d "$TEMPLATE" ]; then
 fi
 
 # Create project
+if [ -d "$DEST" ]; then
+    echo "Error: Directory already exists: $DEST"
+    exit 1
+fi
 echo "Creating project: $PROJECT_NAME"
 mkdir -p "$DEST"
+CREATED=true
 cp -r "$TEMPLATE/." "$DEST/"
 
 # For PlatformIO, also copy common .devcontainer and .vscode

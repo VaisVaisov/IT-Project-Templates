@@ -3,13 +3,22 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
   "customizations": {
     "vscode": {
       "extensions": [
         "anthropic.claude-code",
+        "Alibaba-Cloud.tongyi-lingma",
+        "kilocode.Kilo-Code",
+        "formulahendry.code-runner",
         "yzhang.markdown-all-in-one",
+        "manuth.markdown-converter",
+        "takumii.markdowntable",
         "redhat.vscode-yaml",
         "meezilla.json",
+        "ms-azuretools.vscode-docker",
         "eamodio.gitlens",
         "mhutchie.git-graph",
         "streetsidesoftware.code-spell-checker",
