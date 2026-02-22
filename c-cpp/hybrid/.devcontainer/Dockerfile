@@ -54,7 +54,7 @@ RUN pacman -S --noconfirm \
         python-black \
         python-isort \
         python-pylint \
-        python-mypy && \
+        mypy && \
     pacman -Scc --noconfirm
 
 # Create vscode user with sudo

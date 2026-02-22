@@ -38,7 +38,7 @@ RUN pacman -S --noconfirm \
         python-black \
         python-isort \
         python-pylint \
-        python-mypy \
+        mypy \
         flake8 && \
     pacman -Scc --noconfirm
 

@@ -12,7 +12,18 @@
         "clear": false,
         "focus": true
       }
+    },
+    {
+      "label": "Qwen YOLO",
+      "type": "shell",
+      "command": "qwen --yolo",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "clear": false,
+        "focus": true
+      }
     }
-    // TODO: Add language-specific tasks here
   ]
 }

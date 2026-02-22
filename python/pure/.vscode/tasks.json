@@ -14,57 +14,15 @@
       }
     },
     {
-      "label": "Python: Run",
+      "label": "Qwen YOLO",
       "type": "shell",
-      "command": "python src/main.py",
+      "command": "qwen --yolo",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "Python: Test",
-      "type": "shell",
-      "command": "pytest",
-      "group": {
-        "kind": "test",
-        "isDefault": true
-      },
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "Python: Lint",
-      "type": "shell",
-      "command": "pylint src/",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "Python: Format",
-      "type": "shell",
-      "command": "black src/",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "Python: Type Check",
-      "type": "shell",
-      "command": "mypy src/",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
+        "panel": "new",
+        "clear": false,
+        "focus": true
       }
     }
   ]

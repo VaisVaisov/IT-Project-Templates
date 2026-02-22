@@ -133,6 +133,7 @@ Each container includes:
 - **Editor**: nvim
 - **VCS**: Git, git-delta, GitHub CLI
 - **AI**: Claude Code, Qwen Code
+- **GitHub auth**: `~/.config/gh` from host is bind-mounted — no need to re-authenticate inside containers
 
 ### C/C++ containers additionally include:
 - Clang, LLD, LLDB, compiler-rt
@@ -270,6 +271,7 @@ on: [push, pull_request]
 - [Docker](https://www.docker.com/)
 - [VS Code](https://code.visualstudio.com/)
 - [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+- [GitHub CLI](https://cli.github.com/) installed and authenticated on the host (`gh auth login`)
 
 ## Installation
 
