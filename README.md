@@ -9,7 +9,7 @@ A collection of ready-to-use project templates with VS Code Dev Containers suppo
 - **Dev Containers** - Consistent development environment across machines
 - **Arch Linux base** - Rolling release with latest packages
 - **Clang toolchain** - Modern C/C++ compiler with clang-tidy, clang-format
-- **Claude Code CLI** - AI-powered coding assistant pre-installed
+- **Claude Code & Qwen Code** - AI coding agents pre-installed (from AUR)
 - **Lingma & Kilo Code** - Additional AI assistants available as VS Code extensions
 - **Git & GitHub CLI** - Pre-configured for seamless GitHub integration
 - **Oh My Zsh + Powerlevel10k** - Beautiful and functional terminal
@@ -89,7 +89,7 @@ new-project --c-cpp --platformio --arduino-nano ./my_arduino
 
 ```
 IT-Project-Templates/
-├── .devcontainer/            # Base container (Arch + zsh + Claude Code)
+├── .devcontainer/            # Base container (Arch + zsh + Claude Code + Qwen Code)
 ├── c-cpp/
 │   ├── pure/                 # Pure C/C++ template
 │   │   ├── .devcontainer/
@@ -130,9 +130,9 @@ Each container includes:
 
 - **Base**: Arch Linux (latest)
 - **Shell**: Zsh with Oh My Zsh + Powerlevel10k
-- **Editor**: nvim, vim
+- **Editor**: nvim
 - **VCS**: Git, git-delta, GitHub CLI
-- **AI**: Claude Code CLI
+- **AI**: Claude Code, Qwen Code
 
 ### C/C++ containers additionally include:
 - Clang, LLD, LLDB, compiler-rt
@@ -156,7 +156,7 @@ Each container includes:
 ### Base container (`.devcontainer/`)
 Minimal setup for general development:
 - Arch Linux + zsh + Powerlevel10k
-- Git, GitHub CLI, Claude Code
+- Git, GitHub CLI, Claude Code, Qwen Code
 - No language-specific tools
 
 ## VS Code Extensions

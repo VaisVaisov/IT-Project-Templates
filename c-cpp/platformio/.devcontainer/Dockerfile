@@ -15,7 +15,6 @@ RUN pacman -S --noconfirm \
         base-devel \
         git \
         git-delta \
-        vim \
         neovim \
         sudo \
         wget \
@@ -24,14 +23,11 @@ RUN pacman -S --noconfirm \
         nodejs \
         npm \
         fzf \
-        jq \
-        man-db \
         unzip \
         zsh \
         zsh-completions \
         github-cli \
-        htop \
-        mc && \
+        docker-buildx && \
     pacman -Scc --noconfirm
 
 # Install Clang toolchain (for code analysis)
@@ -83,15 +79,16 @@ RUN echo 'export HISTFILE=/commandhistory/.bash_history' >> ~/.bashrc && \
     echo 'export HISTFILESIZE=10000' >> ~/.bashrc && \
     echo 'export PROMPT_COMMAND="history -a"' >> ~/.bashrc
 
-# Setup npm for user
-RUN mkdir -p ~/.npm-global && \
-    npm config set prefix ~/.npm-global && \
-    echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
+# Install yay-bin
+RUN git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin && \
+    cd /tmp/yay-bin && makepkg -si --noconfirm && \
+    rm -rf /tmp/yay-bin
 
-# Install Claude Code CLI and pre-commit
-RUN export PATH=~/.npm-global/bin:$PATH && \
-    npm install -g @anthropic-ai/claude-code@latest && \
-    pip install --user pre-commit --break-system-packages
+# Install Claude Code and Qwen Code from AUR
+RUN yay -S --noconfirm claude-code qwen-code
+
+# Install pre-commit
+RUN pip install --user pre-commit --break-system-packages
 
 # Install oh-my-zsh
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
@@ -103,7 +100,6 @@ RUN git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zs
 RUN sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/' ~/.zshrc && \
     echo '' >> ~/.zshrc && \
     echo '# User configuration' >> ~/.zshrc && \
-    echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.zshrc && \
     echo 'export HISTFILE=/commandhistory/.bash_history' >> ~/.zshrc && \
     echo 'export HISTSIZE=10000' >> ~/.zshrc && \
     echo 'export SAVEHIST=10000' >> ~/.zshrc && \
