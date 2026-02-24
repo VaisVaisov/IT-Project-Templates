@@ -27,7 +27,9 @@ RUN pacman -S --noconfirm \
         zsh \
         zsh-completions \
         github-cli \
-        docker-buildx && \
+        docker \
+        docker-buildx \
+        lazydocker && \
     pacman -Scc --noconfirm
 
 # Install Clang toolchain
@@ -61,6 +63,9 @@ RUN pacman -S --noconfirm \
 RUN useradd -m -s /bin/bash vscode && \
     echo "vscode ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/vscode && \
     chmod 0440 /etc/sudoers.d/vscode
+
+# Add vscode to docker group
+RUN usermod -aG docker vscode
 
 # Setup bash history persistence
 RUN mkdir -p /commandhistory && \
@@ -122,4 +127,5 @@ ENV CXX=clang++
 
 WORKDIR /workspaces
 
-CMD ["/bin/zsh"]
+# Start Docker daemon and then launch shell
+ENTRYPOINT ["/bin/sh", "-c", "dockerd &>/dev/null & sleep 2 && exec /bin/zsh"]

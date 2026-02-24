@@ -3,9 +3,9 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
-  },
+  "runArgs": [
+    "--privileged"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
@@ -23,7 +23,6 @@
         "mhutchie.git-graph",
         "streetsidesoftware.code-spell-checker",
         "aaron-bond.better-comments"
-        // TODO: Add language-specific extensions here
       ],
       "settings": {
         "editor.formatOnSave": true,
@@ -35,7 +34,6 @@
         "files.eol": "\n",
         "files.insertFinalNewline": true,
         "files.trimTrailingWhitespace": true
-        // TODO: Add language-specific settings here
       }
     }
   },
@@ -50,5 +48,4 @@
     "DEVCONTAINER": "true"
   },
   "postCreateCommand": "git config --global credential.helper '!gh auth git-credential' && claude --version"
-  // TODO: Add language-specific postCreateCommand steps
 }

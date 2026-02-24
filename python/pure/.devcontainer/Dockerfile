@@ -26,7 +26,9 @@ RUN pacman -S --noconfirm \
         zsh \
         zsh-completions \
         github-cli \
-        docker-buildx && \
+        docker \
+        docker-buildx \
+        lazydocker && \
     pacman -Scc --noconfirm
 
 # Install Python and common packages
@@ -46,6 +48,9 @@ RUN pacman -S --noconfirm \
 RUN useradd -m -s /bin/bash vscode && \
     echo "vscode ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/vscode && \
     chmod 0440 /etc/sudoers.d/vscode
+
+# Add vscode to docker group
+RUN usermod -aG docker vscode
 
 # Setup bash history persistence
 RUN mkdir -p /commandhistory && \
@@ -105,4 +110,5 @@ ENV VISUAL=nvim
 
 WORKDIR /workspaces
 
-CMD ["/bin/zsh"]
+# Start Docker daemon and then launch shell
+ENTRYPOINT ["/bin/sh", "-c", "dockerd &>/dev/null & sleep 2 && exec /bin/zsh"]
