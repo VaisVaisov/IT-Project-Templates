@@ -68,8 +68,8 @@ RUN git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin && \
     cd /tmp/yay-bin && makepkg -si --noconfirm && \
     rm -rf /tmp/yay-bin
 
-# Install Claude Code and Qwen Code from AUR
-RUN yay -S --noconfirm claude-code qwen-code
+# Install Claude Code, Qwen Code, Kilo Code from AUR
+RUN yay -S --noconfirm claude-code qwen-code kilocode-cli-bin
 
 # Install oh-my-zsh
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended

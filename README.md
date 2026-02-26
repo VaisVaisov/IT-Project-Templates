@@ -1,318 +1,406 @@
 # IT Project Templates
 
-A collection of ready-to-use project templates with VS Code Dev Containers support. Each template includes pre-configured development environment, tooling, and best practices.
+<div align="center">
 
-> **Note**: These templates are designed for Arch Linux-based dev containers. All containers use `archlinux:latest` as base image.
+![License](https://img.shields.io/badge/license-MIT-E91E63?style=for-the-badge&labelColor=0D1117)
+![Stars](https://img.shields.io/github/stars/VaisVaisov/IT-Project-Templates?style=for-the-badge&labelColor=0D1117&color=E91E63&logo=github&logoColor=white)
+![Last Commit](https://img.shields.io/github/last-commit/VaisVaisov/IT-Project-Templates?style=for-the-badge&labelColor=0D1117&color=00BCD4&logo=git&logoColor=white)
+![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-00BCD4?style=for-the-badge&labelColor=0D1117)
 
-## Features
+**Ready-to-use project templates with VS Code Dev Containers**
 
-- **Dev Containers** - Consistent development environment across machines
-- **Arch Linux base** - Rolling release with latest packages
-- **Clang toolchain** - Modern C/C++ compiler with clang-tidy, clang-format
-- **Claude Code & Qwen Code** - AI coding agents pre-installed (from AUR)
-- **Lingma & Kilo Code** - Additional AI assistants available as VS Code extensions
-- **Git & GitHub CLI** - Pre-configured for seamless GitHub integration
-- **Oh My Zsh + Powerlevel10k** - Beautiful and functional terminal
-- **Pre-commit hooks** - Automatic code quality checks before each commit
-- **CI/CD** - GitHub Actions workflows for automated testing and building
-- **C++20 & Python 3.x** - Modern language standards across all templates
+*Arch Linux base · Clang toolchain · AI coding agents pre-installed*
+
+[Templates](#available-templates) • [Quick Start](#quick-start) • [Installation](#installation) • [Dev Containers](#dev-container-features) • [CI/CD](#code-quality--cicd)
+
+**[🇷🇺 Русский](README.ru.md) · [🇩🇪 Deutsch](README.de.md) · [🇫🇷 Français](README.fr.md) · [🇪🇸 Español](README.es.md) · [🇨🇳 中文](README.zh.md) · [🇯🇵 日本語](README.ja.md) · [🇵🇹 Português](README.pt.md) · [🇰🇷 한국어](README.ko.md) · [🇮🇹 Italiano](README.it.md)**
+
+</div>
+
+---
+
+## What is this?
+
+A collection of opinionated project templates designed to get you from zero to coding in minutes. Each template ships with a fully configured **VS Code Dev Container** running Arch Linux — same environment on every machine, regardless of your host OS.
+
+### Why this over a blank project?
+
+- 🚀 **No setup time**: open in VS Code, click "Reopen in Container", start coding
+- 🤖 **AI-ready**: Claude Code and Qwen Code pre-installed in every container
+- 🔒 **Quality gates**: pre-commit hooks catch issues before they hit the repo
+- ⚙️ **CI/CD included**: GitHub Actions workflows for build, test, and docs
+- 🌍 **Cross-platform**: the same script works on Linux, macOS, and Windows
+
+---
 
 ## Available Templates
 
-### C/C++ Projects (`c-cpp/`)
+### C/C++ (`c-cpp/`)
 
-| Template      | Description                                  |
-| ------------- | -------------------------------------------- |
-| `pure`        | Pure C/C++ with CMake, Ninja, GoogleTest     |
-| `hybrid`      | C/C++ + Python with Cython support           |
-| `platformio/` | Embedded development (Arduino, ESP32, STM32) |
+| Template | Description |
+| --- | --- |
+| `pure` | C/C++ with CMake, Ninja, GoogleTest, Doxygen |
+| `hybrid` | C/C++ + Python/Cython — both languages in one project |
+| `platformio/` | Embedded development for Arduino, ESP32, STM32 |
 
-### Python Projects (`python/`)
+### Python (`python/`)
 
-| Template | Description                                  |
-| -------- | -------------------------------------------- |
-| `pure`   | Pure Python with pytest, black, pylint, mypy |
+| Template | Description |
+| --- | --- |
+| `pure` | Python with pytest, black, isort, pylint, mypy, flake8 |
 
 ### PlatformIO Devices (`c-cpp/platformio/`)
 
-| Device              | Board               |
-| ------------------- | ------------------- |
-| `arduino-nano`      | ATmega328P          |
-| `arduino-pro-micro` | ATmega32U4          |
-| `esp32-devkit`      | ESP32 DevKit        |
-| `stm32f411`         | STM32F411 BlackPill |
+| Device | Board |
+| --- | --- |
+| `arduino-nano` | ATmega328P |
+| `arduino-pro-micro` | ATmega32U4 |
+| `esp32-devkit` | ESP32 DevKit |
+| `stm32f411` | STM32F411 BlackPill |
+
+---
 
 ## Quick Start
 
-### Using the script (recommended)
+### Linux / macOS
 
 ```bash
-# Clone the repository anywhere you like
+# Clone anywhere you like
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-# Create a new project (after installation with PATH configured)
-new-project --c-cpp --pure ~/my_project
+# Add to PATH (one-time setup)
+echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc  # or ~/.bashrc
+source ~/.zshrc
 
-# Or with full path
-~/IT-Project-Templates/new-project --c-cpp --pure ~/my_project
+# Create a new project
+new-project --c-cpp --pure ~/Projects/my_cpp_app
+new-project --python --pure ~/Projects/my_python_app
+new-project --c-cpp --hybrid ~/Projects/my_hybrid_app
+new-project --c-cpp --platformio --esp32-devkit ~/Projects/sensor_node
 ```
 
-### Manual setup
+### Windows (PowerShell)
 
-1. Copy desired template to your projects folder
-2. Open in VS Code
-3. Click "Reopen in Container" when prompted
-4. Container automatically named after your project folder
-5. Pre-commit hooks installed automatically
-6. Start coding!
+```powershell
+# Clone anywhere you like
+git clone https://github.com/VaisVaisov/IT-Project-Templates.git $env:USERPROFILE\IT-Project-Templates
 
-## Usage Examples
+# Create a new project
+.\IT-Project-Templates\new-project-script.ps1 -CCpp -Pure C:\Projects\my_cpp_app
+.\IT-Project-Templates\new-project-script.ps1 -Python -Pure C:\Projects\my_python_app
+.\IT-Project-Templates\new-project-script.ps1 -CCpp -Hybrid C:\Projects\my_hybrid_app
+.\IT-Project-Templates\new-project-script.ps1 -CCpp -PlatformIO -Esp32Devkit C:\Projects\sensor_node
+```
+
+Or use the batch launcher — just double-click or run from cmd:
+
+```cmd
+new-project-shell.bat -CCpp -Pure C:\Projects\my_cpp_app
+```
+
+### After creating a project
+
+1. Open the project folder in VS Code
+2. Click **"Reopen in Container"** when prompted (or `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
+3. Wait for the container to build on first launch
+4. Pre-commit hooks install automatically — you're good to go!
+
+---
+
+## Usage Reference
+
+### Linux / macOS flags
+
+```
+new-project [language] [type] [device] <path>
+
+Language:
+  --c-cpp            C/C++ project
+  --python           Python project
+
+Type:
+  --pure             Pure C/C++ or Python
+  --hybrid           Hybrid C/C++ + Python/Cython  (--c-cpp only)
+  --platformio       Embedded development          (--c-cpp only)
+
+PlatformIO devices:
+  --arduino-nano
+  --arduino-pro-micro
+  --esp32-devkit
+  --stm32f411
+```
+
+### Windows (PowerShell) flags
+
+```
+new-project-script.ps1 [language] [type] [device] <path>
+
+Language:
+  -CCpp              C/C++ project
+  -Python            Python project
+
+Type:
+  -Pure              Pure C/C++ or Python
+  -Hybrid            Hybrid C/C++ + Python/Cython  (-CCpp only)
+  -PlatformIO        Embedded development          (-CCpp only)
+
+PlatformIO devices:
+  -ArduinoNano
+  -ArduinoProMicro
+  -Esp32Devkit
+  -Stm32f411
+```
+
+---
+
+## Installation
+
+### 1. Clone the repository
 
 ```bash
-# Pure C++ project
-new-project --c-cpp --pure ~/Projects/my_cpp_app
+# Linux / macOS
+git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-# Python project
-new-project --python --pure ~/Projects/my_python_app
-
-# Hybrid C++/Python project
-new-project --c-cpp --hybrid ~/Projects/my_hybrid_app
-
-# ESP32 embedded project
-new-project --c-cpp --platformio --esp32-devkit ~/Projects/my_sensor
-
-# Arduino Nano project
-new-project --c-cpp --platformio --arduino-nano ./my_arduino
+# Windows (PowerShell)
+git clone https://github.com/VaisVaisov/IT-Project-Templates.git $env:USERPROFILE\IT-Project-Templates
 ```
+
+### 2. Add to PATH
+
+**Linux / macOS — Bash:**
+```bash
+echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**Linux / macOS — Zsh:**
+```bash
+echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+**Windows — System PATH (permanent):**
+```powershell
+[Environment]::SetEnvironmentVariable(
+    "Path",
+    "$env:Path;$env:USERPROFILE\IT-Project-Templates",
+    "User"
+)
+```
+
+> **Note (Linux/macOS):** `new-project.sh` is already executable after cloning. If not: `chmod +x new-project.sh`
+
+### 3. Prerequisites
+
+| Tool | Linux / macOS | Windows |
+| --- | --- | --- |
+| **Docker** | Required — [docker.com](https://www.docker.com/) | Required — [Docker Desktop](https://www.docker.com/products/docker-desktop/) |
+| **VS Code** | Required — [code.visualstudio.com](https://code.visualstudio.com/) | Required |
+| **Dev Containers extension** | Required — install from VS Code | Required |
+| **GitHub CLI** | Recommended — `gh auth login` | Recommended |
+| **Python** | For hybrid/python templates | For hybrid/python templates |
+| **Git** | Required | Required |
+
+> **GitHub CLI tip:** authenticate once on the host with `gh auth login`. The container bind-mounts `~/.config/gh` from your host — no re-authentication needed inside Dev Containers.
+
+---
 
 ## Project Structure
 
 ```
 IT-Project-Templates/
-├── .devcontainer/            # Base container (Arch + zsh + Claude Code + Qwen Code)
+├── .devcontainer/              # Base container (Arch + Zsh + AI agents)
 ├── c-cpp/
-│   ├── pure/                 # Pure C/C++ template
-│   │   ├── .devcontainer/
+│   ├── pure/                   # Pure C/C++ template
+│   │   ├── .devcontainer/      # Clang + CMake + Ninja + GDB
 │   │   ├── .vscode/
+│   │   ├── .github/workflows/
 │   │   └── ...
-│   ├── hybrid/               # C/C++ + Python template
-│   │   ├── .devcontainer/
+│   ├── hybrid/                 # C/C++ + Python/Cython template
+│   │   ├── .devcontainer/      # Clang + Python + Cython
 │   │   ├── .vscode/
+│   │   ├── .github/workflows/
 │   │   └── ...
-│   └── platformio/           # Embedded templates
-│       ├── .devcontainer/    # Shared devcontainer
-│       ├── .vscode/          # Shared VS Code config
+│   └── platformio/             # Embedded templates
+│       ├── .devcontainer/      # Shared devcontainer (PlatformIO + Clang)
+│       ├── .vscode/            # Shared VS Code config
 │       ├── arduino-nano/
 │       ├── arduino-pro-micro/
 │       ├── esp32-devkit/
 │       └── stm32f411/
 ├── python/
-│   └── pure/                 # Pure Python template
-│       ├── .devcontainer/
+│   └── pure/                   # Pure Python template
+│       ├── .devcontainer/      # Python + pytest + linters
 │       ├── .vscode/
+│       ├── .github/workflows/
 │       └── ...
-├── meta-template/            # Base template for creating new templates
-│   ├── .devcontainer/
-│   ├── .github/workflows/
-│   ├── .vscode/
-│   ├── .gitignore.template
-│   └── .pre-commit-config.yaml
-├── new-project.sh            # Linux/macOS script
-├── new-project-script.ps1    # Windows PowerShell script
-├── new-project-shell.bat     # Windows batch launcher
+├── meta-template/              # Base for creating new templates
+├── new-project.sh              # Linux / macOS script
+├── new-project-script.ps1      # Windows PowerShell script
+├── new-project-shell.bat       # Windows batch launcher
 ├── LICENSE
 └── README.md
 ```
 
+---
+
 ## Dev Container Features
 
-Each container includes:
+Every container is built on **Arch Linux (latest)** and includes:
 
-- **Base**: Arch Linux (latest)
 - **Shell**: Zsh with Oh My Zsh + Powerlevel10k
-- **Editor**: nvim
+- **Editor**: Neovim
 - **VCS**: Git, git-delta, GitHub CLI
-- **AI**: Claude Code, Qwen Code
-- **GitHub auth**: `~/.config/gh` from host is bind-mounted — no need to re-authenticate inside containers
+- **AI agents**: Claude Code, Qwen Code, Kilo Code CLI (from AUR) — all available as CLI tools
+- **Docker**: Docker + Docker Buildx + Lazydocker (for running containers inside containers)
+- **GitHub auth**: `~/.config/gh` bind-mounted from the host — no re-authentication needed
 
-### C/C++ containers additionally include:
+### C/C++ containers
+
 - Clang, LLD, LLDB, compiler-rt
 - CMake, Ninja
-- GDB (for compatibility)
+- GDB
 - cppcheck (static analysis)
-- pre-commit (automatic code quality checks)
+- pre-commit
 
-### Python containers additionally include:
-- Python 3.x
+### C/C++ hybrid containers
+
+Everything from C/C++, plus:
+
+- Python 3, pip, virtualenv
+- Cython, NumPy
+- pytest, black, isort, pylint, mypy
+- Sphinx (documentation)
+
+### Python containers
+
+- Python 3, pip, virtualenv
 - pytest, black, isort, pylint, mypy, flake8
-- virtualenv
-- pre-commit (automatic code quality checks)
+- pre-commit
 
-### PlatformIO containers additionally include:
-- PlatformIO Core
-- USB device access (--privileged)
+### PlatformIO containers
+
+- PlatformIO Core + udev rules
 - Clang, cppcheck (for code analysis)
-- pre-commit (automatic code quality checks)
+- Python 3, pip
+- pre-commit
+- USB device access (container runs with `--privileged`)
 
-### Base container (`.devcontainer/`)
-Minimal setup for general development:
-- Arch Linux + zsh + Powerlevel10k
-- Git, GitHub CLI, Claude Code, Qwen Code
-- No language-specific tools
+---
 
 ## VS Code Extensions
 
-All templates include pre-configured extensions that:
-- **Install automatically** when opening project in Dev Container
-- **Show as recommendations** when opening without Docker
+All templates auto-install extensions when opening in a Dev Container, and show them as recommendations when opening without Docker.
 
-### Common Extensions (all templates)
+### Common (all templates)
 
-| Category              | Extension                                  | Purpose                                    |
-| --------------------- | ------------------------------------------ | ------------------------------------------ |
-| **AI**                | Claude Code                                | AI agent (CLI + VS Code)                   |
-|                       | TONGYI Lingma                              | AI assistant and code completion           |
-|                       | Kilo Code                                  | AI agent supporting 400+ models            |
-| **Code Quality**      | Better Comments                            | Colorful comments (TODO, FIXME, etc.)      |
-|                       | Code Spell Checker                         | Spell checking in code and comments        |
-| **Docker**            | Docker                                     | Container management in VS Code            |
-| **Git**               | GitLens                                    | Advanced Git features (blame, history)     |
-|                       | Git Graph                                  | Visual commit history graph                |
-| **Markdown**          | Markdown All in One                        | Complete Markdown support                  |
-|                       | Markdown Converter                         | Convert Markdown to PDF/HTML/Word          |
-|                       | Markdown Table                             | Table editing in Markdown                  |
-| **Data Formats**      | YAML (Red Hat)                             | YAML file support                          |
-|                       | JSON (Meezilla)                            | Enhanced JSON editing                      |
-| **Code Execution**    | Code Runner                                | Quick code execution                       |
+| Category | Extension | Purpose |
+| --- | --- | --- |
+| **AI** | Claude Code | AI agent (CLI + VS Code) |
+| | TONGYI Lingma | AI assistant and code completion |
+| | Kilo Code | AI agent supporting 400+ models |
+| **Git** | GitLens | Advanced Git features (blame, history) |
+| | Git Graph | Visual commit history |
+| **Code Quality** | Better Comments | Colorful TODO/FIXME/NOTE comments |
+| | Code Spell Checker | Spell checking in code and comments |
+| **Docker** | Docker | Container management |
+| **Markdown** | Markdown All in One | Full Markdown support |
+| | Markdown Converter | Export to PDF/HTML/Word |
+| **Formats** | YAML (Red Hat) | YAML support |
+| | JSON (Meezilla) | Enhanced JSON editing |
 
-### Language-Specific Extensions
+### C/C++ templates
 
-#### C/C++ Templates
-- **C/C++ Tools** - Debugging, IntelliSense
-- **clangd** - Advanced code analysis and navigation
-- **Code Runner** - Quick C/C++ code execution
+- **C/C++ Tools** — IntelliSense and debugging
+- **clangd** — Advanced code analysis and navigation
+- **Code Runner** — Quick code execution
 
-#### Python Templates
-- **Python** - Core Python support
-- **Pylance** - Fast Python language server
-- **debugpy** - Python debugger
-- **Python Envs** - Virtual environment management
-- **Python Extension Pack** - Collection of useful Python tools
-- **autodocstring** - Auto-generate docstrings
-- **Python Indent** - Smart Python indentation
-- **Python Path** - Python path management
-- **Django** - Django framework support (Pure Python template)
-- **Jinja** - Jinja2 template syntax (Pure Python template)
+### Python templates
 
-#### Hybrid (C/C++ + Python) Templates
-Includes both C/C++ and Python extensions listed above
+- **Python** + **Pylance** — Core support and language server
+- **debugpy** — Python debugger
+- **Python Envs** — Virtual environment management
+- **autodocstring** — Auto-generate docstrings
+- **Django** + **Jinja** — Framework support (Pure Python)
 
-#### PlatformIO Templates
-- **PlatformIO IDE** - Embedded development platform
-- **Wokwi Simulator** - Arduino/ESP32 simulator
-- **C/C++ Tools** - For microcontroller code
+### Hybrid templates
+
+All C/C++ and Python extensions combined.
+
+### PlatformIO templates
+
+- **PlatformIO IDE** — Embedded development platform
+- **Wokwi Simulator** — Arduino/ESP32 simulator
+- **C/C++ Tools** — Microcontroller code support
+
+---
 
 ## Code Quality & CI/CD
 
-All templates include automated code quality tools and continuous integration:
-
 ### Pre-commit Hooks
 
-Pre-commit hooks are **automatically installed** when you open a project in Dev Container. They run before each commit to ensure code quality:
+Hooks run automatically before each commit. They are installed when the Dev Container starts (`postCreateCommand`).
 
-#### C/C++ Projects
-- **clang-format** - Automatic code formatting (LLVM style, 100 char limit)
-- **clang-tidy** - Static analysis for bugs and style issues
-- **cppcheck** - Additional static analysis (memory leaks, null pointers, etc.)
+#### C/C++ projects
+- **clang-format** — Automatic code formatting (LLVM style, 100-char limit)
+- **clang-tidy** — Static analysis for bugs and style issues
+- **cppcheck** — Memory leaks, null pointer checks, undefined behaviour
 
-#### Python Projects
-- **black** - Code formatting (PEP 8 compliant)
-- **isort** - Import statement sorting
-- **flake8** - Syntax and style linting
-- **mypy** - Type checking
-- **pylint** - Code quality analysis
+#### Python projects
+- **black** — Code formatting (PEP 8 compliant)
+- **isort** — Import sorting
+- **flake8** — Syntax and style linting
+- **mypy** — Static type checking
+- **pylint** — Code quality analysis
 
-#### All Projects
+#### All projects
 - YAML validation
-- Large file detection (>1MB)
+- Large file detection (> 1 MB)
 - Trailing whitespace removal
 - End-of-file fixer
 - Merge conflict detection
 
-**Note:** If a check fails, the commit is blocked until you fix the issues. This prevents broken code from entering the repository.
+> If a hook fails, the commit is blocked until the issue is fixed. This keeps broken code out of the repository.
 
-### GitHub Actions CI/CD
+### GitHub Actions
 
-Each template includes GitHub Actions workflows in `.github/workflows/ci.yml`:
+Each template includes a CI workflow in `.github/workflows/ci.yml`.
 
 #### C/C++ Pure & Hybrid
-```yaml
-on: [push, pull_request]
-```
 - Build with CMake + Ninja
 - Run GoogleTest suites
 - Generate Doxygen documentation
 - Auto-publish docs to GitHub Pages (main branch only)
 
 #### Python Pure
-- Run pytest test suite
+- Run pytest suite
 - Code quality checks (black, isort, flake8, mypy)
 - Test coverage reports
 
 #### PlatformIO
-- Build firmware for each device (Arduino, ESP32, STM32)
-- Run embedded tests (if available)
+- Build firmware for the target device
 - Check firmware size limits
 
-**All workflows run on Arch Linux containers** for consistency with dev environment.
+All workflows run on **Arch Linux containers** for consistency with the dev environment.
 
-## Requirements
-
-- [Docker](https://www.docker.com/)
-- [VS Code](https://code.visualstudio.com/)
-- [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-- [GitHub CLI](https://cli.github.com/) installed and authenticated on the host (`gh auth login`)
-
-## Installation
-
-### 1. Clone the repository
-
-Clone anywhere you like:
-
-```bash
-git clone https://github.com/VaisVaisov/IT-Project-Templates.git /path/to/IT-Project-Templates
-```
-
-> **Note**: Make sure `new-project.sh` is executable (`chmod +x new-project.sh`). It should already be after cloning.
-
-### 2. Add to PATH (recommended)
-
-To use the `new-project` command from anywhere, add the repository folder to your PATH:
-
-**For Bash (~/.bashrc):**
-```bash
-echo 'export PATH="/path/to/IT-Project-Templates:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-```
-
-**For Zsh (~/.zshrc):**
-```bash
-echo 'export PATH="/path/to/IT-Project-Templates:$PATH"' >> ~/.zshrc
-source ~/.zshrc
-```
-
-After this, you can use `new-project` command from any directory!
-
-### 3. Verify installation
-
-```bash
-new-project
-```
+---
 
 ## License
 
-MIT
+**MIT License** — Copyright © 2025–2026 Vais Vaisov
+
+Free to use, modify, and distribute.
+
+---
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Feel free to open an issue or submit a Pull Request.
+
+---
+
+<div align="center">
+
+*IT Project Templates — from zero to coding in minutes*
+
+</div>

@@ -24,6 +24,17 @@
         "clear": false,
         "focus": true
       }
+    },
+    {
+      "label": "Kilo Code",
+      "type": "shell",
+      "command": "kilo",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "clear": false,
+        "focus": true
+      }
     }
   ]
 }
