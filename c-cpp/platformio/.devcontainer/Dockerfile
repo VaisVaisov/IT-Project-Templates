@@ -7,7 +7,8 @@ FROM archlinux:latest
 RUN sed -i '/NoExtract/d' /etc/pacman.conf && \
     pacman-key --init && \
     pacman-key --populate archlinux && \
-    pacman -Sy --noconfirm archlinux-keyring && \
+    pacman -Sy --noconfirm archlinux-keyring reflector && \
+    reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist && \
     pacman -Syu --noconfirm
 
 # Install base packages
