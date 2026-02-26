@@ -95,7 +95,8 @@ RUN git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin && \
 RUN yay -S --noconfirm claude-code qwen-code
 
 # Install pre-commit
-RUN pip install --user pre-commit --break-system-packages
+RUN pacman -S --noconfirm python-pre-commit && \
+    pacman -Scc --noconfirm
 
 # Install oh-my-zsh
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended

@@ -51,7 +51,8 @@ RUN pacman -S --noconfirm \
 # Install Python and pre-commit tools
 RUN pacman -S --noconfirm \
         python \
-        python-pip && \
+        python-pip \
+        python-pre-commit && \
     pacman -Scc --noconfirm
 
 # Create vscode user with sudo
@@ -90,8 +91,6 @@ RUN git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin && \
 # Install Claude Code and Qwen Code from AUR
 RUN yay -S --noconfirm claude-code qwen-code
 
-# Install pre-commit
-RUN pip install --user pre-commit --break-system-packages
 
 # Install oh-my-zsh
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
