@@ -20,6 +20,8 @@
         "eamodio.gitlens",
         "mhutchie.git-graph",
         "streetsidesoftware.code-spell-checker",
-        "aaron-bond.better-comments"
+        "aaron-bond.better-comments",
+        "DavidAnson.vscode-markdownlint",
+        "GitHub.vscode-pull-request-github"
     ]
 }
