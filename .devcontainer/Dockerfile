@@ -24,6 +24,7 @@ RUN pacman -S --noconfirm \
         nodejs \
         npm \
         fzf \
+        ripgrep \
         unzip \
         zsh \
         zsh-completions \
