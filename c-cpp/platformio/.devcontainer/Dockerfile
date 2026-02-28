@@ -12,7 +12,7 @@ RUN sed -i '/NoExtract/d' /etc/pacman.conf && \
     pacman -Syu --noconfirm
 
 # Install base packages
-RUN pacman -S --noconfirm \
+RUN pacman -Sy --noconfirm \
         base-devel \
         git \
         git-delta \
@@ -35,7 +35,7 @@ RUN pacman -S --noconfirm \
     pacman -Scc --noconfirm
 
 # Install Clang toolchain (for code analysis)
-RUN pacman -S --noconfirm \
+RUN pacman -Sy --noconfirm \
         clang \
         lld \
         lldb \
@@ -44,13 +44,13 @@ RUN pacman -S --noconfirm \
     pacman -Scc --noconfirm
 
 # Install PlatformIO
-RUN pacman -S --noconfirm \
+RUN pacman -Sy --noconfirm \
         platformio-core \
         platformio-core-udev && \
     pacman -Scc --noconfirm
 
 # Install Python and pre-commit tools
-RUN pacman -S --noconfirm \
+RUN pacman -Sy --noconfirm \
         python \
         python-pip \
         python-pre-commit && \

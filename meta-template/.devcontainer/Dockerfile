@@ -12,7 +12,7 @@ RUN sed -i '/NoExtract/d' /etc/pacman.conf && \
     pacman -Syu --noconfirm
 
 # Install base packages
-RUN pacman -S --noconfirm \
+RUN pacman -Sy --noconfirm \
         base-devel \
         git \
         git-delta \
@@ -36,7 +36,7 @@ RUN pacman -S --noconfirm \
 
 # TODO: Add language-specific packages here
 # Example:
-# RUN pacman -S --noconfirm clang cmake ninja && pacman -Scc --noconfirm
+# RUN pacman -Sy --noconfirm clang cmake ninja && pacman -Scc --noconfirm
 
 # Create vscode user with sudo
 RUN useradd -m -s /bin/bash vscode && \
