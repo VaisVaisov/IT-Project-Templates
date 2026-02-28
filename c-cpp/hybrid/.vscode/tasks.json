@@ -29,11 +29,107 @@
       "label": "Kilo Code",
       "type": "shell",
       "command": "kilo",
+      "problemMatcher": [],
       "presentation": {
         "reveal": "always",
         "panel": "new",
         "clear": false,
         "focus": true
+      }
+    },
+    {
+      "label": "Run pre-commit (all files)",
+      "type": "shell",
+      "command": "pre-commit run --all-files",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Update pre-commit hooks",
+      "type": "shell",
+      "command": "pre-commit autoupdate",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "CMake: Build Debug (Linux)",
+      "type": "shell",
+      "command": "cmake --preset linux-debug && cmake --build --preset linux-debug",
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "CMake: Build Release (Linux)",
+      "type": "shell",
+      "command": "cmake --preset linux-release && cmake --build --preset linux-release",
+      "problemMatcher": ["$gcc"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "CMake: Build Windows (.exe)",
+      "type": "shell",
+      "command": "cmake --preset windows-cross && cmake --build --preset windows-cross",
+      "problemMatcher": ["$gcc"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Run tests (C++)",
+      "type": "shell",
+      "command": "cd cmake-build-linux-debug && ctest --output-on-failure",
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Run tests (Python)",
+      "type": "shell",
+      "command": "python -m pytest -v",
+      "problemMatcher": [],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
       }
     }
   ]

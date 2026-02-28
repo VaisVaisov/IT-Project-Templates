@@ -29,6 +29,7 @@
       "label": "Kilo Code",
       "type": "shell",
       "command": "kilo",
+      "problemMatcher": [],
       "presentation": {
         "reveal": "always",
         "panel": "new",

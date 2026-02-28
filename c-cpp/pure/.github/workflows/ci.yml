@@ -3,8 +3,7 @@ name: CI Pipeline
 on: [push, pull_request]
 
 jobs:
-  build:
-    # Note: Ubuntu host is only used to run Docker, all commands execute inside Arch container
+  lint:
     runs-on: ubuntu-latest
     container: archlinux:latest
     steps:
@@ -19,22 +18,40 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pacman -S --noconfirm clang cmake ninja gdb doxygen
+        pacman -S --noconfirm clang cmake ninja cppcheck python python-pre-commit
 
-    - name: Build project
-      run: |
-        mkdir build && cd build
-        cmake -G Ninja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ ..
-        ninja
+    - name: Run pre-commit checks
+      run: pre-commit run --all-files
 
-    - name: Run C++ tests
+  build:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    needs: lint
+    steps:
+    - name: Setup Arch Linux
       run: |
-        cd build
-        ctest --output-on-failure
+        pacman -Syu --noconfirm
+        pacman -S --noconfirm git
 
-    - name: Generate C++ documentation
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
       run: |
-        doxygen docs/cpp/Doxyfile
+        pacman -S --noconfirm clang cmake ninja cppcheck doxygen
+
+    - name: Build Debug
+      run: cmake --preset linux-debug && cmake --build --preset linux-debug
+
+    - name: Build Release
+      run: cmake --preset linux-release && cmake --build --preset linux-release
+
+    - name: Run tests
+      run: cd cmake-build-linux-debug && ctest --output-on-failure
+
+    - name: Generate documentation
+      run: doxygen docs/cpp/Doxyfile
 
     - name: Publish documentation to GitHub Pages
       if: github.ref == 'refs/heads/main'
@@ -45,5 +62,5 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add docs/_site
-        git commit -m "📖 Auto-update documentation" || exit 0
+        git commit -m "Auto-update documentation" || exit 0
         git subtree push --prefix docs/_site origin gh-pages

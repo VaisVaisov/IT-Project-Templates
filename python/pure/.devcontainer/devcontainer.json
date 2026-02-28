@@ -48,9 +48,9 @@
         "files.insertFinalNewline": true,
         "files.trimTrailingWhitespace": true,
         "python.defaultInterpreterPath": "/usr/bin/python",
-        "python.formatting.provider": "black",
-        "python.linting.enabled": true,
-        "python.linting.pylintEnabled": true,
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.black-formatter"
+        },
         "terminal.integrated.fontFamily": "CaskaydiaCove Nerd Font"
       }
     }

@@ -3,8 +3,7 @@ name: CI Pipeline
 on: [push, pull_request]
 
 jobs:
-  build:
-    # Note: Ubuntu host is only used to run Docker, all commands execute inside Arch container
+  lint:
     runs-on: ubuntu-latest
     container: archlinux:latest
     steps:
@@ -19,37 +18,53 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pacman -S --noconfirm clang cmake ninja gdb doxygen python python-pip
+        pacman -S --noconfirm clang cmake ninja cppcheck python python-pre-commit
+
+    - name: Run pre-commit checks
+      run: pre-commit run --all-files
+
+  build:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    needs: lint
+    steps:
+    - name: Setup Arch Linux
+      run: |
+        pacman -Syu --noconfirm
+        pacman -S --noconfirm git
+
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        pacman -S --noconfirm clang cmake ninja cppcheck doxygen \
+          python python-pip python-pytest python-sphinx
 
     - name: Install Python dependencies
       run: |
-        pip install --upgrade pip --break-system-packages
         if [ -f "requirements.txt" ]; then
           pip install -r requirements.txt --break-system-packages
         fi
-        pip install sphinx sphinx-rtd-theme --break-system-packages
 
-    - name: Build project
-      run: |
-        mkdir build && cd build
-        cmake -G Ninja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ ..
-        ninja
+    - name: Build Debug
+      run: cmake --preset linux-debug && cmake --build --preset linux-debug
+
+    - name: Build Release
+      run: cmake --preset linux-release && cmake --build --preset linux-release
 
     - name: Run C++ tests
-      run: |
-        cd build
-        ctest --output-on-failure
+      run: cd cmake-build-linux-debug && ctest --output-on-failure
 
     - name: Run Python tests
       run: |
         if [ -d "python/tests" ]; then
-          cd python/tests
-          python -m pytest -v
+          python -m pytest python/tests -v
         fi
 
     - name: Generate C++ documentation
-      run: |
-        doxygen docs/cpp/Doxyfile
+      run: doxygen docs/cpp/Doxyfile
 
     - name: Generate Python documentation
       run: |
@@ -67,5 +82,5 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add docs/_site
-        git commit -m "📖 Auto-update documentation" || exit 0
+        git commit -m "Auto-update documentation" || exit 0
         git subtree push --prefix docs/_site origin gh-pages
