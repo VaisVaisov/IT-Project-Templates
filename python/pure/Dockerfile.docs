@@ -1,17 +1,15 @@
-FROM ubuntu:22.04
+FROM archlinux:latest
 
-LABEL maintainer="you@example.com"
-
-RUN apt-get update && \
-    apt-get install -y \
-    python3-pip \
-    git \
-    --no-install-recommends && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN pip3 install --no-cache-dir \
-    sphinx \
-    sphinx-rtd-theme
+RUN sed -i '/NoExtract/d' /etc/pacman.conf && \
+    pacman -Syu --noconfirm && \
+    pacman -Sy --noconfirm \
+        python \
+        python-pip \
+        git && \
+    pip install --no-cache-dir --break-system-packages \
+        sphinx \
+        sphinx-rtd-theme && \
+    pacman -Scc --noconfirm
 
 WORKDIR /docs
 
