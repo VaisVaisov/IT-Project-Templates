@@ -3,16 +3,29 @@ name: STM32F411 CI
 on: [push, pull_request]
 
 jobs:
-  build:
-    # Note: Ubuntu host is only used to run Docker, all commands execute inside Arch container
+  lint:
     runs-on: ubuntu-latest
     container: archlinux:latest
-
     steps:
     - name: Setup Arch Linux
       run: |
         pacman -Syu --noconfirm
-        pacman -S --noconfirm git python python-pip
+        pacman -Sy --noconfirm git python python-pre-commit
+
+    - uses: actions/checkout@v4
+
+    - name: Run pre-commit checks
+      run: pre-commit run --all-files
+
+  build:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    needs: lint
+    steps:
+    - name: Setup Arch Linux
+      run: |
+        pacman -Syu --noconfirm
+        pacman -Sy --noconfirm git python python-pip
 
     - uses: actions/checkout@v4
 
@@ -21,9 +34,8 @@ jobs:
         pip install --upgrade pip --break-system-packages
         pip install platformio --break-system-packages
 
-    - name: Build firmware for STM32F411
-      run: |
-        pio run
+    - name: Build firmware
+      run: pio run
 
     - name: Run tests (if available)
       run: |
@@ -34,5 +46,4 @@ jobs:
         fi
 
     - name: Check firmware size
-      run: |
-        pio run --target size
+      run: pio run --target size

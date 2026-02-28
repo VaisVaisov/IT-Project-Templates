@@ -13,17 +13,15 @@ jobs:
         pacman -S --noconfirm git
 
     - uses: actions/checkout@v4
-      with:
-        submodules: recursive
 
     - name: Install dependencies
       run: |
-        pacman -S --noconfirm clang cmake ninja cppcheck python python-pre-commit
+        pacman -S --noconfirm python python-pre-commit
 
     - name: Run pre-commit checks
       run: pre-commit run --all-files
 
-  build:
+  test:
     runs-on: ubuntu-latest
     container: archlinux:latest
     needs: lint
@@ -34,13 +32,10 @@ jobs:
         pacman -S --noconfirm git
 
     - uses: actions/checkout@v4
-      with:
-        submodules: recursive
 
     - name: Install dependencies
       run: |
-        pacman -S --noconfirm clang cmake ninja cppcheck doxygen \
-          python python-pip python-pytest python-sphinx
+        pacman -S --noconfirm python python-pip python-pytest python-sphinx
 
     - name: Install Python dependencies
       run: |
@@ -48,28 +43,16 @@ jobs:
           pip install -r requirements.txt --break-system-packages
         fi
 
-    - name: Build Debug
-      run: cmake --preset linux-debug && cmake --build --preset linux-debug
-
-    - name: Build Release
-      run: cmake --preset linux-release && cmake --build --preset linux-release
-
-    - name: Run C++ tests
-      run: cd cmake-build-linux-debug && ctest --output-on-failure
-
-    - name: Run Python tests
+    - name: Run tests
       run: |
         if [ -d "test/python" ]; then
           python -m pytest test/python -v
         fi
 
-    - name: Generate C++ documentation
-      run: doxygen docs/cpp/Doxyfile
-
-    - name: Generate Python documentation
+    - name: Generate documentation
       run: |
         cd docs/python
-        sphinx-apidoc -o . ../../python --force
+        sphinx-apidoc -o . ../../src --force
         make html
 
     - name: Publish documentation to GitHub Pages
@@ -77,7 +60,6 @@ jobs:
       run: |
         pacman -S --noconfirm openssh
         mkdir -p docs/_site
-        cp -r docs/cpp/generated/html docs/_site/cpp
         cp -r docs/python/_build/html docs/_site/python
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"

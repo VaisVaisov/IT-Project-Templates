@@ -32,7 +32,7 @@ if(EXISTS ${SETUP_PY})
         build_cython ALL
         COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY} build_ext --inplace
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/cython
-        COMMENT "🛠️ Building Cython module..."
+        COMMENT "Building Cython module..."
         VERBATIM
     )
 else()
@@ -44,7 +44,7 @@ add_custom_target(
     clean_cython
     COMMAND ${CMAKE_COMMAND} -E remove_directory ${CYTHON_BUILD_DIR}
     COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/bin/wrapper*
-    COMMENT "🧹 Cleaning Cython build files..."
+    COMMENT "Cleaning Cython build files..."
 )
 
 # Enable testing
@@ -63,28 +63,10 @@ else()
     FetchContent_MakeAvailable(googletest)
 endif()
 
-# Example C library
-if(EXISTS ${CMAKE_SOURCE_DIR}/src/example_c/example_c.c)
-    add_library(example_c SHARED src/example_c/example_c.c)
-    target_include_directories(example_c PUBLIC include/example_c)
-endif()
-
-# Example C++ library
-if(EXISTS ${CMAKE_SOURCE_DIR}/src/example_lib/example_lib.cpp)
-    add_library(example_lib SHARED src/example_lib/example_lib.cpp)
-    target_include_directories(example_lib PUBLIC src/example_lib)
-endif()
-
-# C++ test
-if(EXISTS ${CMAKE_SOURCE_DIR}/test/test_calculator.cpp)
-    add_executable(test_calculator test/test_calculator.cpp)
-    target_link_libraries(test_calculator GTest::gtest_main example_lib)
-    add_test(NAME test_calculator COMMAND test_calculator)
-endif()
-
-# C test
-if(EXISTS ${CMAKE_SOURCE_DIR}/test/test_math.c)
-    add_executable(test_math test/test_math.c)
-    target_link_libraries(test_math GTest::gtest_main example_c)
-    add_test(NAME test_math COMMAND test_math)
-endif()
+# C++ tests — add your test executables in test/cpp/
+# Example:
+# if(EXISTS ${CMAKE_SOURCE_DIR}/test/cpp/test_example.cpp)
+#     add_executable(test_example test/cpp/test_example.cpp)
+#     target_link_libraries(test_example GTest::gtest_main your_lib)
+#     add_test(NAME test_example COMMAND test_example)
+# endif()
