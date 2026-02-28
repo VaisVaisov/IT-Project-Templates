@@ -35,7 +35,8 @@
         },
         "files.eol": "\n",
         "files.insertFinalNewline": true,
-        "files.trimTrailingWhitespace": true
+        "files.trimTrailingWhitespace": true,
+        "terminal.integrated.fontFamily": "CaskaydiaCove Nerd Font"
       }
     }
   },

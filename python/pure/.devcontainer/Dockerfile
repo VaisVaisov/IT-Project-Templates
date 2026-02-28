@@ -97,8 +97,11 @@ RUN sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/
     echo 'export SAVEHIST=10000' >> ~/.zshrc && \
     echo 'setopt SHARE_HISTORY' >> ~/.zshrc && \
     echo 'POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true' >> ~/.zshrc && \
+    echo 'typeset -g POWERLEVEL9K_MODE=nerdfont-v3' >> ~/.zshrc && \
     echo 'typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(os_icon dir vcs)' >> ~/.zshrc && \
-    echo 'typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status command_execution_time background_jobs virtualenv)' >> ~/.zshrc
+    echo 'typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status command_execution_time background_jobs virtualenv time)' >> ~/.zshrc && \
+    echo 'typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=0' >> ~/.zshrc && \
+    echo 'typeset -g POWERLEVEL9K_VIRTUALENV_SHOW_PYTHON_VERSION=false' >> ~/.zshrc
 
 # Set default shell to zsh
 USER root

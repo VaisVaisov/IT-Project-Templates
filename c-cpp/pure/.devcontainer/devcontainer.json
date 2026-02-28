@@ -40,7 +40,8 @@
         "files.trimTrailingWhitespace": true,
         "C_Cpp.default.compilerPath": "/usr/bin/clang++",
         "C_Cpp.default.cppStandard": "c++20",
-        "C_Cpp.default.cStandard": "c17"
+        "C_Cpp.default.cStandard": "c17",
+        "terminal.integrated.fontFamily": "CaskaydiaCove Nerd Font"
       }
     }
   },
