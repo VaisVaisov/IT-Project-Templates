@@ -43,7 +43,8 @@ RUN pacman -S --noconfirm \
         cmake \
         ninja \
         gdb \
-        cppcheck && \
+        cppcheck \
+        mingw-w64-toolchain && \
     pacman -Scc --noconfirm
 
 # Install Python and pre-commit tools
