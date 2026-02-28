@@ -14,6 +14,9 @@
         "kilocode.Kilo-Code",
         "ms-vscode.cpptools",
         "llvm-vs-code-extensions.vscode-clangd",
+        "ms-vscode.cmake-tools",
+        "twxs.cmake",
+        "vadimcn.vscode-lldb",
         "ms-python.python",
         "ms-python.vscode-pylance",
         "ms-python.debugpy",
@@ -46,6 +49,8 @@
         "C_Cpp.default.compilerPath": "/usr/bin/clang++",
         "C_Cpp.default.cppStandard": "c++20",
         "C_Cpp.default.cStandard": "c17",
+        "cmake.configureOnOpen": true,
+        "cmake.generator": "Ninja",
         "python.defaultInterpreterPath": "/usr/bin/python",
         "terminal.integrated.fontFamily": "CaskaydiaCove Nerd Font"
       }

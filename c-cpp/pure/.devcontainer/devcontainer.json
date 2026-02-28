@@ -14,6 +14,9 @@
         "kilocode.Kilo-Code",
         "ms-vscode.cpptools",
         "llvm-vs-code-extensions.vscode-clangd",
+        "ms-vscode.cmake-tools",
+        "twxs.cmake",
+        "vadimcn.vscode-lldb",
         "formulahendry.code-runner",
         "yzhang.markdown-all-in-one",
         "manuth.markdown-converter",
@@ -41,6 +44,8 @@
         "C_Cpp.default.compilerPath": "/usr/bin/clang++",
         "C_Cpp.default.cppStandard": "c++20",
         "C_Cpp.default.cStandard": "c17",
+        "cmake.configureOnOpen": true,
+        "cmake.generator": "Ninja",
         "terminal.integrated.fontFamily": "CaskaydiaCove Nerd Font"
       }
     }
