@@ -27,8 +27,6 @@ __pycache__/
 *$py.class
 
 # Распределённые / установленные пакеты
-bin/
-build/
 develop-eggs/
 dist/
 downloads/
@@ -45,7 +43,6 @@ var/
 MANIFEST
 
 # PyInstaller
-dist/
 *.manifest
 *.spec
 
@@ -68,35 +65,13 @@ coverage.xml
 .pytest_cache/
 
 # pyenv
-#  Версия Python, установленная локально
 .python-version
-
-# pipenv
-#   Следы pipenv-сессий
-Pipfile.lock
-
-# PEP 582; использует __pypackages__
-__pypackages__/
-
-# Celery
-celerybeat-schedule
 
 # Sphinx
 docs/_build/
 
-# PyBuilder
-target/
-
 # Jupyter Notebook
 .ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# Environments
-.environment
-.conda
 
 # mypy
 .mypy_cache/
@@ -106,7 +81,7 @@ dmypy.json
 # ===================================
 # === C / C++ ===
 # ===================================
-# Компиляторы
+# Скомпилированные артефакты
 *.o
 *.obj
 *.exe
@@ -117,7 +92,6 @@ dmypy.json
 *.so
 *.dylib
 *.dll.a
-*.lib
 
 # Debug
 *.dSYM/
@@ -125,25 +99,15 @@ dmypy.json
 *.idb
 *.ilk
 *.map
-*.i_s.res
 
 # Profiling
 *.gcda
 *.gcno
 *.gcov
 
-# Кроссплатформенные артефакты
-*.bin
-*.dat
-*.log
-*.tmp
-*.swp
-*~
-
 # ===================================
-# === CMake / CLion ===
+# === CMake ===
 # ===================================
-# CMake
 cmake-build-*/
 CMakeCache.txt
 CMakeFiles/
@@ -154,12 +118,6 @@ cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
-
-# CLion
-.idea/
-*.ipr
-*.iml
-*.iws
 
 # Build directories
 build/
@@ -177,28 +135,23 @@ Cython/*.cxx
 
 # Python-модули, скомпилированные Cython
 Cython/*.so
-/.emacs.desktop
-/.emacs.desktop.lock
-*.elc
-auto-save-list/
-tramp
-.\#*
 
-# Vim
-.*.swp
-.*.swo
-session.vim
-.netrwhist
-swap/
-backup/
-undo/
+# Build-директории Cython
+cython/cython_build/
+cython/build/
 
-# Sublime Text
-*.sublime-project
-*.sublime-workspace
-
-# Kate
-*.kate-swp
+# ===================================
+# === Секреты / Ключи ===
+# ===================================
+.env
+.env.*
+*.env
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+keys/
 
 # ===================================
 # === Прочее ===
@@ -212,6 +165,11 @@ undo/
 *.gz
 *.7z
 *.rar
+
+# Временные файлы
+*.tmp
+*.swp
+*~
 
 # Локальные конфиги
 .local/

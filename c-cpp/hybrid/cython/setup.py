@@ -10,7 +10,7 @@ extensions = [
         "wrapper",
         ["wrapper.pyx"],
         include_dirs=[
-            "../include/,
+            "../include/",
             "../src/",
             numpy.get_include()
         ],

@@ -11,31 +11,25 @@ Thumbs.db
 Desktop.ini
 
 # ===================================
-# === Editors ===
-# ===================================
-# Vim
-.*.swp
-.*.swo
-session.vim
-.netrwhist
-swap/
-backup/
-undo/
-
-# Sublime Text
-*.sublime-project
-*.sublime-workspace
-
-# Kate
-*.kate-swp
-
-# ===================================
 # === TODO: Add language-specific ignores ===
 # ===================================
 # Example for Python:
 # .venv/
 # __pycache__/
 # *.pyc
+
+# ===================================
+# === Secrets / Keys ===
+# ===================================
+.env
+.env.*
+*.env
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+keys/
 
 # ===================================
 # === Misc ===
@@ -46,4 +40,7 @@ undo/
 *.gz
 *.7z
 *.rar
+*.tmp
+*.swp
+*~
 .local/
