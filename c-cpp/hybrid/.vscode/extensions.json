@@ -6,7 +6,6 @@
         "ms-vscode.cpptools",
         "llvm-vs-code-extensions.vscode-clangd",
         "ms-vscode.cmake-tools",
-        "twxs.cmake",
         "vadimcn.vscode-lldb",
         "ms-python.python",
         "ms-python.vscode-pylance",
