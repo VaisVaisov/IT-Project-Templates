@@ -1,5 +1,5 @@
 # Pre-commit hooks
-# Install: pip install pre-commit
+# Install: pacman -S python-pre-commit
 # Setup: pre-commit install
 
 repos:
