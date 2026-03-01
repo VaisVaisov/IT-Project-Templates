@@ -19,6 +19,16 @@ repos:
       - id: cppcheck
         args: [--enable=warning,style,performance,portability, --suppress=missingIncludeSystem]
 
+  # Memory safety
+  - repo: local
+    hooks:
+      - id: valgrind
+        name: valgrind memcheck
+        language: script
+        entry: tools/valgrind-check.sh
+        pass_filenames: false
+        types_or: [c++, c]
+
   # General checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
