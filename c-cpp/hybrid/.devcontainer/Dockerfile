@@ -44,6 +44,7 @@ RUN pacman -Sy --noconfirm \
         ninja \
         gdb \
         cppcheck \
+        valgrind \
         mingw-w64-toolchain && \
     pacman -Scc --noconfirm
 
