@@ -10,7 +10,7 @@ jobs:
     - name: Setup Arch Linux
       run: |
         pacman -Syu --noconfirm
-        pacman -S --noconfirm git
+        pacman -Sy --noconfirm git
 
     - uses: actions/checkout@v4
       with:
@@ -18,7 +18,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pacman -S --noconfirm clang cmake ninja cppcheck python python-pre-commit
+        pacman -Sy --noconfirm clang cmake ninja cppcheck python python-pre-commit
 
     - name: Run pre-commit checks
       run: pre-commit run --all-files
@@ -31,7 +31,7 @@ jobs:
     - name: Setup Arch Linux
       run: |
         pacman -Syu --noconfirm
-        pacman -S --noconfirm git
+        pacman -Sy --noconfirm git
 
     - uses: actions/checkout@v4
       with:
@@ -39,7 +39,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pacman -S --noconfirm clang cmake ninja cppcheck doxygen
+        pacman -Sy --noconfirm clang cmake ninja cppcheck doxygen
 
     - name: Build Debug
       run: cmake --preset linux-debug && cmake --build --preset linux-debug
@@ -56,7 +56,7 @@ jobs:
     - name: Publish documentation to GitHub Pages
       if: github.ref == 'refs/heads/main'
       run: |
-        pacman -S --noconfirm openssh
+        pacman -Sy --noconfirm openssh
         mkdir -p docs/_site
         cp -r docs/cpp/generated/html docs/_site/cpp
         git config --local user.email "action@github.com"
