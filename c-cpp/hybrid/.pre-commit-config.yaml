@@ -16,8 +16,10 @@ repos:
     hooks:
       - id: clang-tidy
         args: [--config-file=.clang-tidy]
+        exclude: ^cython/
       - id: cppcheck
         args: [--enable=warning,style,performance,portability, --suppress=missingIncludeSystem]
+        exclude: ^cython/
 
   # Python formatting
   - repo: https://github.com/psf/black

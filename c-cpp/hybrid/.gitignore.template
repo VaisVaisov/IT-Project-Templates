@@ -128,13 +128,13 @@ bin/
 # === Cython ===
 # ===================================
 # Сгенерированные C-файлы
-Cython/*.c
-Cython/*.cpp
-Cython/*.cc
-Cython/*.cxx
+cython/*.c
+cython/*.cpp
+cython/*.cc
+cython/*.cxx
 
 # Python-модули, скомпилированные Cython
-Cython/*.so
+cython/*.so
 
 # Build-директории Cython
 cython/cython_build/
