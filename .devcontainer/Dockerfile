@@ -12,7 +12,7 @@ RUN sed -i '/NoExtract/d' /etc/pacman.conf && \
     pacman -Syu --noconfirm
 
 # Install base packages
-RUN pacman -S --noconfirm \
+RUN pacman -Sy --noconfirm \
         base-devel \
         git \
         git-delta \
