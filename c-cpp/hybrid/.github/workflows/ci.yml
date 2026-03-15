@@ -44,9 +44,7 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        if [ -f "requirements.txt" ]; then
-          pip install -r requirements.txt --break-system-packages
-        fi
+        pip install -e ".[dev]" --break-system-packages
 
     - name: Build Debug
       run: cmake --preset linux-debug && cmake --build --preset linux-debug

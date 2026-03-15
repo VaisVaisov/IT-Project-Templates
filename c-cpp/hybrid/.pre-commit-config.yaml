@@ -26,14 +26,12 @@ repos:
     rev: 23.12.1
     hooks:
       - id: black
-        language_version: python3
 
   # Python import sorting
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
       - id: isort
-        args: [--profile, black]
 
   # Python syntax and style
   - repo: https://github.com/pycqa/flake8
@@ -47,7 +45,7 @@ repos:
     rev: v1.8.0
     hooks:
       - id: mypy
-      exclude: ^docs/
+        exclude: ^docs/
 
   # Memory safety
   - repo: local
