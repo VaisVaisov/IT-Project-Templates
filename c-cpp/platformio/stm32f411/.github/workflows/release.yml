@@ -14,10 +14,9 @@ jobs:
     steps:
     - name: Setup Arch Linux
       run: |
-        pacman -Syu --noconfirm
-        pacman -Sy --noconfirm git python python-pip
+        pacman -Syu --noconfirm git python python-pip
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Install PlatformIO Core
       run: |
