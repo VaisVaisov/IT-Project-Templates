@@ -1,5 +1,6 @@
 project = '@PROJECT_NAME@'
-copyright = '2025, Project Author'
+# ADAPT: Set your name and update the year
+copyright = '20XX, Project Author'
 author = 'Project Author'
 
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode']

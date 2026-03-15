@@ -11,4 +11,4 @@ WORKDIR /docs
 
 COPY docs/cpp/Doxyfile Doxyfile
 
-CMD ["sh", "-c", "echo 'Используй: docker run --rm -v $(pwd):/docs docs-builder <команда>'; echo '  doxygen Doxyfile'"]
+CMD ["sh", "-c", "echo 'Usage: docker run --rm -v $(pwd):/docs docs-builder <command>'; echo '  doxygen Doxyfile'"]

@@ -19,4 +19,4 @@ WORKDIR /docs
 COPY docs/cpp/Doxyfile Doxyfile
 COPY docs/python/conf.py docs/python/
 
-CMD ["sh", "-c", "echo 'Используй: docker run --rm -v $(pwd):/docs docs-builder <команда>'; echo '  doxygen Doxyfile'; echo '  make -C docs/python html'"]
+CMD ["sh", "-c", "echo 'Usage: docker run --rm -v $(pwd):/docs docs-builder <command>'; echo '  doxygen Doxyfile'; echo '  make -C docs/python html'"]

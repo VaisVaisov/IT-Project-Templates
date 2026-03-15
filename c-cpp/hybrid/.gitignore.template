@@ -1,5 +1,5 @@
 # ===================================
-# === Операционные системы ===
+# === Operating Systems ===
 # ===================================
 .DS_Store
 .DS_Store?
@@ -13,7 +13,7 @@ Desktop.ini
 # ===================================
 # === Python ===
 # ===================================
-# Виртуальные окружения
+# Virtual environments
 .venv/
 venv/
 env/
@@ -21,12 +21,12 @@ ENV/
 env.bak/
 venv.bak/
 
-# Byte-compiled / скомпилированные
+# Byte-compiled / cache
 __pycache__/
 *.py[co]
 *$py.class
 
-# Распределённые / установленные пакеты
+# Distribution / installed packages
 develop-eggs/
 dist/
 downloads/
@@ -81,7 +81,7 @@ dmypy.json
 # ===================================
 # === C / C++ ===
 # ===================================
-# Скомпилированные артефакты
+# Compiled artifacts
 *.o
 *.obj
 *.exe
@@ -127,21 +127,21 @@ bin/
 # ===================================
 # === Cython ===
 # ===================================
-# Сгенерированные C-файлы
+# Generated C files
 cython/*.c
 cython/*.cpp
 cython/*.cc
 cython/*.cxx
 
-# Python-модули, скомпилированные Cython
+# Cython-compiled Python modules
 cython/*.so
 
-# Build-директории Cython
+# Cython build directories
 cython/cython_build/
 cython/build/
 
 # ===================================
-# === Секреты / Ключи ===
+# === Secrets / Keys ===
 # ===================================
 .env
 .env.*
@@ -154,22 +154,22 @@ secrets/
 keys/
 
 # ===================================
-# === Прочее ===
+# === Misc ===
 # ===================================
-# Логи
+# Logs
 *.log
 
-# Архивы
+# Archives
 *.zip
 *.tar
 *.gz
 *.7z
 *.rar
 
-# Временные файлы
+# Temporary files
 *.tmp
 *.swp
 *~
 
-# Локальные конфиги
+# Local configs
 .local/
