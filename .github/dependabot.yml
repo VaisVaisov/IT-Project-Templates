@@ -1,0 +1,95 @@
+version: 2
+updates:
+  # ── GitHub Actions ─────────────────────────────────────────────────────────
+
+  - package-ecosystem: "github-actions"
+    directory: "/c-cpp/hybrid"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/c-cpp/pure"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/python/pure"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/c-cpp/platformio"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/c-cpp/platformio/arduino-nano"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/c-cpp/platformio/arduino-pro-micro"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/c-cpp/platformio/esp32-devkit"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/c-cpp/platformio/stm32f411"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/meta-template"
+    schedule:
+      interval: "weekly"
+
+  # ── Pre-commit hooks ───────────────────────────────────────────────────────
+
+  - package-ecosystem: "pre-commit"
+    directory: "/c-cpp/hybrid"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pre-commit"
+    directory: "/c-cpp/pure"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pre-commit"
+    directory: "/python/pure"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pre-commit"
+    directory: "/c-cpp/platformio"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pre-commit"
+    directory: "/c-cpp/platformio/arduino-nano"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pre-commit"
+    directory: "/c-cpp/platformio/arduino-pro-micro"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pre-commit"
+    directory: "/c-cpp/platformio/esp32-devkit"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pre-commit"
+    directory: "/c-cpp/platformio/stm32f411"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pre-commit"
+    directory: "/meta-template"
+    schedule:
+      interval: "weekly"
