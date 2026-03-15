@@ -1,0 +1,64 @@
+# @PROJECT_NAME@
+
+> This file is the single source of truth about the project.
+> `CLAUDE.md`, `QWEN.md`, `AGENTS.md` are symlinks to it.
+> Edit only `@PROJECT_NAME@.md`.
+
+---
+
+## What is this
+
+<!-- ADAPT: Describe your project in 2-3 sentences -->
+
+**Tech stack:** C++20 · GoogleTest · CMake · Ninja
+
+---
+
+## Architecture
+
+<!-- ADAPT: Describe key design decisions and module boundaries -->
+
+```
+@PROJECT_NAME@/
+├── include/        ← public headers
+├── src/            ← C++ implementation
+├── test/cpp/       ← GoogleTest
+├── docs/cpp/       ← Doxygen
+└── tools/profiler/ ← profiling scripts
+```
+
+---
+
+## Build & Test
+
+```bash
+# Debug / Release
+cmake --preset linux-debug && cmake --build --preset linux-debug
+cmake --preset linux-release && cmake --build --preset linux-release
+
+# Tests
+cd cmake-build-linux-debug && ctest --output-on-failure
+```
+
+---
+
+## Rules for AI Agents
+
+- **Don't create** new files unless necessary — prefer editing existing ones
+- **Ask** before making architectural decisions
+- **English** in code and comments
+- **Update "Project State"** after each major block of work
+- **Warn the user** when context is running low, update state before that
+
+---
+
+## Project State
+
+> Updated by the agent after each major block of work.
+> If context was lost — start here to continue.
+
+**Last commit:** —
+
+### What's implemented
+
+<!-- ADAPT: Fill in as the project grows -->

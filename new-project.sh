@@ -50,6 +50,13 @@ replace_placeholders() {
     find . -type f -name "*.template" -exec sh -c 'mv "$1" "$(dirname "$1")/$(basename "$1" .template)"' _ {} \;
 }
 
+create_agent_symlinks() {
+    local project_name="$1"
+    ln -sf "${project_name}.md" CLAUDE.md
+    ln -sf "${project_name}.md" QWEN.md
+    ln -sf "${project_name}.md" AGENTS.md
+}
+
 init_git() {
     git init
     echo "Initializing Git..."
@@ -246,6 +253,9 @@ cd "$DEST" || exit 1
 
 # Replace placeholders
 replace_placeholders "$PROJECT_NAME"
+
+# Create AI agent symlinks
+create_agent_symlinks "$PROJECT_NAME"
 
 # Virtual environments
 if [ "$LANG_TYPE" = "c-cpp" ] && [ "$HYBRID" = "true" ]; then
