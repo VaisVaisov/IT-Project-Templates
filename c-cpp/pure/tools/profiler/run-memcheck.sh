@@ -11,9 +11,5 @@ fi
 BINARY=$1
 mkdir -p profiles
 
-docker run --rm \
-    -v "$(pwd)/bin:/app" \
-    -v "$(pwd)/profiles:/profiles" \
-    profiler-tool \
-    valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all \
-        --error-exitcode=1 /app/"$BINARY"
+valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all \
+    --error-exitcode=1 ./bin/"$BINARY"

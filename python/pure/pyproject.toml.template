@@ -21,6 +21,7 @@ dev = [
     "py-spy",
     "sphinx",
     "furo",
+    "genbadge[coverage]",
 ]
 
 [tool.ruff]

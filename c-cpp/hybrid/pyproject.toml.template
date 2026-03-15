@@ -23,6 +23,8 @@ dev = [
     "sphinx",
     "furo",
     "breathe",
+    "genbadge[coverage]",
+    "lcov_cobertura",
 ]
 
 [tool.ruff]

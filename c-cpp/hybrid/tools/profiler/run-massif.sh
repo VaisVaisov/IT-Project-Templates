@@ -11,11 +11,7 @@ fi
 BINARY=$1
 mkdir -p profiles
 
-docker run --rm \
-    -v "$(pwd)/bin:/app" \
-    -v "$(pwd)/profiles:/profiles" \
-    profiler-tool \
-    bash -c "valgrind --tool=massif --massif-out-file=/profiles/massif.out /app/$BINARY \
-        && ms_print /profiles/massif.out"
+valgrind --tool=massif --massif-out-file=./profiles/massif.out ./bin/"$BINARY"
+ms_print ./profiles/massif.out
 
 echo "Saved: profiles/massif.out"

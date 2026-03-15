@@ -14,6 +14,7 @@
         "redhat.vscode-yaml",
         "meezilla.json",
         "ms-azuretools.vscode-docker",
+        "ms-azuretools.vscode-containers",
         "eamodio.gitlens",
         "mhutchie.git-graph",
         "streetsidesoftware.code-spell-checker",

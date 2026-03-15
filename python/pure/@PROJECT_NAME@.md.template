@@ -31,7 +31,7 @@
 
 ```bash
 # Install dependencies
-pip install -e ".[dev]"
+uv sync
 
 # Tests
 python -m pytest test/python -v

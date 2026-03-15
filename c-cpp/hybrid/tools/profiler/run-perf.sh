@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # perf — CPU profiling with hardware performance counters
-# HOST ONLY: does not work in Docker (requires kernel PMU access)
+# Requires kernel PMU access (CAP_PERFMON or --privileged container)
 # Visualize: flamegraph — https://github.com/brendangregg/FlameGraph
 # Usage: ./tools/profiler/run-perf.sh <binary_name>
+set -e
 
 if [ -z "$1" ]; then
     echo "Usage: $0 <binary_name>"

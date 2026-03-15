@@ -100,6 +100,16 @@ jobs:
       with:
         pytest-xml-coverage-path: coverage.xml
 
+    - name: Generate coverage badges
+      if: github.ref == 'refs/heads/main'
+      run: |
+        mkdir -p docs/_site/badges
+        python -m lcov_cobertura cmake-build-linux-coverage/coverage.info -o coverage-cpp.xml
+        genbadge coverage -i coverage-cpp.xml -o docs/_site/badges/cpp-coverage.svg
+        if [ -f coverage.xml ]; then
+          genbadge coverage -i coverage.xml -o docs/_site/badges/python-coverage.svg
+        fi
+
     - name: Generate C++ documentation
       run: doxygen docs/cpp/Doxyfile
 

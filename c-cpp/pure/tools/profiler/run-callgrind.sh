@@ -12,10 +12,6 @@ fi
 BINARY=$1
 mkdir -p profiles
 
-docker run --rm \
-    -v "$(pwd)/bin:/app" \
-    -v "$(pwd)/profiles:/profiles" \
-    profiler-tool \
-    valgrind --tool=callgrind --callgrind-out-file=/profiles/callgrind.out /app/"$BINARY"
+valgrind --tool=callgrind --callgrind-out-file=./profiles/callgrind.out ./bin/"$BINARY"
 
 echo "Saved: profiles/callgrind.out — visualize: speedscope.app"

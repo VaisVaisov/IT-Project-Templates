@@ -30,7 +30,7 @@
 - 🔒 **Контроль качества**: pre-commit хуки ловят проблемы до попадания в репозиторий
 - ⚙️ **CI/CD из коробки**: GitHub Actions для линтинга, сборки, тестов, покрытия, документации и релизов
 - 📝 **Conventional Commits**: commitlint проверяет формат сообщений коммитов
-- 🌍 **Кроссплатформенность**: один скрипт работает на Linux, macOS и Windows
+- 🌍 **Кроссплатформенность**: один скрипт работает на Linux, macOS и Windows (через WSL2)
 
 ---
 
@@ -80,23 +80,23 @@ new-project --c-cpp --hybrid ~/Projects/my_hybrid_app
 new-project --c-cpp --platformio --esp32-devkit ~/Projects/sensor_node
 ```
 
-### Windows (PowerShell)
+### Windows (WSL2)
 
-```powershell
-# Клонировать в любое место
-git clone https://github.com/VaisVaisov/IT-Project-Templates.git $env:USERPROFILE\IT-Project-Templates
+На Windows вся экосистема работает через WSL2. Установи WSL2 и используй тот же скрипт:
 
-# Создать новый проект
-.\IT-Project-Templates\new-project-script.ps1 -CCpp -Pure C:\Projects\my_cpp_app
-.\IT-Project-Templates\new-project-script.ps1 -Python -Pure C:\Projects\my_python_app
-.\IT-Project-Templates\new-project-script.ps1 -CCpp -Hybrid C:\Projects\my_hybrid_app
-.\IT-Project-Templates\new-project-script.ps1 -CCpp -PlatformIO -Esp32Devkit C:\Projects\sensor_node
-```
+```bash
+# Клонировать в WSL2 home
+git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-Или через bat-лаунчер — двойной клик или запуск из cmd:
+# Добавить в PATH (один раз, в WSL2)
+echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc  # или ~/.bashrc
+source ~/.zshrc
 
-```cmd
-new-project-shell.bat -CCpp -Pure C:\Projects\my_cpp_app
+# Создать новый проект (из WSL2)
+new-project --c-cpp --pure ~/Projects/my_cpp_app
+new-project --python --pure ~/Projects/my_python_app
+new-project --c-cpp --hybrid ~/Projects/my_hybrid_app
+new-project --c-cpp --platformio --esp32-devkit ~/Projects/sensor_node
 ```
 
 ### После создания проекта
@@ -131,27 +131,6 @@ new-project [язык] [тип] [устройство] <путь>
   --stm32f411
 ```
 
-### Windows (PowerShell)
-
-```
-new-project-script.ps1 [язык] [тип] [устройство] <путь>
-
-Язык:
-  -CCpp              C/C++ проект
-  -Python            Python проект
-
-Тип:
-  -Pure              Чистый C/C++ или Python
-  -Hybrid            Гибридный C/C++ + Python/Cython  (только -CCpp)
-  -PlatformIO        Встраиваемые системы             (только -CCpp)
-
-Устройства PlatformIO:
-  -ArduinoNano
-  -ArduinoProMicro
-  -Esp32Devkit
-  -Stm32f411
-```
-
 ---
 
 ## Установка
@@ -159,50 +138,39 @@ new-project-script.ps1 [язык] [тип] [устройство] <путь>
 ### 1. Клонировать репозиторий
 
 ```bash
-# Linux / macOS
+# Linux / macOS / Windows (WSL2)
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
-
-# Windows (PowerShell)
-git clone https://github.com/VaisVaisov/IT-Project-Templates.git $env:USERPROFILE\IT-Project-Templates
 ```
 
 ### 2. Добавить в PATH
 
-**Linux / macOS — Bash:**
+**Bash:**
 ```bash
 echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-**Linux / macOS — Zsh:**
+**Zsh:**
 ```bash
 echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-**Windows — постоянный PATH:**
-```powershell
-[Environment]::SetEnvironmentVariable(
-    "Path",
-    "$env:Path;$env:USERPROFILE\IT-Project-Templates",
-    "User"
-)
-```
-
-> **Примечание (Linux/macOS):** `new-project.sh` уже исполняемый после клонирования. Если нет: `chmod +x new-project.sh`
+> **Примечание:** `new-project.sh` уже исполняемый после клонирования. Если нет: `chmod +x new-project.sh`
 
 ### 3. Требования
 
 | Инструмент | Linux / macOS | Windows |
 | --- | --- | --- |
 | **Docker** | Обязательно — [docker.com](https://www.docker.com/) | Обязательно — [Docker Desktop](https://www.docker.com/products/docker-desktop/) |
+| **WSL2** | — | Обязательно — [Руководство по установке WSL2](https://learn.microsoft.com/ru-ru/windows/wsl/install) + расширение **WSL** в VS Code |
 | **VS Code** | Обязательно — [code.visualstudio.com](https://code.visualstudio.com/) | Обязательно |
-| **Dev Containers extension** | Обязательно — установить из VS Code | Обязательно |
-| **GitHub CLI** | Рекомендуется — `gh auth login` | Рекомендуется |
-| **Python** | Для hybrid/python шаблонов | Для hybrid/python шаблонов |
-| **Git** | Обязательно | Обязательно |
+| **Dev Containers extension** | Обязательно — установить из VS Code | Обязательно (открывать проект из WSL2) |
+| **GitHub CLI** | Рекомендуется | Рекомендуется (для Windows — в WSL2) |
+| **uv** | Для hybrid/python шаблонов — [astral.sh/uv](https://astral.sh/uv) | Для hybrid/python шаблонов — устанавливать в WSL2 |
+| **Git** | Обязательно | Обязательно — устанавливать в WSL2 |
 
-> **Совет по GitHub CLI:** авторизуйся один раз на хосте через `gh auth login`. Контейнер монтирует `~/.config/gh` с хоста — повторная авторизация внутри Dev Container не нужна.
+> **Совет по GitHub CLI:** авторизуйся один раз на хосте (для Windows — в WSL2) через `gh auth login`. Контейнер монтирует `~/.config/gh` с хоста — повторная авторизация внутри Dev Container не нужна.
 
 ---
 
@@ -257,9 +225,7 @@ IT-Project-Templates/
 │       ├── commitlint.config.js
 │       └── ...
 ├── meta-template/              # Основа для создания новых шаблонов
-├── new-project.sh              # Скрипт для Linux / macOS
-├── new-project-script.ps1      # Скрипт для Windows (PowerShell)
-├── new-project-shell.bat       # Bat-лаунчер для Windows
+├── new-project.sh              # Скрипт для Linux / macOS / Windows (WSL2)
 ├── LICENSE
 └── README.md
 ```
@@ -289,7 +255,7 @@ IT-Project-Templates/
 
 Всё из C/C++, плюс:
 
-- Python 3, pip, virtualenv
+- Python 3, pip, uv, virtualenv
 - Cython, NumPy
 - pytest, pytest-cov
 - ruff, pylint, mypy
@@ -297,7 +263,7 @@ IT-Project-Templates/
 
 ### Python контейнеры
 
-- Python 3, pip, virtualenv
+- Python 3, pip, uv, virtualenv
 - pytest, pytest-cov
 - ruff, pylint, mypy
 - Sphinx, furo
@@ -380,6 +346,7 @@ IT-Project-Templates/
 
 #### Все проекты
 - **commitlint** — Проверка формата сообщений коммитов по [Conventional Commits](https://www.conventionalcommits.org/)
+- **detect-secrets** — Блокирует коммит при обнаружении секретов (API-ключи, токены, пароли)
 - Валидация YAML
 - Обнаружение больших файлов (> 1 МБ)
 - Удаление пробелов в конце строк
@@ -396,17 +363,20 @@ IT-Project-Templates/
 - **Lint**: pre-commit проверки (clang-format, clang-tidy, cppcheck, commitlint)
 - **Build**: сборка CMake Debug + Release пресетами
 - **Test**: тесты GoogleTest через ctest
-- **Coverage**: gcov + lcov — HTML отчёт загружается как артефакт
-- **Docs**: Doxygen (pure) или Doxygen + Sphinx/furo (hybrid)
-- **Pages**: автопубликация документации на GitHub Pages (только ветка `main`)
-- **Release**: на тег `v*` — собирает бинарники + Python wheel, создаёт GitHub Release
+- **Coverage**: gcov + lcov — HTML отчёт + summary в GitHub Actions UI + coverage badge на GitHub Pages
+- **Matrix**: тестирование на Python 3.10–3.13 (только hybrid)
+- **Security**: Trivy — сканирование на CVE (HIGH/CRITICAL, блокирует merge)
+- **Docs**: Doxygen (pure) или Doxygen + Sphinx/furo (hybrid) → GitHub Pages при пуше в `main`
+- **Release**: на тег `v*` — git-cliff генерирует CHANGELOG, собирает артефакты, создаёт GitHub Release
 
 #### Python Pure
 - **Lint**: pre-commit проверки (ruff, pylint, mypy, commitlint)
-- **Test**: pytest
-- **Coverage**: pytest-cov — XML отчёт + артефакт
-- **Docs**: Sphinx + furo, публикация через ReadTheDocs
-- **Release**: на тег `v*` — собирает wheel + sdist, создаёт GitHub Release
+- **Test**: pytest + coverage summary в GitHub Actions UI + комментарий с coverage в PR
+- **Coverage badge**: публикуется на GitHub Pages при пуше в `main`
+- **Matrix**: тестирование на Python 3.10–3.13
+- **Security**: Trivy — сканирование на CVE (HIGH/CRITICAL, блокирует merge)
+- **Docs**: Sphinx + furo → GitHub Pages (`main`) + ReadTheDocs (все ветки/теги)
+- **Release**: на тег `v*` — git-cliff генерирует CHANGELOG, собирает wheel + sdist, создаёт GitHub Release
 
 #### PlatformIO
 - **Lint**: pre-commit проверки (clang-format, cppcheck, commitlint)
@@ -446,7 +416,11 @@ IT-Project-Templates/
 
 ### C/C++ Hybrid & Python Pure
 
-Документация собирается через **Sphinx** с темой **furo** (поддержка тёмной темы) и публикуется через **ReadTheDocs**. Гибридный шаблон дополнительно использует **Breathe** для импорта C++ API из Doxygen в Sphinx.
+Документация собирается через **Sphinx** с темой **furo** (поддержка тёмной темы) и публикуется в **двух местах**:
+- **GitHub Pages** — автоматически при каждом пуше в `main`
+- **ReadTheDocs** — автоматически при каждом пуше (все ветки и теги, с версионированием)
+
+Гибридный шаблон дополнительно использует **Breathe** для импорта C++ API из Doxygen в Sphinx.
 
 Для подключения ReadTheDocs:
 1. Подключи репозиторий на [readthedocs.org](https://readthedocs.org)
@@ -464,7 +438,7 @@ IT-Project-Templates/
 
 ## Участие в разработке
 
-Мы рады любому вкладу! Открывайте issue или отправляйте Pull Request.
+Мы рады любому вкладу! Прочитайте [CONTRIBUTING.md](.github/CONTRIBUTING.md) и открывайте issue или Pull Request.
 
 ---
 

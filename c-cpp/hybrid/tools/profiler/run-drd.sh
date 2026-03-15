@@ -10,7 +10,4 @@ fi
 
 BINARY=$1
 
-docker run --rm \
-    -v "$(pwd)/bin:/app" \
-    profiler-tool \
-    valgrind --tool=drd /app/"$BINARY"
+valgrind --tool=drd ./bin/"$BINARY"

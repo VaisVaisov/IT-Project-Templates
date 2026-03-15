@@ -30,7 +30,7 @@ Una raccolta di template di progetto progettati per portarti da zero al codice i
 - 🔒 **Controllo qualità**: gli hook pre-commit individuano i problemi prima che raggiungano il repository
 - ⚙️ **CI/CD incluso**: workflow GitHub Actions per linting, build, test, coverage, documentazione e release
 - 📝 **Conventional Commits**: commitlint verifica il formato dei messaggi di commit
-- 🌍 **Multipiattaforma**: lo stesso script funziona su Linux, macOS e Windows
+- 🌍 **Multipiattaforma**: lo stesso script funziona su Linux, macOS e Windows (tramite WSL2)
 
 ---
 
@@ -80,23 +80,23 @@ new-project --c-cpp --hybrid ~/Projects/my_hybrid_app
 new-project --c-cpp --platformio --esp32-devkit ~/Projects/sensor_node
 ```
 
-### Windows (PowerShell)
+### Windows (WSL2)
 
-```powershell
-# Clona dove vuoi
-git clone https://github.com/VaisVaisov/IT-Project-Templates.git $env:USERPROFILE\IT-Project-Templates
+Su Windows, l'intero ecosistema funziona attraverso WSL2. Installa WSL2 e usa lo stesso script:
 
-# Crea un nuovo progetto
-.\IT-Project-Templates\new-project-script.ps1 -CCpp -Pure C:\Projects\my_cpp_app
-.\IT-Project-Templates\new-project-script.ps1 -Python -Pure C:\Projects\my_python_app
-.\IT-Project-Templates\new-project-script.ps1 -CCpp -Hybrid C:\Projects\my_hybrid_app
-.\IT-Project-Templates\new-project-script.ps1 -CCpp -PlatformIO -Esp32Devkit C:\Projects\sensor_node
-```
+```bash
+# Clona nel home di WSL2
+git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-Oppure usa il launcher batch — doppio clic o esegui da cmd:
+# Aggiungi al PATH (una sola volta, in WSL2)
+echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc  # o ~/.bashrc
+source ~/.zshrc
 
-```cmd
-new-project-shell.bat -CCpp -Pure C:\Projects\my_cpp_app
+# Crea un nuovo progetto (da WSL2)
+new-project --c-cpp --pure ~/Projects/my_cpp_app
+new-project --python --pure ~/Projects/my_python_app
+new-project --c-cpp --hybrid ~/Projects/my_hybrid_app
+new-project --c-cpp --platformio --esp32-devkit ~/Projects/sensor_node
 ```
 
 ### Dopo aver creato il progetto
@@ -131,27 +131,6 @@ Dispositivi PlatformIO:
   --stm32f411
 ```
 
-### Flag Windows (PowerShell)
-
-```
-new-project-script.ps1 [linguaggio] [tipo] [dispositivo] <percorso>
-
-Linguaggio:
-  -CCpp              Progetto C/C++
-  -Python            Progetto Python
-
-Tipo:
-  -Pure              C/C++ o Python puro
-  -Hybrid            Ibrido C/C++ + Python/Cython  (solo -CCpp)
-  -PlatformIO        Sviluppo embedded              (solo -CCpp)
-
-Dispositivi PlatformIO:
-  -ArduinoNano
-  -ArduinoProMicro
-  -Esp32Devkit
-  -Stm32f411
-```
-
 ---
 
 ## Installazione
@@ -159,50 +138,39 @@ Dispositivi PlatformIO:
 ### 1. Clonare il repository
 
 ```bash
-# Linux / macOS
+# Linux / macOS / Windows (WSL2)
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
-
-# Windows (PowerShell)
-git clone https://github.com/VaisVaisov/IT-Project-Templates.git $env:USERPROFILE\IT-Project-Templates
 ```
 
 ### 2. Aggiungere al PATH
 
-**Linux / macOS — Bash:**
+**Bash:**
 ```bash
 echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-**Linux / macOS — Zsh:**
+**Zsh:**
 ```bash
 echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-**Windows — PATH di sistema (permanente):**
-```powershell
-[Environment]::SetEnvironmentVariable(
-    "Path",
-    "$env:Path;$env:USERPROFILE\IT-Project-Templates",
-    "User"
-)
-```
-
-> **Nota (Linux/macOS):** `new-project.sh` è già eseguibile dopo il clone. Se non lo è: `chmod +x new-project.sh`
+> **Nota:** `new-project.sh` è già eseguibile dopo il clone. Se non lo è: `chmod +x new-project.sh`
 
 ### 3. Prerequisiti
 
 | Strumento | Linux / macOS | Windows |
 | --- | --- | --- |
 | **Docker** | Obbligatorio — [docker.com](https://www.docker.com/) | Obbligatorio — [Docker Desktop](https://www.docker.com/products/docker-desktop/) |
+| **WSL2** | — | Obbligatorio — [Guida installazione WSL2](https://learn.microsoft.com/it-it/windows/wsl/install) + estensione **WSL** in VS Code |
 | **VS Code** | Obbligatorio — [code.visualstudio.com](https://code.visualstudio.com/) | Obbligatorio |
-| **Estensione Dev Containers** | Obbligatorio — installare da VS Code | Obbligatorio |
-| **GitHub CLI** | Consigliato — `gh auth login` | Consigliato |
-| **Python** | Per i template hybrid/python | Per i template hybrid/python |
-| **Git** | Obbligatorio | Obbligatorio |
+| **Estensione Dev Containers** | Obbligatorio — installare da VS Code | Obbligatorio (aprire il progetto da WSL2) |
+| **GitHub CLI** | Consigliato | Consigliato (per Windows — in WSL2) |
+| **uv** | Per i template hybrid/python — [astral.sh/uv](https://astral.sh/uv) | Per i template hybrid/python — installare in WSL2 |
+| **Git** | Obbligatorio | Obbligatorio — installare in WSL2 |
 
-> **Suggerimento GitHub CLI:** autenticati una volta sull'host con `gh auth login`. Il container monta `~/.config/gh` dall'host — nessuna ri-autenticazione necessaria nei Dev Containers.
+> **Suggerimento GitHub CLI:** autenticati una volta sull'host (per Windows — in WSL2) con `gh auth login`. Il container monta `~/.config/gh` dall'host — nessuna ri-autenticazione necessaria nei Dev Containers.
 
 ---
 
@@ -257,9 +225,7 @@ IT-Project-Templates/
 │       ├── commitlint.config.js
 │       └── ...
 ├── meta-template/              # Base per creare nuovi template
-├── new-project.sh              # Script Linux / macOS
-├── new-project-script.ps1      # Script Windows PowerShell
-├── new-project-shell.bat       # Launcher batch Windows
+├── new-project.sh              # Script Linux / macOS / Windows (WSL2)
 ├── LICENSE
 └── README.md
 ```
@@ -289,7 +255,7 @@ Ogni container è costruito su **Arch Linux (ultimo)** e include:
 
 Tutto di C/C++, più:
 
-- Python 3, pip, virtualenv
+- Python 3, pip, uv, virtualenv
 - Cython, NumPy
 - pytest, pytest-cov
 - ruff, pylint, mypy
@@ -297,7 +263,7 @@ Tutto di C/C++, più:
 
 ### Container Python
 
-- Python 3, pip, virtualenv
+- Python 3, pip, uv, virtualenv
 - pytest, pytest-cov
 - ruff, pylint, mypy
 - Sphinx, furo
@@ -380,6 +346,7 @@ Gli hook vengono eseguiti automaticamente prima di ogni commit e vengono install
 
 #### Tutti i progetti
 - **commitlint** — Verifica del formato dei messaggi di commit secondo [Conventional Commits](https://www.conventionalcommits.org/)
+- **detect-secrets** — Blocca i commit contenenti segreti (chiavi API, token, password)
 - Validazione YAML
 - Rilevamento file grandi (> 1 MB)
 - Rimozione spazi a fine riga
@@ -396,17 +363,20 @@ Ogni template include due workflow: `ci.yml` (eseguito ad ogni push/PR) e `relea
 - **Lint**: verifiche pre-commit (clang-format, clang-tidy, cppcheck, commitlint)
 - **Build**: build CMake Debug + Release con preset
 - **Test**: test GoogleTest via ctest
-- **Coverage**: gcov + lcov — report HTML caricato come artefatto
-- **Docs**: Doxygen (pure) o Doxygen + Sphinx/furo (hybrid)
-- **Pages**: pubblicazione automatica della documentazione su GitHub Pages (solo branch `main`)
-- **Release**: su tag `v*` — compila binari + Python wheel, crea GitHub Release
+- **Coverage**: gcov + lcov — report HTML + riepilogo in GitHub Actions UI + badge di copertura su GitHub Pages
+- **Matrix**: Python 3.10–3.13 (solo hybrid)
+- **Security**: Trivy — scansione CVE (HIGH/CRITICAL, blocca il merge)
+- **Docs**: Doxygen (pure) o Doxygen + Sphinx/furo (hybrid) → GitHub Pages su `main`
+- **Release**: su tag `v*` — git-cliff genera CHANGELOG, compila artefatti, crea GitHub Release
 
 #### Python Pure
 - **Lint**: verifiche pre-commit (ruff, pylint, mypy, commitlint)
-- **Test**: pytest
-- **Coverage**: pytest-cov — report XML + artefatto
-- **Docs**: Sphinx + furo, pubblicazione via ReadTheDocs
-- **Release**: su tag `v*` — compila wheel + sdist, crea GitHub Release
+- **Test**: pytest + riepilogo copertura in GitHub Actions UI + commento copertura nella PR
+- **Badge di copertura**: pubblicato su GitHub Pages al push su `main`
+- **Matrix**: Python 3.10–3.13
+- **Security**: Trivy — scansione CVE (HIGH/CRITICAL, blocca il merge)
+- **Docs**: Sphinx + furo → GitHub Pages (`main`) + ReadTheDocs (tutti i branch/tag)
+- **Release**: su tag `v*` — git-cliff genera CHANGELOG, compila wheel + sdist, crea GitHub Release
 
 #### PlatformIO
 - **Lint**: verifiche pre-commit (clang-format, cppcheck, commitlint)
@@ -446,7 +416,11 @@ La documentazione viene generata tramite **Doxygen** e pubblicata automaticament
 
 ### C/C++ Hybrid & Python Pure
 
-La documentazione viene costruita tramite **Sphinx** con il tema **furo** (supporto modalità scura) e pubblicata tramite **ReadTheDocs**. Il template hybrid usa anche **Breathe** per importare l'API C++ da Doxygen in Sphinx.
+La documentazione viene costruita tramite **Sphinx** con il tema **furo** (supporto modalità scura) e pubblicata in **due posti**:
+- **GitHub Pages** — automaticamente ad ogni push su `main`
+- **ReadTheDocs** — automaticamente ad ogni push (tutti i branch/tag, con versioning)
+
+Il template hybrid usa anche **Breathe** per importare l'API C++ da Doxygen in Sphinx.
 
 Per connettere ReadTheDocs:
 1. Collegare il repository su [readthedocs.org](https://readthedocs.org)
@@ -464,7 +438,7 @@ Libero di usare, modificare e distribuire.
 
 ## Contribuire
 
-I contributi sono benvenuti! Sentiti libero di aprire una issue o inviare una Pull Request.
+I contributi sono benvenuti! Leggi [CONTRIBUTING.md](.github/CONTRIBUTING.md) e sentiti libero di aprire una issue o inviare una Pull Request.
 
 ---
 

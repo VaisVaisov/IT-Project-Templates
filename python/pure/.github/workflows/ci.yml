@@ -65,6 +65,14 @@ jobs:
       with:
         pytest-xml-coverage-path: coverage.xml
 
+    - name: Generate coverage badge
+      if: github.ref == 'refs/heads/main'
+      run: |
+        if [ -f coverage.xml ]; then
+          mkdir -p docs/_site/badges
+          genbadge coverage -i coverage.xml -o docs/_site/badges/coverage.svg
+        fi
+
     - name: Generate documentation
       run: |
         cd docs/python

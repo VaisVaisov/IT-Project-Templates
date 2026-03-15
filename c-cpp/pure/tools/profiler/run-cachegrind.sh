@@ -12,11 +12,7 @@ fi
 BINARY=$1
 mkdir -p profiles
 
-docker run --rm \
-    -v "$(pwd)/bin:/app" \
-    -v "$(pwd)/profiles:/profiles" \
-    profiler-tool \
-    bash -c "valgrind --tool=cachegrind --cachegrind-out-file=/profiles/cachegrind.out /app/$BINARY \
-        && cg_annotate /profiles/cachegrind.out"
+valgrind --tool=cachegrind --cachegrind-out-file=./profiles/cachegrind.out ./bin/"$BINARY"
+cg_annotate ./profiles/cachegrind.out
 
 echo "Saved: profiles/cachegrind.out — visualize: speedscope.app"

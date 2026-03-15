@@ -37,7 +37,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pacman -Sy --noconfirm clang cmake ninja cppcheck doxygen lcov
+        pacman -Sy --noconfirm clang cmake ninja cppcheck doxygen lcov python python-pip
+        pip install genbadge[coverage] lcov_cobertura --break-system-packages
 
     - name: Build Debug
       run: cmake --preset linux-debug && cmake --build --preset linux-debug
@@ -68,6 +69,13 @@ jobs:
       with:
         name: cpp-coverage
         path: cmake-build-linux-coverage/coverage-html
+
+    - name: Generate coverage badge
+      if: github.ref == 'refs/heads/main'
+      run: |
+        mkdir -p docs/_site/badges
+        python -m lcov_cobertura cmake-build-linux-coverage/coverage.info -o coverage-cpp.xml
+        genbadge coverage -i coverage-cpp.xml -o docs/_site/badges/coverage.svg
 
     - name: Generate documentation
       run: doxygen docs/cpp/Doxyfile

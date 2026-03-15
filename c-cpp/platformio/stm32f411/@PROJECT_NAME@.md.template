@@ -41,6 +41,33 @@ pio device monitor               # serial monitor
 
 ---
 
+## Wokwi Simulation
+
+The project includes `wokwi.toml` and `diagram.json` for hardware simulation without a physical board.
+
+> **Note:** Wokwi does not support STM32F411 BlackPill directly. The `diagram.json` uses `board-st-nucleo-f411re` (same MCU, different pinout). Adjust the diagram to match your actual hardware.
+
+### VS Code (local simulation)
+
+1. Install the **Wokwi Simulator** extension in VS Code
+2. `F1` → **Wokwi: Request License** — get a free personal license (expires shown in VS Code)
+3. Build the firmware: `pio run`
+4. Open `diagram.json` in VS Code — click **Play** to start simulation
+
+### CI (GitHub Actions)
+
+1. Get a CI token: [wokwi.com](https://wokwi.com) → avatar → **CI Tokens** → **Create a new token**
+2. Add to GitHub Secrets: **Settings** → **Secrets** → `WOKWI_CLI_TOKEN`
+3. CI simulates firmware automatically on every push — **50 min/month free**
+
+### Updating the circuit diagram
+
+1. Open [wokwi.com](https://wokwi.com) and draw your circuit
+2. Download as `diagram.json` → place in the project root
+3. The same `diagram.json` is used by both VS Code extension and CI
+
+---
+
 ## Rules for AI Agents
 
 - **Don't create** new files unless necessary — prefer editing existing ones

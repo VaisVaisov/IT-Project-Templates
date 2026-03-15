@@ -30,7 +30,7 @@
 - 🔒 **품질 게이트**: pre-commit 훅이 저장소에 들어가기 전에 문제를 잡아냄
 - ⚙️ **CI/CD 포함**: 린팅, 빌드, 테스트, 커버리지, 문서화, 릴리즈를 위한 GitHub Actions 워크플로우
 - 📝 **Conventional Commits**: commitlint가 커밋 메시지 형식을 검증
-- 🌍 **크로스 플랫폼**: 동일한 스크립트가 Linux, macOS, Windows에서 동작
+- 🌍 **크로스 플랫폼**: 동일한 스크립트가 Linux, macOS, Windows에서 동작（WSL2 경유）
 
 ---
 
@@ -80,23 +80,23 @@ new-project --c-cpp --hybrid ~/Projects/my_hybrid_app
 new-project --c-cpp --platformio --esp32-devkit ~/Projects/sensor_node
 ```
 
-### Windows (PowerShell)
+### Windows (WSL2)
 
-```powershell
-# 원하는 위치에 클론
-git clone https://github.com/VaisVaisov/IT-Project-Templates.git $env:USERPROFILE\IT-Project-Templates
+Windows에서는 전체 에코시스템이 WSL2를 통해 작동합니다. WSL2를 설치하고 동일한 스크립트를 사용하세요:
 
-# 새 프로젝트 생성
-.\IT-Project-Templates\new-project-script.ps1 -CCpp -Pure C:\Projects\my_cpp_app
-.\IT-Project-Templates\new-project-script.ps1 -Python -Pure C:\Projects\my_python_app
-.\IT-Project-Templates\new-project-script.ps1 -CCpp -Hybrid C:\Projects\my_hybrid_app
-.\IT-Project-Templates\new-project-script.ps1 -CCpp -PlatformIO -Esp32Devkit C:\Projects\sensor_node
-```
+```bash
+# WSL2 홈에 클론
+git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-또는 배치 런처를 사용하세요 — 더블클릭하거나 cmd에서 실행:
+# PATH에 추가 (WSL2 내에서, 최초 1회 설정)
+echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc  # 또는 ~/.bashrc
+source ~/.zshrc
 
-```cmd
-new-project-shell.bat -CCpp -Pure C:\Projects\my_cpp_app
+# 새 프로젝트 생성 (WSL2에서)
+new-project --c-cpp --pure ~/Projects/my_cpp_app
+new-project --python --pure ~/Projects/my_python_app
+new-project --c-cpp --hybrid ~/Projects/my_hybrid_app
+new-project --c-cpp --platformio --esp32-devkit ~/Projects/sensor_node
 ```
 
 ### 프로젝트 생성 후
@@ -131,27 +131,6 @@ PlatformIO 디바이스:
   --stm32f411
 ```
 
-### Windows (PowerShell) 플래그
-
-```
-new-project-script.ps1 [언어] [타입] [디바이스] <경로>
-
-언어:
-  -CCpp              C/C++ 프로젝트
-  -Python            Python 프로젝트
-
-타입:
-  -Pure              순수 C/C++ 또는 Python
-  -Hybrid            하이브리드 C/C++ + Python/Cython  (-CCpp 전용)
-  -PlatformIO        임베디드 개발                     (-CCpp 전용)
-
-PlatformIO 디바이스:
-  -ArduinoNano
-  -ArduinoProMicro
-  -Esp32Devkit
-  -Stm32f411
-```
-
 ---
 
 ## 설치
@@ -159,50 +138,39 @@ PlatformIO 디바이스:
 ### 1. 저장소 클론
 
 ```bash
-# Linux / macOS
+# Linux / macOS / Windows (WSL2)
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
-
-# Windows (PowerShell)
-git clone https://github.com/VaisVaisov/IT-Project-Templates.git $env:USERPROFILE\IT-Project-Templates
 ```
 
 ### 2. PATH에 추가
 
-**Linux / macOS — Bash:**
+**Bash:**
 ```bash
 echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-**Linux / macOS — Zsh:**
+**Zsh:**
 ```bash
 echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-**Windows — 시스템 PATH (영구 설정):**
-```powershell
-[Environment]::SetEnvironmentVariable(
-    "Path",
-    "$env:Path;$env:USERPROFILE\IT-Project-Templates",
-    "User"
-)
-```
-
-> **참고 (Linux/macOS):** `new-project.sh`는 클론 후 이미 실행 가능합니다. 그렇지 않은 경우: `chmod +x new-project.sh`
+> **참고:** `new-project.sh`는 클론 후 이미 실행 가능합니다. 그렇지 않은 경우: `chmod +x new-project.sh`
 
 ### 3. 사전 요구 사항
 
 | 도구 | Linux / macOS | Windows |
 | --- | --- | --- |
 | **Docker** | 필수 — [docker.com](https://www.docker.com/) | 필수 — [Docker Desktop](https://www.docker.com/products/docker-desktop/) |
+| **WSL2** | — | 필수 — [WSL2 설치 가이드](https://learn.microsoft.com/ko-kr/windows/wsl/install) + VS Code의 **WSL** 확장 |
 | **VS Code** | 필수 — [code.visualstudio.com](https://code.visualstudio.com/) | 필수 |
-| **Dev Containers 확장** | 필수 — VS Code에서 설치 | 필수 |
-| **GitHub CLI** | 권장 — `gh auth login` | 권장 |
-| **Python** | 하이브리드/Python 템플릿용 | 하이브리드/Python 템플릿용 |
-| **Git** | 필수 | 필수 |
+| **Dev Containers 확장** | 필수 — VS Code에서 설치 | 필수 (WSL2에서 프로젝트 열기) |
+| **GitHub CLI** | 권장 | 권장 (Windows의 경우 — WSL2 내에서) |
+| **uv** | 하이브리드/Python 템플릿용 — [astral.sh/uv](https://astral.sh/uv) | 하이브리드/Python 템플릿용 — WSL2에 설치 |
+| **Git** | 필수 | 필수 — WSL2에 설치 |
 
-> **GitHub CLI 팁:** 호스트에서 `gh auth login`으로 한 번만 인증하세요. 컨테이너는 호스트의 `~/.config/gh`를 bind-mount합니다 — Dev Container 안에서 재인증이 필요 없습니다.
+> **GitHub CLI 팁:** 호스트(Windows의 경우 — WSL2 내)에서 `gh auth login`으로 한 번만 인증하세요. 컨테이너는 호스트의 `~/.config/gh`를 bind-mount합니다 — Dev Container 안에서 재인증이 필요 없습니다.
 
 ---
 
@@ -257,9 +225,7 @@ IT-Project-Templates/
 │       ├── commitlint.config.js
 │       └── ...
 ├── meta-template/              # 새 템플릿 생성을 위한 기반
-├── new-project.sh              # Linux / macOS 스크립트
-├── new-project-script.ps1      # Windows PowerShell 스크립트
-├── new-project-shell.bat       # Windows 배치 런처
+├── new-project.sh              # Linux / macOS / Windows (WSL2) 스크립트
 ├── LICENSE
 └── README.md
 ```
@@ -289,7 +255,7 @@ IT-Project-Templates/
 
 C/C++의 모든 것에 추가로:
 
-- Python 3, pip, virtualenv
+- Python 3, pip, uv, virtualenv
 - Cython, NumPy
 - pytest, pytest-cov
 - ruff, pylint, mypy
@@ -297,7 +263,7 @@ C/C++의 모든 것에 추가로:
 
 ### Python 컨테이너
 
-- Python 3, pip, virtualenv
+- Python 3, pip, uv, virtualenv
 - pytest, pytest-cov
 - ruff, pylint, mypy
 - Sphinx, furo
@@ -380,6 +346,7 @@ C/C++의 모든 것에 추가로:
 
 #### 모든 프로젝트
 - **commitlint** — [Conventional Commits](https://www.conventionalcommits.org/)에 따른 커밋 메시지 형식 검증
+- **detect-secrets** — 시크릿(API 키, 토큰, 비밀번호)이 포함된 커밋 차단
 - YAML 유효성 검사
 - 대용량 파일 감지 (> 1 MB)
 - 후행 공백 제거
@@ -396,17 +363,20 @@ C/C++의 모든 것에 추가로:
 - **Lint**: pre-commit 검사 (clang-format, clang-tidy, cppcheck, commitlint)
 - **Build**: 프리셋을 사용한 CMake Debug + Release 빌드
 - **Test**: ctest를 통한 GoogleTest 테스트
-- **Coverage**: gcov + lcov — HTML 보고서를 아티팩트로 업로드
-- **Docs**: Doxygen (pure) 또는 Doxygen + Sphinx/furo (hybrid)
-- **Pages**: `main` 브랜치 push 시 GitHub Pages에 문서 자동 게시
-- **Release**: `v*` 태그 시 — 바이너리 + Python Wheel 빌드, GitHub Release 생성
+- **Coverage**: gcov + lcov — HTML 보고서 + GitHub Actions UI 요약 + GitHub Pages 커버리지 배지
+- **Matrix**: Python 3.10–3.13 (hybrid 전용)
+- **Security**: Trivy — CVE 스캔 (HIGH/CRITICAL, 머지 차단)
+- **Docs**: Doxygen (pure) 또는 Doxygen + Sphinx/furo (hybrid) → `main` push 시 GitHub Pages 게시
+- **Release**: `v*` 태그 시 — git-cliff가 CHANGELOG 생성, 아티팩트 빌드, GitHub Release 생성
 
 #### Python Pure
 - **Lint**: pre-commit 검사 (ruff, pylint, mypy, commitlint)
-- **Test**: pytest
-- **Coverage**: pytest-cov — XML 보고서 + 아티팩트
-- **Docs**: Sphinx + furo, ReadTheDocs를 통해 게시
-- **Release**: `v*` 태그 시 — wheel + sdist 빌드, GitHub Release 생성
+- **Test**: pytest + GitHub Actions UI 커버리지 요약 + PR 커버리지 댓글
+- **커버리지 배지**: `main` push 시 GitHub Pages에 게시
+- **Matrix**: Python 3.10–3.13
+- **Security**: Trivy — CVE 스캔 (HIGH/CRITICAL, 머지 차단)
+- **Docs**: Sphinx + furo → GitHub Pages (`main`) + ReadTheDocs (모든 브랜치/태그)
+- **Release**: `v*` 태그 시 — git-cliff가 CHANGELOG 생성, wheel + sdist 빌드, GitHub Release 생성
 
 #### PlatformIO
 - **Lint**: pre-commit 검사 (clang-format, cppcheck, commitlint)
@@ -446,7 +416,11 @@ C/C++의 모든 것에 추가로:
 
 ### C/C++ Hybrid & Python Pure
 
-문서는 **Sphinx**와 **furo** 테마(다크 모드 지원)로 빌드되고 **ReadTheDocs**를 통해 게시됩니다. Hybrid 템플릿은 추가로 **Breathe**를 사용하여 Doxygen의 C++ API를 Sphinx에 가져옵니다.
+문서는 **Sphinx**와 **furo** 테마(다크 모드 지원)로 빌드되고 **두 곳**에 게시됩니다:
+- **GitHub Pages** — `main` push 시 자동으로 게시
+- **ReadTheDocs** — 매 push 시 자동 게시 (모든 브랜치/태그, 버전 관리 포함)
+
+Hybrid 템플릿은 추가로 **Breathe**를 사용하여 Doxygen의 C++ API를 Sphinx에 가져옵니다.
 
 ReadTheDocs 연결 방법:
 1. [readthedocs.org](https://readthedocs.org)에서 저장소 연결
@@ -464,7 +438,7 @@ ReadTheDocs 연결 방법:
 
 ## 기여
 
-기여를 환영합니다! 이슈를 열거나 Pull Request를 제출해 주세요.
+기여를 환영합니다! [CONTRIBUTING.md](.github/CONTRIBUTING.md)를 읽고 이슈를 열거나 Pull Request를 제출해 주세요.
 
 ---
 

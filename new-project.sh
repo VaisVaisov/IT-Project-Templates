@@ -48,6 +48,10 @@ replace_placeholders() {
     find . -type f \( -name "*.in" -o -name "*.template" \) -exec sed -i "s|@PROJECT_NAME@|$project_name|g" {} \;
     find . -type f -name "*.in" -exec sh -c 'mv "$1" "$(dirname "$1")/$(basename "$1" .in)"' _ {} \;
     find . -type f -name "*.template" -exec sh -c 'mv "$1" "$(dirname "$1")/$(basename "$1" .template)"' _ {} \;
+    # Rename files that have @PROJECT_NAME@ in their filename
+    while IFS= read -r f; do
+        mv "$f" "$(echo "$f" | sed "s|@PROJECT_NAME@|$project_name|g")"
+    done < <(find . -type f -name "*@PROJECT_NAME@*")
 }
 
 create_agent_symlinks() {
@@ -65,26 +69,12 @@ init_git() {
         echo "googletest added as submodule"
     fi
 
-    pre-commit install
-    pre-commit install --hook-type commit-msg
+    # pre-commit hooks are installed automatically by postCreateCommand when the dev container starts
 
     git add .
     git commit -m "feat: initial commit from template"
 }
 
-build_docker_images() {
-    if [ -f "tools/profiler/Dockerfile" ]; then
-        echo "Building profiler-tool image..."
-        if docker build -f tools/profiler/Dockerfile -t profiler-tool .; then
-            echo "profiler-tool image built successfully"
-        else
-            echo "Error: failed to build profiler-tool"
-            return 1
-        fi
-    else
-        echo "Note: profiler Dockerfile not found, skipping"
-    fi
-}
 
 check_deps() {
     local missing=()
@@ -249,33 +239,23 @@ replace_placeholders "$PROJECT_NAME"
 create_agent_symlinks "$PROJECT_NAME"
 
 # Virtual environments
-if [ "$LANG_TYPE" = "c-cpp" ] && [ "$HYBRID" = "true" ]; then
-    echo "Creating virtual environment .venv"
-    python -m venv .venv
-    source .venv/bin/activate
-    pip install --upgrade pip
-    if [ -f "pyproject.toml" ]; then
-        pip install -e ".[dev]"
-    fi
-fi
-
-if [ "$LANG_TYPE" = "python" ] && [ "$PURE" = "true" ]; then
-    echo "Creating virtual environment .venv"
-    python -m venv .venv
-    source .venv/bin/activate
-    pip install --upgrade pip
-    if [ -f "pyproject.toml" ]; then
-        pip install -e ".[dev]"
+if { [ "$LANG_TYPE" = "c-cpp" ] && [ "$HYBRID" = "true" ]; } || \
+   { [ "$LANG_TYPE" = "python" ] && [ "$PURE" = "true" ]; }; then
+    if command -v uv &>/dev/null; then
+        echo "Creating virtual environment with uv..."
+        uv sync
+    else
+        echo "Creating virtual environment .venv..."
+        python -m venv .venv
+        source .venv/bin/activate
+        pip install --upgrade pip
+        [ -f pyproject.toml ] && pip install -e ".[dev]"
     fi
 fi
 
 # Git
 init_git
 
-# Docker (only for C/C++)
-if [ "$LANG_TYPE" = "c-cpp" ] && ! $PLATFORMIO; then
-    build_docker_images
-fi
 
 # ========================================
 # Tips

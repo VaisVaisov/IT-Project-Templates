@@ -30,7 +30,7 @@
 - 🔒 **品質ゲート**: pre-commit フックがリポジトリに入る前に問題を検出
 - ⚙️ **CI/CD 付き**: リンティング、ビルド、テスト、カバレッジ、ドキュメント、リリース用の GitHub Actions ワークフロー
 - 📝 **Conventional Commits**: commitlint がコミットメッセージのフォーマットを検証
-- 🌍 **クロスプラットフォーム**: 同じスクリプトが Linux、macOS、Windows で動作
+- 🌍 **クロスプラットフォーム**: 同じスクリプトが Linux、macOS、Windows で動作（WSL2 経由）
 
 ---
 
@@ -80,23 +80,23 @@ new-project --c-cpp --hybrid ~/Projects/my_hybrid_app
 new-project --c-cpp --platformio --esp32-devkit ~/Projects/sensor_node
 ```
 
-### Windows (PowerShell)
+### Windows (WSL2)
 
-```powershell
-# 好きな場所にクローン
-git clone https://github.com/VaisVaisov/IT-Project-Templates.git $env:USERPROFILE\IT-Project-Templates
+Windows では、エコシステム全体が WSL2 を通じて動作します。WSL2 をインストールして同じスクリプトを使用してください：
 
-# 新しいプロジェクトを作成
-.\IT-Project-Templates\new-project-script.ps1 -CCpp -Pure C:\Projects\my_cpp_app
-.\IT-Project-Templates\new-project-script.ps1 -Python -Pure C:\Projects\my_python_app
-.\IT-Project-Templates\new-project-script.ps1 -CCpp -Hybrid C:\Projects\my_hybrid_app
-.\IT-Project-Templates\new-project-script.ps1 -CCpp -PlatformIO -Esp32Devkit C:\Projects\sensor_node
-```
+```bash
+# WSL2 ホームにクローン
+git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-またはバッチランチャーを使用 — ダブルクリックまたは cmd から実行:
+# PATH に追加（WSL2 内で、1回だけ）
+echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc  # または ~/.bashrc
+source ~/.zshrc
 
-```cmd
-new-project-shell.bat -CCpp -Pure C:\Projects\my_cpp_app
+# 新しいプロジェクトを作成（WSL2 から）
+new-project --c-cpp --pure ~/Projects/my_cpp_app
+new-project --python --pure ~/Projects/my_python_app
+new-project --c-cpp --hybrid ~/Projects/my_hybrid_app
+new-project --c-cpp --platformio --esp32-devkit ~/Projects/sensor_node
 ```
 
 ### プロジェクト作成後
@@ -131,27 +131,6 @@ PlatformIO デバイス:
   --stm32f411
 ```
 
-### Windows (PowerShell) フラグ
-
-```
-new-project-script.ps1 [言語] [タイプ] [デバイス] <パス>
-
-言語:
-  -CCpp              C/C++ プロジェクト
-  -Python            Python プロジェクト
-
-タイプ:
-  -Pure              純粋な C/C++ または Python
-  -Hybrid            ハイブリッド C/C++ + Python/Cython  (-CCpp のみ)
-  -PlatformIO        組み込み開発                         (-CCpp のみ)
-
-PlatformIO デバイス:
-  -ArduinoNano
-  -ArduinoProMicro
-  -Esp32Devkit
-  -Stm32f411
-```
-
 ---
 
 ## インストール
@@ -159,50 +138,39 @@ PlatformIO デバイス:
 ### 1. リポジトリをクローン
 
 ```bash
-# Linux / macOS
+# Linux / macOS / Windows (WSL2)
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
-
-# Windows (PowerShell)
-git clone https://github.com/VaisVaisov/IT-Project-Templates.git $env:USERPROFILE\IT-Project-Templates
 ```
 
 ### 2. PATH に追加
 
-**Linux / macOS — Bash:**
+**Bash:**
 ```bash
 echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-**Linux / macOS — Zsh:**
+**Zsh:**
 ```bash
 echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-**Windows — システム PATH（永続）:**
-```powershell
-[Environment]::SetEnvironmentVariable(
-    "Path",
-    "$env:Path;$env:USERPROFILE\IT-Project-Templates",
-    "User"
-)
-```
-
-> **注意 (Linux/macOS):** `new-project.sh` はクローン後すでに実行可能です。そうでない場合: `chmod +x new-project.sh`
+> **注意:** `new-project.sh` はクローン後すでに実行可能です。そうでない場合: `chmod +x new-project.sh`
 
 ### 3. 前提条件
 
 | ツール | Linux / macOS | Windows |
 | --- | --- | --- |
 | **Docker** | 必須 — [docker.com](https://www.docker.com/) | 必須 — [Docker Desktop](https://www.docker.com/products/docker-desktop/) |
+| **WSL2** | — | 必須 — [WSL2 インストールガイド](https://learn.microsoft.com/ja-jp/windows/wsl/install) + VS Code の **WSL** 拡張機能 |
 | **VS Code** | 必須 — [code.visualstudio.com](https://code.visualstudio.com/) | 必須 |
-| **Dev Containers 拡張機能** | 必須 — VS Code からインストール | 必須 |
-| **GitHub CLI** | 推奨 — `gh auth login` | 推奨 |
-| **Python** | hybrid/python テンプレート用 | hybrid/python テンプレート用 |
-| **Git** | 必須 | 必須 |
+| **Dev Containers 拡張機能** | 必須 — VS Code からインストール | 必須（WSL2 からプロジェクトを開く） |
+| **GitHub CLI** | 推奨 | 推奨（Windows の場合 — WSL2 内で） |
+| **uv** | hybrid/python テンプレート用 — [astral.sh/uv](https://astral.sh/uv) | hybrid/python テンプレート用 — WSL2 内にインストール |
+| **Git** | 必須 | 必須 — WSL2 内にインストール |
 
-> **GitHub CLI ヒント:** ホストで `gh auth login` を1回実行するだけ。コンテナはホストの `~/.config/gh` をバインドマウントします — Dev Container 内での再認証は不要です。
+> **GitHub CLI ヒント:** ホスト（Windows の場合 — WSL2 内）で `gh auth login` を1回実行するだけ。コンテナはホストの `~/.config/gh` をバインドマウントします — Dev Container 内での再認証は不要です。
 
 ---
 
@@ -257,9 +225,7 @@ IT-Project-Templates/
 │       ├── commitlint.config.js
 │       └── ...
 ├── meta-template/              # 新しいテンプレート作成の基盤
-├── new-project.sh              # Linux / macOS スクリプト
-├── new-project-script.ps1      # Windows PowerShell スクリプト
-├── new-project-shell.bat       # Windows バッチランチャー
+├── new-project.sh              # Linux / macOS / Windows (WSL2) スクリプト
 ├── LICENSE
 └── README.md
 ```
@@ -289,7 +255,7 @@ IT-Project-Templates/
 
 C/C++ のすべてに加えて:
 
-- Python 3、pip、virtualenv
+- Python 3、pip、uv、virtualenv
 - Cython、NumPy
 - pytest、pytest-cov
 - ruff、pylint、mypy
@@ -297,7 +263,7 @@ C/C++ のすべてに加えて:
 
 ### Python コンテナ
 
-- Python 3、pip、virtualenv
+- Python 3、pip、uv、virtualenv
 - pytest、pytest-cov
 - ruff、pylint、mypy
 - Sphinx、furo
@@ -380,6 +346,7 @@ C/C++ と Python のすべての拡張機能を組み合わせ。
 
 #### すべてのプロジェクト
 - **commitlint** — [Conventional Commits](https://www.conventionalcommits.org/) に従ったコミットメッセージフォーマットの検証
+- **detect-secrets** — シークレット（APIキー、トークン、パスワード）を含むコミットをブロック
 - YAML バリデーション
 - 大きなファイルの検出（> 1 MB）
 - 行末の空白削除
@@ -396,17 +363,20 @@ C/C++ と Python のすべての拡張機能を組み合わせ。
 - **Lint**: pre-commit チェック（clang-format、clang-tidy、cppcheck、commitlint）
 - **Build**: プリセットを使った CMake Debug + Release ビルド
 - **Test**: ctest を通じた GoogleTest テスト
-- **Coverage**: gcov + lcov — HTML レポートをアーティファクトとしてアップロード
-- **Docs**: Doxygen（pure）または Doxygen + Sphinx/furo（hybrid）
-- **Pages**: `main` ブランチへの Push 時に GitHub Pages にドキュメントを自動公開
-- **Release**: タグ `v*` 時 — バイナリ + Python Wheel をビルドし、GitHub Release を作成
+- **Coverage**: gcov + lcov — HTML レポート + GitHub Actions UI サマリー + GitHub Pages にカバレッジバッジ
+- **Matrix**: Python 3.10–3.13（hybrid のみ）
+- **Security**: Trivy — CVE スキャン（HIGH/CRITICAL、マージをブロック）
+- **Docs**: Doxygen（pure）または Doxygen + Sphinx/furo（hybrid）→ `main` Push 時に GitHub Pages に公開
+- **Release**: タグ `v*` 時 — git-cliff が CHANGELOG を生成、アーティファクトをビルド、GitHub Release を作成
 
 #### Python Pure
 - **Lint**: pre-commit チェック（ruff、pylint、mypy、commitlint）
-- **Test**: pytest
-- **Coverage**: pytest-cov — XML レポート + アーティファクト
-- **Docs**: Sphinx + furo、ReadTheDocs 経由で公開
-- **Release**: タグ `v*` 時 — wheel + sdist をビルドし、GitHub Release を作成
+- **Test**: pytest + GitHub Actions UI カバレッジサマリー + PR カバレッジコメント
+- **カバレッジバッジ**: `main` Push 時に GitHub Pages に公開
+- **Matrix**: Python 3.10–3.13
+- **Security**: Trivy — CVE スキャン（HIGH/CRITICAL、マージをブロック）
+- **Docs**: Sphinx + furo → GitHub Pages（`main`）+ ReadTheDocs（全ブランチ/タグ）
+- **Release**: タグ `v*` 時 — git-cliff が CHANGELOG を生成、wheel + sdist をビルド、GitHub Release を作成
 
 #### PlatformIO
 - **Lint**: pre-commit チェック（clang-format、cppcheck、commitlint）
@@ -446,7 +416,11 @@ C/C++ と Python のすべての拡張機能を組み合わせ。
 
 ### C/C++ Hybrid & Python Pure
 
-ドキュメントは **Sphinx** と **furo** テーマ（ダークモード対応）でビルドされ、**ReadTheDocs** 経由で公開されます。Hybrid テンプレートは Doxygen からの C++ API を Sphinx にインポートするために **Breathe** も使用します。
+ドキュメントは **Sphinx** と **furo** テーマ（ダークモード対応）でビルドされ、**2か所**に公開されます：
+- **GitHub Pages** — `main` へのプッシュ毎に自動公開
+- **ReadTheDocs** — 毎回のプッシュで自動公開（全ブランチ・タグ、バージョン管理付き）
+
+Hybrid テンプレートは Doxygen からの C++ API を Sphinx にインポートするために **Breathe** も使用します。
 
 ReadTheDocs の接続方法：
 1. [readthedocs.org](https://readthedocs.org) でリポジトリを接続
@@ -464,7 +438,7 @@ ReadTheDocs の接続方法：
 
 ## 貢献
 
-コントリビューションを歓迎します！ Issue を開くか Pull Request を送ってください。
+コントリビューションを歓迎します！ [CONTRIBUTING.md](.github/CONTRIBUTING.md) を読んで、Issue を開くか Pull Request を送ってください。
 
 ---
 

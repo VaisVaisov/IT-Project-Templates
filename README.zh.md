@@ -30,7 +30,7 @@
 - 🔒 **质量把关**：pre-commit 钩子在代码进入仓库前拦截问题
 - ⚙️ **内置 CI/CD**：用于 linting、构建、测试、覆盖率、文档和发布的 GitHub Actions 工作流
 - 📝 **Conventional Commits**：commitlint 验证提交消息格式
-- 🌍 **跨平台**：同一脚本在 Linux、macOS 和 Windows 上均可运行
+- 🌍 **跨平台**：同一脚本在 Linux、macOS 和 Windows 上均可运行（通过 WSL2）
 
 ---
 
@@ -80,23 +80,23 @@ new-project --c-cpp --hybrid ~/Projects/my_hybrid_app
 new-project --c-cpp --platformio --esp32-devkit ~/Projects/sensor_node
 ```
 
-### Windows (PowerShell)
+### Windows (WSL2)
 
-```powershell
-# 克隆到任意位置
-git clone https://github.com/VaisVaisov/IT-Project-Templates.git $env:USERPROFILE\IT-Project-Templates
+在 Windows 上，整个生态系统通过 WSL2 运行。安装 WSL2 并使用相同的脚本：
 
-# 创建新项目
-.\IT-Project-Templates\new-project-script.ps1 -CCpp -Pure C:\Projects\my_cpp_app
-.\IT-Project-Templates\new-project-script.ps1 -Python -Pure C:\Projects\my_python_app
-.\IT-Project-Templates\new-project-script.ps1 -CCpp -Hybrid C:\Projects\my_hybrid_app
-.\IT-Project-Templates\new-project-script.ps1 -CCpp -PlatformIO -Esp32Devkit C:\Projects\sensor_node
-```
+```bash
+# 克隆到 WSL2 home 目录
+git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-或使用批处理启动器 —— 双击或从 cmd 运行：
+# 添加到 PATH（在 WSL2 中，一次性配置）
+echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc  # 或 ~/.bashrc
+source ~/.zshrc
 
-```cmd
-new-project-shell.bat -CCpp -Pure C:\Projects\my_cpp_app
+# 创建新项目（在 WSL2 中）
+new-project --c-cpp --pure ~/Projects/my_cpp_app
+new-project --python --pure ~/Projects/my_python_app
+new-project --c-cpp --hybrid ~/Projects/my_hybrid_app
+new-project --c-cpp --platformio --esp32-devkit ~/Projects/sensor_node
 ```
 
 ### 创建项目后
@@ -131,27 +131,6 @@ PlatformIO 设备：
   --stm32f411
 ```
 
-### Windows (PowerShell) 标志
-
-```
-new-project-script.ps1 [语言] [类型] [设备] <路径>
-
-语言：
-  -CCpp              C/C++ 项目
-  -Python            Python 项目
-
-类型：
-  -Pure              纯 C/C++ 或 Python
-  -Hybrid            混合 C/C++ + Python/Cython  （仅 -CCpp）
-  -PlatformIO        嵌入式开发                  （仅 -CCpp）
-
-PlatformIO 设备：
-  -ArduinoNano
-  -ArduinoProMicro
-  -Esp32Devkit
-  -Stm32f411
-```
-
 ---
 
 ## 安装
@@ -159,50 +138,39 @@ PlatformIO 设备：
 ### 1. 克隆仓库
 
 ```bash
-# Linux / macOS
+# Linux / macOS / Windows (WSL2)
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
-
-# Windows (PowerShell)
-git clone https://github.com/VaisVaisov/IT-Project-Templates.git $env:USERPROFILE\IT-Project-Templates
 ```
 
 ### 2. 添加到 PATH
 
-**Linux / macOS — Bash：**
+**Bash：**
 ```bash
 echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-**Linux / macOS — Zsh：**
+**Zsh：**
 ```bash
 echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-**Windows — 系统 PATH（永久）：**
-```powershell
-[Environment]::SetEnvironmentVariable(
-    "Path",
-    "$env:Path;$env:USERPROFILE\IT-Project-Templates",
-    "User"
-)
-```
-
-> **注意（Linux/macOS）：** 克隆后 `new-project.sh` 已具有可执行权限。若没有：`chmod +x new-project.sh`
+> **注意：** 克隆后 `new-project.sh` 已具有可执行权限。若没有：`chmod +x new-project.sh`
 
 ### 3. 前提条件
 
 | 工具 | Linux / macOS | Windows |
 | --- | --- | --- |
 | **Docker** | 必需 — [docker.com](https://www.docker.com/) | 必需 — [Docker Desktop](https://www.docker.com/products/docker-desktop/) |
+| **WSL2** | — | 必需 — [WSL2 安装指南](https://learn.microsoft.com/zh-cn/windows/wsl/install) + VS Code 中的 **WSL** 扩展 |
 | **VS Code** | 必需 — [code.visualstudio.com](https://code.visualstudio.com/) | 必需 |
-| **Dev Containers 扩展** | 必需 — 从 VS Code 安装 | 必需 |
-| **GitHub CLI** | 推荐 — `gh auth login` | 推荐 |
-| **Python** | 用于 hybrid/python 模板 | 用于 hybrid/python 模板 |
-| **Git** | 必需 | 必需 |
+| **Dev Containers 扩展** | 必需 — 从 VS Code 安装 | 必需（从 WSL2 打开项目） |
+| **GitHub CLI** | 推荐 | 推荐（Windows 用户 — 在 WSL2 中） |
+| **uv** | 用于 hybrid/python 模板 — [astral.sh/uv](https://astral.sh/uv) | 用于 hybrid/python 模板 — 在 WSL2 中安装 |
+| **Git** | 必需 | 必需 — 在 WSL2 中安装 |
 
-> **GitHub CLI 提示：** 在宿主机上运行一次 `gh auth login`。容器会挂载宿主机的 `~/.config/gh` —— 无需在 Dev Container 内重新认证。
+> **GitHub CLI 提示：** 在宿主机上（Windows 用户 — 在 WSL2 中）运行一次 `gh auth login`。容器会挂载宿主机的 `~/.config/gh` —— 无需在 Dev Container 内重新认证。
 
 ---
 
@@ -257,9 +225,7 @@ IT-Project-Templates/
 │       ├── commitlint.config.js
 │       └── ...
 ├── meta-template/              # 创建新模板的基础
-├── new-project.sh              # Linux / macOS 脚本
-├── new-project-script.ps1      # Windows PowerShell 脚本
-├── new-project-shell.bat       # Windows 批处理启动器
+├── new-project.sh              # Linux / macOS / Windows (WSL2) 脚本
 ├── LICENSE
 └── README.md
 ```
@@ -289,7 +255,7 @@ IT-Project-Templates/
 
 C/C++ 的全部内容，另加：
 
-- Python 3、pip、virtualenv
+- Python 3、pip、uv、virtualenv
 - Cython、NumPy
 - pytest、pytest-cov
 - ruff、pylint、mypy
@@ -297,7 +263,7 @@ C/C++ 的全部内容，另加：
 
 ### Python 容器
 
-- Python 3、pip、virtualenv
+- Python 3、pip、uv、virtualenv
 - pytest、pytest-cov
 - ruff、pylint、mypy
 - Sphinx、furo
@@ -380,6 +346,7 @@ C/C++ 和 Python 扩展全部合并。
 
 #### 所有项目
 - **commitlint** —— 根据 [Conventional Commits](https://www.conventionalcommits.org/) 验证提交消息格式
+- **detect-secrets** —— 阻止包含密钥的提交（API 密钥、令牌、密码）
 - YAML 验证
 - 大文件检测（> 1 MB）
 - 删除行尾空格
@@ -396,17 +363,20 @@ C/C++ 和 Python 扩展全部合并。
 - **Lint**：pre-commit 检查（clang-format、clang-tidy、cppcheck、commitlint）
 - **Build**：使用预设的 CMake Debug + Release 构建
 - **Test**：通过 ctest 运行 GoogleTest 测试
-- **Coverage**：gcov + lcov —— HTML 报告作为制品上传
-- **Docs**：Doxygen（pure）或 Doxygen + Sphinx/furo（hybrid）
-- **Pages**：自动发布文档到 GitHub Pages（仅 `main` 分支）
-- **Release**：在标签 `v*` 时 —— 构建二进制文件 + Python wheel，创建 GitHub Release
+- **Coverage**：gcov + lcov —— HTML 报告 + GitHub Actions UI 摘要 + GitHub Pages 覆盖率徽章
+- **Matrix**：Python 3.10–3.13（仅 hybrid）
+- **Security**：Trivy —— CVE 扫描（HIGH/CRITICAL，阻止合并）
+- **Docs**：Doxygen（pure）或 Doxygen + Sphinx/furo（hybrid）→ 推送到 `main` 时发布到 GitHub Pages
+- **Release**：在标签 `v*` 时 —— git-cliff 生成 CHANGELOG，构建制品，创建 GitHub Release
 
 #### Python Pure
 - **Lint**：pre-commit 检查（ruff、pylint、mypy、commitlint）
-- **Test**：pytest
-- **Coverage**：pytest-cov —— XML 报告 + 制品
-- **Docs**：Sphinx + furo，通过 ReadTheDocs 发布
-- **Release**：在标签 `v*` 时 —— 构建 wheel + sdist，创建 GitHub Release
+- **Test**：pytest + GitHub Actions UI 覆盖率摘要 + PR 覆盖率评论
+- **覆盖率徽章**：推送到 `main` 时发布到 GitHub Pages
+- **Matrix**：Python 3.10–3.13
+- **Security**：Trivy —— CVE 扫描（HIGH/CRITICAL，阻止合并）
+- **Docs**：Sphinx + furo → GitHub Pages（`main`）+ ReadTheDocs（所有分支/标签）
+- **Release**：在标签 `v*` 时 —— git-cliff 生成 CHANGELOG，构建 wheel + sdist，创建 GitHub Release
 
 #### PlatformIO
 - **Lint**：pre-commit 检查（clang-format、cppcheck、commitlint）
@@ -446,7 +416,11 @@ C/C++ 和 Python 扩展全部合并。
 
 ### C/C++ Hybrid & Python Pure
 
-文档通过 **Sphinx** 和 **furo** 主题（支持深色模式）构建，并通过 **ReadTheDocs** 发布。Hybrid 模板还使用 **Breathe** 将 Doxygen 中的 C++ API 导入 Sphinx。
+文档通过 **Sphinx** 和 **furo** 主题（支持深色模式）构建，并发布到**两个地方**：
+- **GitHub Pages** —— 每次推送到 `main` 时自动发布
+- **ReadTheDocs** —— 每次推送时自动发布（所有分支和标签，带版本管理）
+
+Hybrid 模板还使用 **Breathe** 将 Doxygen 中的 C++ API 导入 Sphinx。
 
 连接 ReadTheDocs：
 1. 在 [readthedocs.org](https://readthedocs.org) 上连接仓库
@@ -464,7 +438,7 @@ C/C++ 和 Python 扩展全部合并。
 
 ## 贡献
 
-欢迎贡献！随时提交 issue 或 Pull Request。
+欢迎贡献！请阅读 [CONTRIBUTING.md](.github/CONTRIBUTING.md)，随时提交 issue 或 Pull Request。
 
 ---
 
