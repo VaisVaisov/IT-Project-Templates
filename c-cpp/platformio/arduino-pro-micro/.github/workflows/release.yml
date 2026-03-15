@@ -1,0 +1,42 @@
+name: Arduino Pro Micro Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    permissions:
+      contents: write
+    steps:
+    - name: Setup Arch Linux
+      run: |
+        pacman -Syu --noconfirm
+        pacman -Sy --noconfirm git python python-pip
+
+    - uses: actions/checkout@v4
+
+    - name: Install PlatformIO Core
+      run: |
+        pip install --upgrade pip --break-system-packages
+        pip install platformio --break-system-packages
+
+    - name: Build firmware
+      run: pio run
+
+    - name: Collect firmware artifacts
+      run: |
+        mkdir -p firmware
+        find .pio/build/leonardo/ -maxdepth 1 \
+          \( -name "firmware.elf" -o -name "firmware.hex" -o -name "firmware.bin" \) \
+          -exec cp {} firmware/ \;
+        ls -lh firmware/
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: firmware/*
+        generate_release_notes: true

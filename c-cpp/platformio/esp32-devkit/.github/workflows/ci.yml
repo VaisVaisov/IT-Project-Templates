@@ -10,7 +10,7 @@ jobs:
     - name: Setup Arch Linux
       run: |
         pacman -Syu --noconfirm
-        pacman -Sy --noconfirm git python python-pre-commit
+        pacman -Sy --noconfirm git python python-pre-commit nodejs npm
 
     - uses: actions/checkout@v4
 
@@ -47,3 +47,5 @@ jobs:
 
     - name: Check firmware size
       run: pio run --target size
+    - name: Static analysis
+      run: pio check --fail-on-defect high

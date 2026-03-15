@@ -54,5 +54,5 @@
     "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
     "DEVCONTAINER": "true"
   },
-  "postCreateCommand": "git config --global credential.helper '!gh auth git-credential' && pio --version && claude --version && pre-commit install"
+  "postCreateCommand": "git config --global credential.helper '!gh auth git-credential' && pio --version && claude --version && pre-commit install && pre-commit install --hook-type commit-msg"
 }
