@@ -78,6 +78,19 @@
       }
     },
     {
+      "label": "Coverage: Python",
+      "type": "shell",
+      "command": "python -m pytest --cov --cov-report=term --cov-report=html",
+      "problemMatcher": [],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
       "label": "Profile: Python cProfile",
       "type": "shell",
       "command": "tools/profiler/profile-python.sh",

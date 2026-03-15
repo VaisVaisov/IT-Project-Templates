@@ -39,7 +39,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pacman -Sy --noconfirm clang cmake ninja cppcheck doxygen \
+        pacman -Sy --noconfirm clang cmake ninja cppcheck doxygen lcov \
           python python-pip python-pytest python-sphinx
 
     - name: Install Python dependencies
@@ -55,11 +55,32 @@ jobs:
     - name: Run C++ tests
       run: cd cmake-build-linux-debug && ctest --output-on-failure
 
-    - name: Run Python tests
+    - name: C++ coverage
+      run: |
+        cmake --preset linux-coverage && cmake --build --preset linux-coverage
+        cd cmake-build-linux-coverage && ctest --output-on-failure
+        lcov --capture --directory . --output-file coverage.info
+        lcov --remove coverage.info '/usr/*' '*/libraries/*' '*/test/*' --output-file coverage.info
+        lcov --list coverage.info
+        genhtml coverage.info --output-directory coverage-html
+
+    - name: Upload C++ coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: cpp-coverage
+        path: cmake-build-linux-coverage/coverage-html
+
+    - name: Run Python tests with coverage
       run: |
         if [ -d "test/python" ]; then
-          python -m pytest test/python -v
+          python -m pytest test/python -v --cov --cov-report=xml --cov-report=term
         fi
+
+    - name: Upload Python coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: python-coverage
+        path: coverage.xml
 
     - name: Generate C++ documentation
       run: doxygen docs/cpp/Doxyfile

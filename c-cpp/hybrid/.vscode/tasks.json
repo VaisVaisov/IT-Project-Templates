@@ -185,6 +185,32 @@
       }
     },
     {
+      "label": "Coverage: C++",
+      "type": "shell",
+      "command": "cmake --preset linux-coverage && cmake --build --preset linux-coverage && cd cmake-build-linux-coverage && ctest --output-on-failure && lcov --capture --directory . --output-file coverage.info && lcov --remove coverage.info '/usr/*' '*/libraries/*' '*/test/*' --output-file coverage.info && genhtml coverage.info --output-directory coverage-html",
+      "problemMatcher": ["$gcc"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Coverage: Python",
+      "type": "shell",
+      "command": "python -m pytest --cov --cov-report=term --cov-report=html",
+      "problemMatcher": [],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
       "label": "Profile: memcheck",
       "type": "shell",
       "command": "tools/profiler/run-memcheck.sh ${input:binaryName}",

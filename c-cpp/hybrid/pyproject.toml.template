@@ -14,6 +14,7 @@ dependencies = [
 # ADAPT: Add extra dev tools if needed
 dev = [
     "pytest",
+    "pytest-cov",
     "snakeviz",
     "black",
     "isort",
@@ -34,3 +35,9 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["test/python"]
+
+[tool.coverage.run]
+source = ["python"]
+
+[tool.coverage.report]
+show_missing = true
