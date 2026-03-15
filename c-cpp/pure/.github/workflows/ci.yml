@@ -18,7 +18,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pacman -Sy --noconfirm clang cmake ninja cppcheck python python-pre-commit
+        pacman -Sy --noconfirm clang cmake ninja cppcheck python python-pre-commit nodejs npm
 
     - name: Run pre-commit checks
       run: pre-commit run --all-files

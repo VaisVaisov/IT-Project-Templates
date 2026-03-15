@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    permissions:
+      contents: write
+    steps:
+    - name: Setup Arch Linux
+      run: |
+        pacman -Syu --noconfirm
+        pacman -Sy --noconfirm git
+
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        pacman -Sy --noconfirm clang cmake ninja
+
+    - name: Build Release
+      run: cmake --preset linux-release && cmake --build --preset linux-release
+
+    - name: Package binaries
+      run: |
+        mkdir -p release-artifacts
+        find cmake-build-linux-release -maxdepth 1 -type f -executable \
+          -exec cp {} release-artifacts/ \;
+        tar -czf release-artifacts.tar.gz release-artifacts/
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: release-artifacts.tar.gz
+        generate_release_notes: true

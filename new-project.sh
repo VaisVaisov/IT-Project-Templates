@@ -65,6 +65,9 @@ init_git() {
         echo "googletest added as submodule"
     fi
 
+    pre-commit install
+    pre-commit install --hook-type commit-msg
+
     git add .
     git commit -m "feat: initial commit from template"
 }

@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    permissions:
+      contents: write
+    steps:
+    - name: Setup Arch Linux
+      run: |
+        pacman -Syu --noconfirm
+        pacman -Sy --noconfirm git
+
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        pacman -Sy --noconfirm python python-pip python-build
+
+    - name: Install Python dependencies
+      run: |
+        pip install -e ".[dev]" --break-system-packages
+
+    - name: Build Python distribution
+      run: python -m build
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          dist/*.whl
+          dist/*.tar.gz
+        generate_release_notes: true
