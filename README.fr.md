@@ -26,9 +26,10 @@ Une collection de modèles de projets conçus pour vous faire passer de zéro au
 ### Pourquoi utiliser cela plutôt qu'un projet vide ?
 
 - 🚀 **Pas de configuration** : ouvrez dans VS Code, cliquez sur « Reopen in Container », commencez à coder
-- 🤖 **Prêt pour l'IA** : Claude Code et Qwen Code préinstallés dans chaque container
+- 🤖 **Prêt pour l'IA** : Claude Code, Qwen Code et Kilo Code préinstallés dans chaque container
 - 🔒 **Contrôle qualité** : les hooks pre-commit interceptent les problèmes avant qu'ils n'atteignent le dépôt
-- ⚙️ **CI/CD inclus** : workflows GitHub Actions pour les builds, tests et documentation
+- ⚙️ **CI/CD inclus** : workflows GitHub Actions pour le linting, build, tests, coverage, documentation et releases
+- 📝 **Conventional Commits** : commitlint vérifie le format des messages de commit
 - 🌍 **Multiplateforme** : le même script fonctionne sur Linux, macOS et Windows
 
 ---
@@ -39,15 +40,15 @@ Une collection de modèles de projets conçus pour vous faire passer de zéro au
 
 | Modèle | Description |
 | --- | --- |
-| `pure` | C/C++ avec CMake, Ninja, GoogleTest, Doxygen |
-| `hybrid` | C/C++ + Python/Cython — les deux langages dans un seul projet |
-| `platformio/` | Développement embarqué pour Arduino, ESP32, STM32 |
+| `pure` | C/C++ avec CMake, Ninja, GoogleTest, Doxygen, coverage via lcov |
+| `hybrid` | C/C++ + Python/Cython — les deux langages dans un seul projet, Sphinx + ReadTheDocs |
+| `platformio/` | Développement embarqué : Arduino, ESP32, STM32 |
 
 ### Python (`python/`)
 
 | Modèle | Description |
 | --- | --- |
-| `pure` | Python avec pytest, black, isort, pylint, mypy, flake8 |
+| `pure` | Python avec pytest, ruff, pylint, mypy, Sphinx + ReadTheDocs |
 
 ### Appareils PlatformIO (`c-cpp/platformio/`)
 
@@ -102,14 +103,14 @@ new-project-shell.bat -CCpp -Pure C:\Projects\my_cpp_app
 
 1. Ouvrir le dossier du projet dans VS Code
 2. Cliquer sur **« Reopen in Container »** (ou `Ctrl+Shift+P` → « Dev Containers: Reopen in Container »)
-3. Lors du premier lancement, attendre que le container soit construit
+3. Lors du premier lancement, le container se construit automatiquement
 4. Les hooks pre-commit s'installent automatiquement — vous êtes prêt !
 
 ---
 
 ## Référence des commandes
 
-### Flags Linux / macOS
+### Linux / macOS
 
 ```
 new-project [langue] [type] [appareil] <chemin>
@@ -130,7 +131,7 @@ Appareils PlatformIO :
   --stm32f411
 ```
 
-### Flags Windows (PowerShell)
+### Windows (PowerShell)
 
 ```
 new-project-script.ps1 [langue] [type] [appareil] <chemin>
@@ -205,21 +206,35 @@ source ~/.zshrc
 
 ---
 
-## Structure du projet
+## Structure du dépôt
 
 ```
 IT-Project-Templates/
-├── .devcontainer/              # Container de base (Arch + Zsh + Agents IA)
+├── .github/
+│   └── dependabot.yml          # Mise à jour automatique des dépendances (Actions + pre-commit)
 ├── c-cpp/
 │   ├── pure/                   # Modèle C/C++ pur
-│   │   ├── .devcontainer/      # Clang + CMake + Ninja + GDB
+│   │   ├── .devcontainer/      # Clang + CMake + Ninja + GDB + lcov
+│   │   ├── .github/
+│   │   │   ├── workflows/      # ci.yml + release.yml
+│   │   │   └── ISSUE_TEMPLATE/
 │   │   ├── .vscode/
-│   │   ├── .github/workflows/
+│   │   ├── .editorconfig
+│   │   ├── .gitattributes
+│   │   ├── .pre-commit-config.yaml
+│   │   ├── commitlint.config.js
 │   │   └── ...
 │   ├── hybrid/                 # Modèle C/C++ + Python/Cython
-│   │   ├── .devcontainer/      # Clang + Python + Cython
+│   │   ├── .devcontainer/      # Clang + Python + Cython + ruff + pylint
+│   │   ├── .github/
+│   │   │   ├── workflows/      # ci.yml + release.yml
+│   │   │   └── ISSUE_TEMPLATE/
 │   │   ├── .vscode/
-│   │   ├── .github/workflows/
+│   │   ├── .readthedocs.yaml
+│   │   ├── .editorconfig
+│   │   ├── .gitattributes
+│   │   ├── .pre-commit-config.yaml
+│   │   ├── commitlint.config.js
 │   │   └── ...
 │   └── platformio/             # Modèles embarqués
 │       ├── .devcontainer/      # Devcontainer partagé (PlatformIO + Clang)
@@ -230,9 +245,16 @@ IT-Project-Templates/
 │       └── stm32f411/
 ├── python/
 │   └── pure/                   # Modèle Python pur
-│       ├── .devcontainer/      # Python + pytest + linters
+│       ├── .devcontainer/      # Python + ruff + pylint + mypy
+│       ├── .github/
+│       │   ├── workflows/      # ci.yml + release.yml
+│       │   └── ISSUE_TEMPLATE/
 │       ├── .vscode/
-│       ├── .github/workflows/
+│       ├── .readthedocs.yaml
+│       ├── .editorconfig
+│       ├── .gitattributes
+│       ├── .pre-commit-config.yaml
+│       ├── commitlint.config.js
 │       └── ...
 ├── meta-template/              # Base pour créer de nouveaux modèles
 ├── new-project.sh              # Script Linux / macOS
@@ -251,7 +273,7 @@ Chaque container est construit sur **Arch Linux (dernière version)** et inclut 
 - **Shell** : Zsh avec Oh My Zsh + Powerlevel10k
 - **Éditeur** : Neovim
 - **VCS** : Git, git-delta, GitHub CLI
-- **Agents IA** : Claude Code, Qwen Code (depuis AUR)
+- **Agents IA** : Claude Code, Qwen Code, Kilo Code CLI (depuis AUR) — tous disponibles comme outils CLI
 - **Docker** : Docker + Docker Buildx + Lazydocker (pour faire tourner des containers dans des containers)
 - **Auth GitHub** : `~/.config/gh` monté depuis l'hôte — pas besoin de se ré-authentifier
 
@@ -259,8 +281,8 @@ Chaque container est construit sur **Arch Linux (dernière version)** et inclut 
 
 - Clang, LLD, LLDB, compiler-rt
 - CMake, Ninja
-- GDB
-- cppcheck (analyse statique)
+- GDB, valgrind
+- cppcheck, lcov
 - pre-commit
 
 ### Containers C/C++ hybrides
@@ -269,13 +291,16 @@ Tout ce que contient C/C++, plus :
 
 - Python 3, pip, virtualenv
 - Cython, NumPy
-- pytest, black, isort, pylint, mypy
-- Sphinx (documentation)
+- pytest, pytest-cov
+- ruff, pylint, mypy
+- Sphinx, furo, breathe (documentation)
 
 ### Containers Python
 
 - Python 3, pip, virtualenv
-- pytest, black, isort, pylint, mypy, flake8
+- pytest, pytest-cov
+- ruff, pylint, mypy
+- Sphinx, furo
 - pre-commit
 
 ### Containers PlatformIO
@@ -330,7 +355,7 @@ Toutes les extensions C/C++ et Python combinées.
 ### Modèles PlatformIO
 
 - **PlatformIO IDE** — Plateforme de développement embarqué
-- **Wokwi Simulator** — Simulateur Arduino/ESP32
+- **Wokwi Simulator** — Simulateur interactif Arduino/ESP32/STM32 directement dans VS Code
 - **C/C++ Tools** — Support du code pour microcontrôleurs
 
 ---
@@ -339,21 +364,22 @@ Toutes les extensions C/C++ et Python combinées.
 
 ### Hooks pre-commit
 
-Les hooks s'exécutent automatiquement avant chaque commit. Ils sont installés au démarrage du Dev Container (`postCreateCommand`).
+Les hooks s'exécutent automatiquement avant chaque commit. Ils sont installés au démarrage du Dev Container (`postCreateCommand`) — à la fois les hooks normaux et le hook de vérification du message de commit.
 
 #### Projets C/C++
-- **clang-format** — Formatage automatique (style LLVM, limite 100 caractères)
+- **clang-format** — Formatage automatique du code (style LLVM)
 - **clang-tidy** — Analyse statique pour les bugs et problèmes de style
 - **cppcheck** — Fuites mémoire, vérifications null pointer, comportement indéfini
+- **valgrind memcheck** — Détection des erreurs mémoire à l'exécution (hybrid + pure)
 
 #### Projets Python
-- **black** — Formatage du code (conforme PEP 8)
-- **isort** — Tri des imports
-- **flake8** — Linting syntaxe et style
+- **ruff** — Linting rapide + tri des imports (remplace flake8 + isort)
+- **ruff-format** — Formatage du code (compatible black)
+- **pylint** — Analyse sémantique profonde : code inaccessible, mauvais nombre d'arguments, attributs inexistants
 - **mypy** — Vérification statique des types
-- **pylint** — Analyse de la qualité du code
 
 #### Tous les projets
+- **commitlint** — Vérification du format des messages de commit selon [Conventional Commits](https://www.conventionalcommits.org/)
 - Validation YAML
 - Détection des fichiers volumineux (> 1 Mo)
 - Suppression des espaces en fin de ligne
@@ -364,24 +390,65 @@ Les hooks s'exécutent automatiquement avant chaque commit. Ils sont installés 
 
 ### GitHub Actions
 
-Chaque modèle inclut un workflow CI dans `.github/workflows/ci.yml`.
+Chaque modèle inclut deux workflows : `ci.yml` (lancé à chaque push/PR) et `release.yml` (lancé sur le tag `v*`).
 
 #### C/C++ Pure & Hybrid
-- Build avec CMake + Ninja
-- Exécution des suites GoogleTest
-- Génération de la documentation Doxygen
-- Publication automatique des docs sur GitHub Pages (branche main uniquement)
+- **Lint** : vérifications pre-commit (clang-format, clang-tidy, cppcheck, commitlint)
+- **Build** : builds CMake Debug + Release avec presets
+- **Test** : tests GoogleTest via ctest
+- **Coverage** : gcov + lcov — rapport HTML uploadé comme artefact
+- **Docs** : Doxygen (pure) ou Doxygen + Sphinx/furo (hybrid)
+- **Pages** : publication automatique de la documentation sur GitHub Pages (branche `main` uniquement)
+- **Release** : sur tag `v*` — build des binaires + Python wheel, création du GitHub Release
 
 #### Python Pure
-- Exécution de la suite pytest
-- Vérifications qualité du code (black, isort, flake8, mypy)
-- Rapports de couverture de tests
+- **Lint** : vérifications pre-commit (ruff, pylint, mypy, commitlint)
+- **Test** : pytest
+- **Coverage** : pytest-cov — rapport XML + artefact
+- **Docs** : Sphinx + furo, publication via ReadTheDocs
+- **Release** : sur tag `v*` — build wheel + sdist, création du GitHub Release
 
 #### PlatformIO
-- Build du firmware pour l'appareil cible
-- Vérification des limites de taille du firmware
+- **Lint** : vérifications pre-commit (clang-format, cppcheck, commitlint)
+- **Build** : `pio run` — compilation du firmware
+- **Test** : `pio test` (si le répertoire test existe)
+- **Size** : `pio run --target size` — rapport de taille du firmware
+- **Static analysis** : `pio check --fail-on-defect high`
+- **Wokwi CI** : simulation du firmware dans le cloud — vérifie la sortie Serial sans matériel réel (nécessite `WOKWI_CLI_TOKEN` dans GitHub Secrets, 50 min/mois gratuit)
+- **Release** : sur tag `v*` — upload des `.elf`/`.hex`/`.bin` dans GitHub Release
+
+> **Wokwi CI et l'extension VS Code** utilisent le même `diagram.json` — le schéma dessiné sur [wokwi.com](https://wokwi.com). Plus de détails dans `@PROJECT_NAME@.md` du projet généré.
 
 Tous les workflows s'exécutent sur des **containers Arch Linux** pour la cohérence avec l'environnement de développement.
+
+### Dependabot
+
+À la racine du dépôt se trouve `.github/dependabot.yml` — il surveille automatiquement l'actualité des versions dans tous les modèles et propose des mises à jour via PR. Couvert :
+
+- **GitHub Actions** — versions de actions/checkout, upload-artifact et autres
+- **pre-commit hooks** — révisions de clang-format, ruff, mypy, pylint et autres
+
+Les mises à jour sont vérifiées hebdomadairement — pas de suivi manuel des versions.
+
+### Contexte IA pour les agents
+
+Chaque projet généré contient un fichier `@PROJECT_NAME@.md` — source unique de vérité avec la description de l'architecture, la stack, les instructions de build et les règles pour les agents IA. `CLAUDE.md`, `QWEN.md` et `AGENTS.md` sont des liens symboliques vers ce fichier, donc Claude Code, Qwen Code et Kilo Code lisent automatiquement le même contexte.
+
+---
+
+## Documentation
+
+### C/C++ Pure
+
+La documentation est générée via **Doxygen** et publiée automatiquement sur **GitHub Pages** à chaque push sur `main`.
+
+### C/C++ Hybrid & Python Pure
+
+La documentation est construite via **Sphinx** avec le thème **furo** (support du mode sombre) et publiée via **ReadTheDocs**. Le modèle hybrid utilise également **Breathe** pour importer l'API C++ de Doxygen dans Sphinx.
+
+Pour connecter ReadTheDocs :
+1. Connecter le dépôt sur [readthedocs.org](https://readthedocs.org)
+2. ReadTheDocs détectera automatiquement `.readthedocs.yaml` et commencera à construire à chaque push
 
 ---
 

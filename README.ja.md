@@ -28,7 +28,8 @@
 - 🚀 **設定時間ゼロ**: VS Code で開き、「Reopen in Container」をクリックしてすぐにコーディング開始
 - 🤖 **AI 対応**: すべてのコンテナに Claude Code、Qwen Code、Kilo Code CLI がプリインストール
 - 🔒 **品質ゲート**: pre-commit フックがリポジトリに入る前に問題を検出
-- ⚙️ **CI/CD 付き**: ビルド、テスト、ドキュメント用の GitHub Actions ワークフロー
+- ⚙️ **CI/CD 付き**: リンティング、ビルド、テスト、カバレッジ、ドキュメント、リリース用の GitHub Actions ワークフロー
+- 📝 **Conventional Commits**: commitlint がコミットメッセージのフォーマットを検証
 - 🌍 **クロスプラットフォーム**: 同じスクリプトが Linux、macOS、Windows で動作
 
 ---
@@ -39,15 +40,15 @@
 
 | テンプレート | 説明 |
 | --- | --- |
-| `pure` | CMake、Ninja、GoogleTest、Doxygen を使った C/C++ |
-| `hybrid` | C/C++ + Python/Cython — 1つのプロジェクトで両言語 |
+| `pure` | CMake、Ninja、GoogleTest、Doxygen を使った C/C++、lcov でカバレッジ |
+| `hybrid` | C/C++ + Python/Cython — 1つのプロジェクトで両言語、Sphinx + ReadTheDocs |
 | `platformio/` | Arduino、ESP32、STM32 向け組み込み開発 |
 
 ### Python (`python/`)
 
 | テンプレート | 説明 |
 | --- | --- |
-| `pure` | pytest、black、isort、pylint、mypy、flake8 を使った Python |
+| `pure` | pytest、ruff、pylint、mypy を使った Python、Sphinx + ReadTheDocs |
 
 ### PlatformIO デバイス (`c-cpp/platformio/`)
 
@@ -101,8 +102,8 @@ new-project-shell.bat -CCpp -Pure C:\Projects\my_cpp_app
 ### プロジェクト作成後
 
 1. VS Code でプロジェクトフォルダを開く
-2. プロンプトが表示されたら **「Reopen in Container」** をクリック（または `Ctrl+Shift+P` → "Dev Containers: Reopen in Container"）
-3. 初回起動時はコンテナのビルドを待つ
+2. **「Reopen in Container」** をクリック（または `Ctrl+Shift+P` → "Dev Containers: Reopen in Container"）
+3. 初回起動時はコンテナが自動的にビルドされます
 4. pre-commit フックが自動的にインストールされます — コーディング開始！
 
 ---
@@ -205,21 +206,35 @@ source ~/.zshrc
 
 ---
 
-## プロジェクト構造
+## リポジトリ構造
 
 ```
 IT-Project-Templates/
-├── .devcontainer/              # ベースコンテナ (Arch + Zsh + AI エージェント)
+├── .github/
+│   └── dependabot.yml          # 依存関係の自動更新（Actions + pre-commit）
 ├── c-cpp/
 │   ├── pure/                   # 純粋 C/C++ テンプレート
-│   │   ├── .devcontainer/      # Clang + CMake + Ninja + GDB
+│   │   ├── .devcontainer/      # Clang + CMake + Ninja + GDB + lcov
+│   │   ├── .github/
+│   │   │   ├── workflows/      # ci.yml + release.yml
+│   │   │   └── ISSUE_TEMPLATE/
 │   │   ├── .vscode/
-│   │   ├── .github/workflows/
+│   │   ├── .editorconfig
+│   │   ├── .gitattributes
+│   │   ├── .pre-commit-config.yaml
+│   │   ├── commitlint.config.js
 │   │   └── ...
 │   ├── hybrid/                 # C/C++ + Python/Cython テンプレート
-│   │   ├── .devcontainer/      # Clang + Python + Cython
+│   │   ├── .devcontainer/      # Clang + Python + Cython + ruff + pylint
+│   │   ├── .github/
+│   │   │   ├── workflows/      # ci.yml + release.yml
+│   │   │   └── ISSUE_TEMPLATE/
 │   │   ├── .vscode/
-│   │   ├── .github/workflows/
+│   │   ├── .readthedocs.yaml
+│   │   ├── .editorconfig
+│   │   ├── .gitattributes
+│   │   ├── .pre-commit-config.yaml
+│   │   ├── commitlint.config.js
 │   │   └── ...
 │   └── platformio/             # 組み込みテンプレート
 │       ├── .devcontainer/      # 共有 devcontainer (PlatformIO + Clang)
@@ -230,9 +245,16 @@ IT-Project-Templates/
 │       └── stm32f411/
 ├── python/
 │   └── pure/                   # 純粋 Python テンプレート
-│       ├── .devcontainer/      # Python + pytest + リンター
+│       ├── .devcontainer/      # Python + ruff + pylint + mypy
+│       ├── .github/
+│       │   ├── workflows/      # ci.yml + release.yml
+│       │   └── ISSUE_TEMPLATE/
 │       ├── .vscode/
-│       ├── .github/workflows/
+│       ├── .readthedocs.yaml
+│       ├── .editorconfig
+│       ├── .gitattributes
+│       ├── .pre-commit-config.yaml
+│       ├── commitlint.config.js
 │       └── ...
 ├── meta-template/              # 新しいテンプレート作成の基盤
 ├── new-project.sh              # Linux / macOS スクリプト
@@ -259,8 +281,8 @@ IT-Project-Templates/
 
 - Clang、LLD、LLDB、compiler-rt
 - CMake、Ninja
-- GDB
-- cppcheck（静的解析）
+- GDB、valgrind
+- cppcheck、lcov
 - pre-commit
 
 ### C/C++ ハイブリッドコンテナ
@@ -269,13 +291,16 @@ C/C++ のすべてに加えて:
 
 - Python 3、pip、virtualenv
 - Cython、NumPy
-- pytest、black、isort、pylint、mypy
-- Sphinx（ドキュメント）
+- pytest、pytest-cov
+- ruff、pylint、mypy
+- Sphinx、furo、breathe（ドキュメント）
 
 ### Python コンテナ
 
 - Python 3、pip、virtualenv
-- pytest、black、isort、pylint、mypy、flake8
+- pytest、pytest-cov
+- ruff、pylint、mypy
+- Sphinx、furo
 - pre-commit
 
 ### PlatformIO コンテナ
@@ -330,7 +355,7 @@ C/C++ と Python のすべての拡張機能を組み合わせ。
 ### PlatformIO テンプレート
 
 - **PlatformIO IDE** — 組み込み開発プラットフォーム
-- **Wokwi Simulator** — Arduino/ESP32 シミュレーター
+- **Wokwi Simulator** — VS Code 内で直接 Arduino/ESP32/STM32 をインタラクティブにシミュレート
 - **C/C++ Tools** — マイクロコントローラーコードのサポート
 
 ---
@@ -339,21 +364,22 @@ C/C++ と Python のすべての拡張機能を組み合わせ。
 
 ### pre-commit フック
 
-フックはコミットごとに自動的に実行されます。Dev Container 起動時にインストールされます（`postCreateCommand`）。
+フックはコミットごとに自動的に実行されます。Dev Container 起動時にインストールされます（`postCreateCommand`）— 通常のフックとコミットメッセージフックの両方。
 
 #### C/C++ プロジェクト
-- **clang-format** — 自動コードフォーマット（LLVM スタイル、100 文字制限）
+- **clang-format** — 自動コードフォーマット（LLVM スタイル）
 - **clang-tidy** — バグとスタイル問題の静的解析
 - **cppcheck** — メモリリーク、null ポインタチェック、未定義動作
+- **valgrind memcheck** — 実行時メモリエラー検出（hybrid + pure）
 
 #### Python プロジェクト
-- **black** — コードフォーマット（PEP 8 準拠）
-- **isort** — インポートの並べ替え
-- **flake8** — 構文とスタイルのリンティング
+- **ruff** — 高速リンティング + インポート並べ替え（flake8 + isort を置き換え）
+- **ruff-format** — コードフォーマット（black 互換）
+- **pylint** — 深い意味解析：到達不能コード、誤った引数数、存在しない属性へのアクセス
 - **mypy** — 静的型チェック
-- **pylint** — コード品質分析
 
 #### すべてのプロジェクト
+- **commitlint** — [Conventional Commits](https://www.conventionalcommits.org/) に従ったコミットメッセージフォーマットの検証
 - YAML バリデーション
 - 大きなファイルの検出（> 1 MB）
 - 行末の空白削除
@@ -364,24 +390,65 @@ C/C++ と Python のすべての拡張機能を組み合わせ。
 
 ### GitHub Actions
 
-各テンプレートは `.github/workflows/ci.yml` に CI ワークフローを含みます。
+各テンプレートは2つのワークフローを含みます：`ci.yml`（Push/PR 毎に実行）と `release.yml`（`v*` タグ時に実行）。
 
 #### C/C++ Pure & Hybrid
-- CMake + Ninja でビルド
-- GoogleTest スイートを実行
-- Doxygen ドキュメントを生成
-- GitHub Pages にドキュメントを自動公開（main ブランチのみ）
+- **Lint**: pre-commit チェック（clang-format、clang-tidy、cppcheck、commitlint）
+- **Build**: プリセットを使った CMake Debug + Release ビルド
+- **Test**: ctest を通じた GoogleTest テスト
+- **Coverage**: gcov + lcov — HTML レポートをアーティファクトとしてアップロード
+- **Docs**: Doxygen（pure）または Doxygen + Sphinx/furo（hybrid）
+- **Pages**: `main` ブランチへの Push 時に GitHub Pages にドキュメントを自動公開
+- **Release**: タグ `v*` 時 — バイナリ + Python Wheel をビルドし、GitHub Release を作成
 
 #### Python Pure
-- pytest スイートを実行
-- コード品質チェック（black、isort、flake8、mypy）
-- テストカバレッジレポート
+- **Lint**: pre-commit チェック（ruff、pylint、mypy、commitlint）
+- **Test**: pytest
+- **Coverage**: pytest-cov — XML レポート + アーティファクト
+- **Docs**: Sphinx + furo、ReadTheDocs 経由で公開
+- **Release**: タグ `v*` 時 — wheel + sdist をビルドし、GitHub Release を作成
 
 #### PlatformIO
-- ターゲットデバイス用ファームウェアをビルド
-- ファームウェアサイズ制限を確認
+- **Lint**: pre-commit チェック（clang-format、cppcheck、commitlint）
+- **Build**: `pio run` — ファームウェアコンパイル
+- **Test**: `pio test`（test ディレクトリがある場合）
+- **Size**: `pio run --target size` — ファームウェアサイズレポート
+- **Static analysis**: `pio check --fail-on-defect high`
+- **Wokwi CI**: クラウドでのファームウェアシミュレーション — 実際のハードウェアなしで Serial 出力を検証（GitHub Secrets に `WOKWI_CLI_TOKEN` が必要、月50分無料）
+- **Release**: タグ `v*` 時 — `.elf`/`.hex`/`.bin` を GitHub Release にアップロード
+
+> **Wokwi CI と VS Code 拡張機能**は同じ `diagram.json` を使用します — [wokwi.com](https://wokwi.com) で描いた回路図。詳細は生成されたプロジェクトの `@PROJECT_NAME@.md` を参照。
 
 すべてのワークフローは開発環境との一貫性のために **Arch Linux コンテナ**上で実行されます。
+
+### Dependabot
+
+リポジトリのルートに `.github/dependabot.yml` があります — すべてのテンプレートのバージョンが最新かどうかを自動的に監視し、PR でアップデートを提案します。対象：
+
+- **GitHub Actions** — actions/checkout、upload-artifact などのバージョン
+- **pre-commit フック** — clang-format、ruff、mypy、pylint などのリビジョン
+
+更新は毎週チェックされます — バージョンの手動追跡は不要。
+
+### AI エージェント向けコンテキスト
+
+各生成されたプロジェクトには `@PROJECT_NAME@.md` ファイルが含まれます — アーキテクチャの説明、スタック、ビルド手順、AI エージェントのルールを含む単一の真実のソースです。`CLAUDE.md`、`QWEN.md`、`AGENTS.md` はこのファイルへのシンボリックリンクなので、Claude Code、Qwen Code、Kilo Code は自動的に同じコンテキストを読みます。
+
+---
+
+## ドキュメント
+
+### C/C++ Pure
+
+ドキュメントは **Doxygen** で生成され、`main` への Push 毎に **GitHub Pages** に自動公開されます。
+
+### C/C++ Hybrid & Python Pure
+
+ドキュメントは **Sphinx** と **furo** テーマ（ダークモード対応）でビルドされ、**ReadTheDocs** 経由で公開されます。Hybrid テンプレートは Doxygen からの C++ API を Sphinx にインポートするために **Breathe** も使用します。
+
+ReadTheDocs の接続方法：
+1. [readthedocs.org](https://readthedocs.org) でリポジトリを接続
+2. ReadTheDocs は `.readthedocs.yaml` を自動検出し、Push 毎にビルドを開始します
 
 ---
 

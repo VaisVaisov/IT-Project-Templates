@@ -28,7 +28,8 @@
 - 🚀 **설정 시간 없음**: VS Code에서 열고 "Reopen in Container"를 클릭하면 바로 코딩 시작
 - 🤖 **AI 준비 완료**: 모든 컨테이너에 Claude Code, Qwen Code, Kilo Code CLI가 사전 설치됨
 - 🔒 **품질 게이트**: pre-commit 훅이 저장소에 들어가기 전에 문제를 잡아냄
-- ⚙️ **CI/CD 포함**: 빌드, 테스트, 문서화를 위한 GitHub Actions 워크플로우
+- ⚙️ **CI/CD 포함**: 린팅, 빌드, 테스트, 커버리지, 문서화, 릴리즈를 위한 GitHub Actions 워크플로우
+- 📝 **Conventional Commits**: commitlint가 커밋 메시지 형식을 검증
 - 🌍 **크로스 플랫폼**: 동일한 스크립트가 Linux, macOS, Windows에서 동작
 
 ---
@@ -39,15 +40,15 @@
 
 | 템플릿 | 설명 |
 | --- | --- |
-| `pure` | CMake, Ninja, GoogleTest, Doxygen을 포함한 C/C++ |
-| `hybrid` | C/C++ + Python/Cython — 하나의 프로젝트에 두 언어 |
+| `pure` | CMake, Ninja, GoogleTest, Doxygen을 포함한 C/C++, lcov를 통한 커버리지 |
+| `hybrid` | C/C++ + Python/Cython — 하나의 프로젝트에 두 언어, Sphinx + ReadTheDocs |
 | `platformio/` | Arduino, ESP32, STM32를 위한 임베디드 개발 |
 
 ### Python (`python/`)
 
 | 템플릿 | 설명 |
 | --- | --- |
-| `pure` | pytest, black, isort, pylint, mypy, flake8을 포함한 Python |
+| `pure` | pytest, ruff, pylint, mypy를 포함한 Python, Sphinx + ReadTheDocs |
 
 ### PlatformIO 디바이스 (`c-cpp/platformio/`)
 
@@ -101,8 +102,8 @@ new-project-shell.bat -CCpp -Pure C:\Projects\my_cpp_app
 ### 프로젝트 생성 후
 
 1. VS Code에서 프로젝트 폴더 열기
-2. 메시지가 표시되면 **"Reopen in Container"** 클릭 (또는 `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
-3. 최초 실행 시 컨테이너가 빌드될 때까지 대기
+2. **"Reopen in Container"** 클릭 (또는 `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
+3. 최초 실행 시 컨테이너가 자동으로 빌드됩니다
 4. Pre-commit 훅이 자동으로 설치됩니다 — 바로 시작할 수 있습니다!
 
 ---
@@ -205,21 +206,35 @@ source ~/.zshrc
 
 ---
 
-## 프로젝트 구조
+## 저장소 구조
 
 ```
 IT-Project-Templates/
-├── .devcontainer/              # 기본 컨테이너 (Arch + Zsh + AI 에이전트)
+├── .github/
+│   └── dependabot.yml          # 자동 의존성 업데이트 (Actions + pre-commit)
 ├── c-cpp/
 │   ├── pure/                   # 순수 C/C++ 템플릿
-│   │   ├── .devcontainer/      # Clang + CMake + Ninja + GDB
+│   │   ├── .devcontainer/      # Clang + CMake + Ninja + GDB + lcov
+│   │   ├── .github/
+│   │   │   ├── workflows/      # ci.yml + release.yml
+│   │   │   └── ISSUE_TEMPLATE/
 │   │   ├── .vscode/
-│   │   ├── .github/workflows/
+│   │   ├── .editorconfig
+│   │   ├── .gitattributes
+│   │   ├── .pre-commit-config.yaml
+│   │   ├── commitlint.config.js
 │   │   └── ...
 │   ├── hybrid/                 # C/C++ + Python/Cython 템플릿
-│   │   ├── .devcontainer/      # Clang + Python + Cython
+│   │   ├── .devcontainer/      # Clang + Python + Cython + ruff + pylint
+│   │   ├── .github/
+│   │   │   ├── workflows/      # ci.yml + release.yml
+│   │   │   └── ISSUE_TEMPLATE/
 │   │   ├── .vscode/
-│   │   ├── .github/workflows/
+│   │   ├── .readthedocs.yaml
+│   │   ├── .editorconfig
+│   │   ├── .gitattributes
+│   │   ├── .pre-commit-config.yaml
+│   │   ├── commitlint.config.js
 │   │   └── ...
 │   └── platformio/             # 임베디드 템플릿
 │       ├── .devcontainer/      # 공유 devcontainer (PlatformIO + Clang)
@@ -230,9 +245,16 @@ IT-Project-Templates/
 │       └── stm32f411/
 ├── python/
 │   └── pure/                   # 순수 Python 템플릿
-│       ├── .devcontainer/      # Python + pytest + 린터
+│       ├── .devcontainer/      # Python + ruff + pylint + mypy
+│       ├── .github/
+│       │   ├── workflows/      # ci.yml + release.yml
+│       │   └── ISSUE_TEMPLATE/
 │       ├── .vscode/
-│       ├── .github/workflows/
+│       ├── .readthedocs.yaml
+│       ├── .editorconfig
+│       ├── .gitattributes
+│       ├── .pre-commit-config.yaml
+│       ├── commitlint.config.js
 │       └── ...
 ├── meta-template/              # 새 템플릿 생성을 위한 기반
 ├── new-project.sh              # Linux / macOS 스크립트
@@ -259,8 +281,8 @@ IT-Project-Templates/
 
 - Clang, LLD, LLDB, compiler-rt
 - CMake, Ninja
-- GDB
-- cppcheck (정적 분석)
+- GDB, valgrind
+- cppcheck, lcov
 - pre-commit
 
 ### C/C++ 하이브리드 컨테이너
@@ -269,13 +291,16 @@ C/C++의 모든 것에 추가로:
 
 - Python 3, pip, virtualenv
 - Cython, NumPy
-- pytest, black, isort, pylint, mypy
-- Sphinx (문서화)
+- pytest, pytest-cov
+- ruff, pylint, mypy
+- Sphinx, furo, breathe (문서화)
 
 ### Python 컨테이너
 
 - Python 3, pip, virtualenv
-- pytest, black, isort, pylint, mypy, flake8
+- pytest, pytest-cov
+- ruff, pylint, mypy
+- Sphinx, furo
 - pre-commit
 
 ### PlatformIO 컨테이너
@@ -330,7 +355,7 @@ C/C++의 모든 것에 추가로:
 ### PlatformIO 템플릿
 
 - **PlatformIO IDE** — 임베디드 개발 플랫폼
-- **Wokwi Simulator** — Arduino/ESP32 시뮬레이터
+- **Wokwi Simulator** — VS Code 내에서 직접 Arduino/ESP32/STM32 인터랙티브 시뮬레이션
 - **C/C++ Tools** — 마이크로컨트롤러 코드 지원
 
 ---
@@ -339,21 +364,22 @@ C/C++의 모든 것에 추가로:
 
 ### Pre-commit 훅
 
-훅은 각 커밋 전에 자동으로 실행됩니다. Dev Container가 시작될 때(`postCreateCommand`) 설치됩니다.
+훅은 각 커밋 전에 자동으로 실행됩니다. Dev Container가 시작될 때(`postCreateCommand`) 설치됩니다 — 일반 훅과 커밋 메시지 훅 모두.
 
 #### C/C++ 프로젝트
-- **clang-format** — 자동 코드 포맷팅 (LLVM 스타일, 100자 제한)
+- **clang-format** — 자동 코드 포맷팅 (LLVM 스타일)
 - **clang-tidy** — 버그 및 스타일 문제에 대한 정적 분석
 - **cppcheck** — 메모리 누수, null 포인터 검사, 정의되지 않은 동작
+- **valgrind memcheck** — 런타임 메모리 오류 감지 (hybrid + pure)
 
 #### Python 프로젝트
-- **black** — 코드 포맷팅 (PEP 8 준수)
-- **isort** — 임포트 정렬
-- **flake8** — 문법 및 스타일 린팅
+- **ruff** — 빠른 린팅 + 임포트 정렬 (flake8 + isort 대체)
+- **ruff-format** — 코드 포맷팅 (black 호환)
+- **pylint** — 깊은 의미론적 분석: 도달 불가능한 코드, 잘못된 인수 수, 존재하지 않는 속성 접근
 - **mypy** — 정적 타입 검사
-- **pylint** — 코드 품질 분석
 
 #### 모든 프로젝트
+- **commitlint** — [Conventional Commits](https://www.conventionalcommits.org/)에 따른 커밋 메시지 형식 검증
 - YAML 유효성 검사
 - 대용량 파일 감지 (> 1 MB)
 - 후행 공백 제거
@@ -364,24 +390,65 @@ C/C++의 모든 것에 추가로:
 
 ### GitHub Actions
 
-각 템플릿에는 `.github/workflows/ci.yml`에 CI 워크플로우가 포함되어 있습니다.
+각 템플릿에는 두 개의 워크플로우가 포함됩니다: `ci.yml`(매 push/PR 시 실행)과 `release.yml`(`v*` 태그 시 실행).
 
 #### C/C++ Pure & Hybrid
-- CMake + Ninja로 빌드
-- GoogleTest 스위트 실행
-- Doxygen 문서 생성
-- GitHub Pages에 자동으로 문서 게시 (main 브랜치 전용)
+- **Lint**: pre-commit 검사 (clang-format, clang-tidy, cppcheck, commitlint)
+- **Build**: 프리셋을 사용한 CMake Debug + Release 빌드
+- **Test**: ctest를 통한 GoogleTest 테스트
+- **Coverage**: gcov + lcov — HTML 보고서를 아티팩트로 업로드
+- **Docs**: Doxygen (pure) 또는 Doxygen + Sphinx/furo (hybrid)
+- **Pages**: `main` 브랜치 push 시 GitHub Pages에 문서 자동 게시
+- **Release**: `v*` 태그 시 — 바이너리 + Python Wheel 빌드, GitHub Release 생성
 
 #### Python Pure
-- pytest 스위트 실행
-- 코드 품질 검사 (black, isort, flake8, mypy)
-- 테스트 커버리지 보고서
+- **Lint**: pre-commit 검사 (ruff, pylint, mypy, commitlint)
+- **Test**: pytest
+- **Coverage**: pytest-cov — XML 보고서 + 아티팩트
+- **Docs**: Sphinx + furo, ReadTheDocs를 통해 게시
+- **Release**: `v*` 태그 시 — wheel + sdist 빌드, GitHub Release 생성
 
 #### PlatformIO
-- 대상 디바이스용 펌웨어 빌드
-- 펌웨어 크기 제한 확인
+- **Lint**: pre-commit 검사 (clang-format, cppcheck, commitlint)
+- **Build**: `pio run` — 펌웨어 컴파일
+- **Test**: `pio test` (test 디렉토리가 있는 경우)
+- **Size**: `pio run --target size` — 펌웨어 크기 보고서
+- **Static analysis**: `pio check --fail-on-defect high`
+- **Wokwi CI**: 클라우드에서 펌웨어 시뮬레이션 — 실제 하드웨어 없이 Serial 출력 검증 (GitHub Secrets에 `WOKWI_CLI_TOKEN` 필요, 월 50분 무료)
+- **Release**: `v*` 태그 시 — `.elf`/`.hex`/`.bin`을 GitHub Release에 업로드
+
+> **Wokwi CI와 VS Code 확장**은 동일한 `diagram.json`을 사용합니다 — [wokwi.com](https://wokwi.com)에서 그린 회로도. 자세한 내용은 생성된 프로젝트의 `@PROJECT_NAME@.md`를 참조하세요.
 
 모든 워크플로우는 개발 환경과의 일관성을 위해 **Arch Linux 컨테이너**에서 실행됩니다.
+
+### Dependabot
+
+저장소 루트에 `.github/dependabot.yml`이 있습니다 — 모든 템플릿의 버전이 최신인지 자동으로 모니터링하고 PR을 통해 업데이트를 제안합니다. 대상:
+
+- **GitHub Actions** — actions/checkout, upload-artifact 등의 버전
+- **pre-commit hooks** — clang-format, ruff, mypy, pylint 등의 리비전
+
+업데이트는 매주 확인됩니다 — 버전 수동 추적 불필요.
+
+### AI 에이전트를 위한 컨텍스트
+
+생성된 각 프로젝트에는 `@PROJECT_NAME@.md` 파일이 포함됩니다 — 아키텍처 설명, 스택, 빌드 지침, AI 에이전트 규칙이 담긴 단일 진실 소스입니다. `CLAUDE.md`, `QWEN.md`, `AGENTS.md`는 이 파일에 대한 심볼릭 링크이므로 Claude Code, Qwen Code, Kilo Code가 자동으로 동일한 컨텍스트를 읽습니다.
+
+---
+
+## 문서화
+
+### C/C++ Pure
+
+문서는 **Doxygen**을 통해 생성되며 `main`에 push할 때마다 **GitHub Pages**에 자동으로 게시됩니다.
+
+### C/C++ Hybrid & Python Pure
+
+문서는 **Sphinx**와 **furo** 테마(다크 모드 지원)로 빌드되고 **ReadTheDocs**를 통해 게시됩니다. Hybrid 템플릿은 추가로 **Breathe**를 사용하여 Doxygen의 C++ API를 Sphinx에 가져옵니다.
+
+ReadTheDocs 연결 방법:
+1. [readthedocs.org](https://readthedocs.org)에서 저장소 연결
+2. ReadTheDocs가 `.readthedocs.yaml`을 자동으로 감지하고 매 push마다 빌드를 시작합니다
 
 ---
 
