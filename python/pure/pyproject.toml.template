@@ -1,0 +1,35 @@
+[project]
+name = "@PROJECT_NAME@"
+# ADAPT: Set your version, description, and Python requirement
+version = "0.0.0"
+description = ""
+requires-python = ">=3.10"
+# ADAPT: Add your project's runtime dependencies
+dependencies = [
+    # "example",
+]
+
+[project.optional-dependencies]
+# ADAPT: Add extra dev tools if needed
+dev = [
+    "pytest",
+    "snakeviz",
+    "black",
+    "isort",
+    "mypy",
+    "flake8",
+    "py-spy",
+]
+
+[tool.black]
+line-length = 100
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["test/python"]

@@ -253,8 +253,8 @@ if [ "$LANG_TYPE" = "c-cpp" ] && [ "$HYBRID" = "true" ]; then
     python -m venv .venv
     source .venv/bin/activate
     pip install --upgrade pip
-    if [ -f "requirements.txt" ]; then
-        pip install -r requirements.txt
+    if [ -f "pyproject.toml" ]; then
+        pip install -e ".[dev]"
     fi
 fi
 
@@ -263,8 +263,8 @@ if [ "$LANG_TYPE" = "python" ] && [ "$PURE" = "true" ]; then
     python -m venv .venv
     source .venv/bin/activate
     pip install --upgrade pip
-    if [ -f "requirements.txt" ]; then
-        pip install -r requirements.txt
+    if [ -f "pyproject.toml" ]; then
+        pip install -e ".[dev]"
     fi
 fi
 

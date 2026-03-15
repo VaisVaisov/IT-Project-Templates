@@ -1,4 +1,0 @@
-﻿pytest
-numpy
-cython
-snakeviz
