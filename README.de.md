@@ -418,6 +418,8 @@ Jede Vorlage enthält zwei Workflows: `ci.yml` (läuft bei jedem Push/PR) und `r
 - **Release**: Bei Tag `v*` — lädt `.elf`/`.hex`/`.bin` in GitHub Release hoch
 
 > **Wokwi CI und VS Code Erweiterung** verwenden dieselbe `diagram.json` — das Schema, das auf [wokwi.com](https://wokwi.com) gezeichnet wird. Details in `@PROJECT_NAME@.md` des generierten Projekts.
+>
+> **Hinweis für STM32F411**: Wokwi unterstützt BlackPill nicht direkt — `diagram.json` verwendet `board-st-nucleo-f411re` (gleicher STM32F411-MCU, anderes Pinout). Schema an echte Hardware anpassen.
 
 Alle Workflows laufen auf **Arch Linux Containern** für vollständige Konsistenz mit der Entwicklungsumgebung.
 

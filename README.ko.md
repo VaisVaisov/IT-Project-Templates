@@ -418,6 +418,8 @@ C/C++의 모든 것에 추가로:
 - **Release**: `v*` 태그 시 — `.elf`/`.hex`/`.bin`을 GitHub Release에 업로드
 
 > **Wokwi CI와 VS Code 확장**은 동일한 `diagram.json`을 사용합니다 — [wokwi.com](https://wokwi.com)에서 그린 회로도. 자세한 내용은 생성된 프로젝트의 `@PROJECT_NAME@.md`를 참조하세요.
+>
+> **STM32F411 참고**: Wokwi는 BlackPill을 직접 지원하지 않습니다 — `diagram.json`은 `board-st-nucleo-f411re`(동일한 STM32F411 MCU, 다른 핀 배치)를 사용합니다. 실제 하드웨어에 맞게 회로도를 수정하세요.
 
 모든 워크플로우는 개발 환경과의 일관성을 위해 **Arch Linux 컨테이너**에서 실행됩니다.
 

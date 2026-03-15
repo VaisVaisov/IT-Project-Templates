@@ -418,6 +418,8 @@ C/C++ 和 Python 扩展全部合并。
 - **Release**：在标签 `v*` 时 —— 将 `.elf`/`.hex`/`.bin` 上传到 GitHub Release
 
 > **Wokwi CI 和 VS Code 扩展**使用同一个 `diagram.json` —— 在 [wokwi.com](https://wokwi.com) 上绘制的电路图。详情请查看生成项目中的 `@PROJECT_NAME@.md`。
+>
+> **STM32F411 注意事项**：Wokwi 不直接支持 BlackPill —— `diagram.json` 使用 `board-st-nucleo-f411re`（相同的 STM32F411 MCU，但引脚布局不同）。请根据实际硬件调整电路图。
 
 所有工作流在 **Arch Linux 容器**上运行 —— 与开发环境完全一致。
 

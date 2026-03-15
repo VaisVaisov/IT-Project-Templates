@@ -17,17 +17,22 @@ jobs:
         pacman -Syu --noconfirm git
 
     - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
 
     - name: Install dependencies
       run: |
-        pacman -Sy --noconfirm python python-pip python-build
+        pacman -Sy --noconfirm python uv python-build git-cliff
 
     - name: Install Python dependencies
       run: |
-        pip install -e ".[dev]" --break-system-packages
+        uv sync
 
     - name: Build Python distribution
       run: python -m build
+
+    - name: Generate CHANGELOG
+      run: git cliff --current --output CHANGELOG.md
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
@@ -35,4 +40,4 @@ jobs:
         files: |
           dist/*.whl
           dist/*.tar.gz
-        generate_release_notes: true
+        body_path: CHANGELOG.md

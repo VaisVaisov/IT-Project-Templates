@@ -418,6 +418,8 @@ Ogni template include due workflow: `ci.yml` (eseguito ad ogni push/PR) e `relea
 - **Release**: su tag `v*` — carica `.elf`/`.hex`/`.bin` nel GitHub Release
 
 > **Wokwi CI e l'estensione VS Code** usano lo stesso `diagram.json` — lo schema disegnato su [wokwi.com](https://wokwi.com). Dettagli in `@PROJECT_NAME@.md` del progetto generato.
+>
+> **Nota per STM32F411**: Wokwi non supporta BlackPill direttamente — `diagram.json` usa `board-st-nucleo-f411re` (stesso MCU STM32F411, pinout diverso). Adattare lo schema all'hardware reale.
 
 Tutti i workflow girano su **container Arch Linux** per coerenza con l'ambiente di sviluppo.
 

@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "author": "Template",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-st-nucleo-f411re", "id": "stm", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-led", "id": "led1", "top": -100, "left": 150, "attrs": { "color": "red" } },
+    { "type": "wokwi-resistor", "id": "r1", "top": -40, "left": 220, "attrs": { "value": "220" } }
+  ],
+  "connections": [
+    [ "stm:PA5", "led1:A", "green", [] ],
+    [ "led1:C", "r1:1", "green", [] ],
+    [ "r1:2", "stm:GND", "black", [] ]
+  ],
+  "dependencies": {}
+}

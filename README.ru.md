@@ -418,6 +418,8 @@ IT-Project-Templates/
 - **Release**: на тег `v*` — загружает `.elf`/`.hex`/`.bin` в GitHub Release
 
 > **Wokwi CI и VS Code расширение** используют один и тот же `diagram.json` — схему, нарисованную на [wokwi.com](https://wokwi.com). Подробнее — в `@PROJECT_NAME@.md` сгенерированного проекта.
+>
+> **Примечание для STM32F411**: Wokwi не поддерживает BlackPill напрямую — в `diagram.json` используется `board-st-nucleo-f411re` (тот же MCU STM32F411, но другой пинаут). Скорректируйте схему под реальное железо.
 
 Все воркфлоу запускаются на **Arch Linux контейнерах** — для полного соответствия окружению разработки.
 

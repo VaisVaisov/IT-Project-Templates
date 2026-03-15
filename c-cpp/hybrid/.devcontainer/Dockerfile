@@ -54,6 +54,7 @@ RUN pacman -Sy --noconfirm \
 RUN pacman -Sy --noconfirm \
         python \
         python-pip \
+        uv \
         python-virtualenv \
         cython \
         python-numpy \

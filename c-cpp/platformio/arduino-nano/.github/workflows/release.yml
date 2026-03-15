@@ -14,9 +14,11 @@ jobs:
     steps:
     - name: Setup Arch Linux
       run: |
-        pacman -Syu --noconfirm git python python-pip
+        pacman -Syu --noconfirm git python python-pip git-cliff
 
     - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
 
     - name: Install PlatformIO Core
       run: |
@@ -34,8 +36,11 @@ jobs:
           -exec cp {} firmware/ \;
         ls -lh firmware/
 
+    - name: Generate CHANGELOG
+      run: git cliff --current --output CHANGELOG.md
+
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
         files: firmware/*
-        generate_release_notes: true
+        body_path: CHANGELOG.md

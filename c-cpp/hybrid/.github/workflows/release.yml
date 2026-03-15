@@ -19,14 +19,15 @@ jobs:
     - uses: actions/checkout@v6
       with:
         submodules: recursive
+        fetch-depth: 0
 
     - name: Install dependencies
       run: |
-        pacman -Sy --noconfirm clang cmake ninja python python-pip python-build
+        pacman -Sy --noconfirm clang cmake ninja python uv python-build git-cliff
 
     - name: Install Python dependencies
       run: |
-        pip install -e ".[dev]" --break-system-packages
+        uv sync
 
     - name: Build Release
       run: cmake --preset linux-release && cmake --build --preset linux-release
@@ -34,10 +35,13 @@ jobs:
     - name: Build Python distribution
       run: python -m build
 
+    - name: Generate CHANGELOG
+      run: git cliff --current --output CHANGELOG.md
+
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
         files: |
           dist/*.whl
           dist/*.tar.gz
-        generate_release_notes: true
+        body_path: CHANGELOG.md
