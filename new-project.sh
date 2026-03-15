@@ -70,18 +70,6 @@ init_git() {
 }
 
 build_docker_images() {
-    if [ -f "Dockerfile.docs" ] && [ -f "docs/cpp/Doxyfile" ] && [ -f "docs/python/conf.py" ]; then
-        echo "Building docs-builder image..."
-        if docker build -f Dockerfile.docs -t docs-builder .; then
-            echo "docs-builder image built successfully"
-        else
-            echo "Error: failed to build docs-builder"
-            return 1
-        fi
-    else
-        echo "Note: Dockerfile.docs not found, skipping docs-builder"
-    fi
-
     if [ -f "tools/profiler/Dockerfile" ]; then
         echo "Building profiler-tool image..."
         if docker build -f tools/profiler/Dockerfile -t profiler-tool .; then

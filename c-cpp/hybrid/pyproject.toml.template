@@ -21,6 +21,9 @@ dev = [
     "mypy",
     "flake8",
     "py-spy",
+    "sphinx",
+    "furo",
+    "breathe",
 ]
 
 [tool.black]

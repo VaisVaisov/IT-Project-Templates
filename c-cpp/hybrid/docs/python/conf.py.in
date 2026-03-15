@@ -3,9 +3,17 @@ project = '@PROJECT_NAME@'
 copyright = '20XX, Project Author'
 author = 'Project Author'
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.viewcode',
+    'breathe',
+]
 templates_path = ['_templates']
 exclude_patterns = []
 
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'furo'
 html_static_path = ['_static']
+
+# Breathe configuration (C++ API from Doxygen XML)
+breathe_projects = {'@PROJECT_NAME@': '../xml'}
+breathe_default_project = '@PROJECT_NAME@'

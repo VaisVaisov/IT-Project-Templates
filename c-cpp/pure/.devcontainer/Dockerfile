@@ -45,6 +45,8 @@ RUN pacman -Sy --noconfirm \
         gdb \
         cppcheck \
         valgrind \
+        lcov \
+        doxygen \
         mingw-w64-toolchain && \
     pacman -Scc --noconfirm
 

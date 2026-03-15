@@ -39,6 +39,7 @@ RUN pacman -Sy --noconfirm \
         python-pip \
         python-virtualenv \
         python-pytest \
+        python-sphinx \
         python-black \
         python-isort \
         python-pylint \

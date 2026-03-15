@@ -5,10 +5,15 @@ Welcome to @PROJECT_NAME@'s documentation!
    :maxdepth: 2
    :caption: Contents:
 
-Modules
--------
+Python API
+----------
 .. automodule:: @PROJECT_NAME@
-   :members: @Enter_your_members@
+   :members:
+
+C++ API
+-------
+.. doxygenindex::
+   :project: @PROJECT_NAME@
 
 Indices and tables
 ==================
