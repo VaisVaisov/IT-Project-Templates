@@ -4,7 +4,7 @@
     {
       "name": "linux-debug",
       "displayName": "Linux Debug",
-      "description": "Сборка под Linux с отладкой",
+      "description": "Debug build for Linux",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/cmake-build-linux-debug",
       "cacheVariables": {
@@ -21,7 +21,7 @@
     {
       "name": "linux-release",
       "displayName": "Linux Release",
-      "description": "Оптимизированная сборка под Linux",
+      "description": "Optimized build for Linux",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/cmake-build-linux-release",
       "cacheVariables": {
@@ -38,11 +38,55 @@
     {
       "name": "windows-cross",
       "displayName": "Cross-compile to Windows (.exe)",
-      "description": "Кросс-компиляция в .exe с помощью Clang + MinGW",
+      "description": "Cross-compilation to .exe with Clang + MinGW",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/cmake-build-windows",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/toolchain-windows.cmake"
+      }
+    },
+    {
+      "name": "linux-asan",
+      "displayName": "Linux ASan",
+      "description": "AddressSanitizer + LeakSanitizer",
+      "inherits": "linux-debug",
+      "binaryDir": "${sourceDir}/cmake-build-linux-asan",
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-fsanitize=address -fno-omit-frame-pointer",
+        "CMAKE_C_FLAGS": "-fsanitize=address -fno-omit-frame-pointer"
+      }
+    },
+    {
+      "name": "linux-ubsan",
+      "displayName": "Linux UBSan",
+      "description": "UndefinedBehaviorSanitizer",
+      "inherits": "linux-debug",
+      "binaryDir": "${sourceDir}/cmake-build-linux-ubsan",
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-fsanitize=undefined",
+        "CMAKE_C_FLAGS": "-fsanitize=undefined"
+      }
+    },
+    {
+      "name": "linux-tsan",
+      "displayName": "Linux TSan",
+      "description": "ThreadSanitizer — data race detection",
+      "inherits": "linux-debug",
+      "binaryDir": "${sourceDir}/cmake-build-linux-tsan",
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-fsanitize=thread -fno-omit-frame-pointer",
+        "CMAKE_C_FLAGS": "-fsanitize=thread -fno-omit-frame-pointer"
+      }
+    },
+    {
+      "name": "linux-msan",
+      "displayName": "Linux MSan",
+      "description": "MemorySanitizer — uninitialized memory reads",
+      "inherits": "linux-debug",
+      "binaryDir": "${sourceDir}/cmake-build-linux-msan",
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-fsanitize=memory -fno-omit-frame-pointer",
+        "CMAKE_C_FLAGS": "-fsanitize=memory -fno-omit-frame-pointer"
       }
     }
   ]

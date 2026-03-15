@@ -1,14 +1,15 @@
-#!/bin/bash
-# Runs perf in Docker
+#!/usr/bin/env bash
+# perf — CPU profiling with hardware performance counters
+# HOST ONLY: does not work in Docker (requires kernel PMU access)
+# Visualize: flamegraph — https://github.com/brendangregg/FlameGraph
+# Usage: ./tools/profiler/run-perf.sh <binary_name>
 
 if [ -z "$1" ]; then
-  echo "Usage: $0 <binary_file>"
-  exit 1
+    echo "Usage: $0 <binary_name>"
+    exit 1
 fi
 
 BINARY=$1
 
-docker run --rm -v "$(pwd)/bin:/app" profiler-tool \
-    perf record -g /app/$BINARY
-docker run --rm -v "$(pwd)/bin:/app" profiler-tool \
-    perf report --no-children
+perf record -g ./bin/"$BINARY"
+perf report --no-children

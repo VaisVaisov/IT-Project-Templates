@@ -131,6 +131,186 @@
         "clear": true,
         "focus": false
       }
+    },
+    {
+      "label": "Sanitize: ASan",
+      "type": "shell",
+      "command": "cmake --preset linux-asan && cmake --build --preset linux-asan && cd cmake-build-linux-asan && ctest --output-on-failure",
+      "problemMatcher": ["$gcc"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Sanitize: UBSan",
+      "type": "shell",
+      "command": "cmake --preset linux-ubsan && cmake --build --preset linux-ubsan && cd cmake-build-linux-ubsan && ctest --output-on-failure",
+      "problemMatcher": ["$gcc"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Sanitize: TSan",
+      "type": "shell",
+      "command": "cmake --preset linux-tsan && cmake --build --preset linux-tsan && cd cmake-build-linux-tsan && ctest --output-on-failure",
+      "problemMatcher": ["$gcc"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Sanitize: MSan",
+      "type": "shell",
+      "command": "cmake --preset linux-msan && cmake --build --preset linux-msan && cd cmake-build-linux-msan && ctest --output-on-failure",
+      "problemMatcher": ["$gcc"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Profile: memcheck",
+      "type": "shell",
+      "command": "tools/profiler/run-memcheck.sh ${input:binaryName}",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Profile: callgrind",
+      "type": "shell",
+      "command": "tools/profiler/run-callgrind.sh ${input:binaryName}",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Profile: cachegrind",
+      "type": "shell",
+      "command": "tools/profiler/run-cachegrind.sh ${input:binaryName}",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Profile: massif",
+      "type": "shell",
+      "command": "tools/profiler/run-massif.sh ${input:binaryName}",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Profile: helgrind",
+      "type": "shell",
+      "command": "tools/profiler/run-helgrind.sh ${input:binaryName}",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Profile: drd",
+      "type": "shell",
+      "command": "tools/profiler/run-drd.sh ${input:binaryName}",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Profile: Python cProfile",
+      "type": "shell",
+      "command": "tools/profiler/profile-python.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Profile: Python memory",
+      "type": "shell",
+      "command": "tools/profiler/profile-memory.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Profile: Python py-spy",
+      "type": "shell",
+      "command": "tools/profiler/profile-spy.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Profile: Run all",
+      "type": "shell",
+      "command": "scripts/profile.sh ${input:binaryName}",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "binaryName",
+      "type": "promptString",
+      "description": "Binary name (from bin/)",
+      "default": "my_binary"
     }
   ]
 }

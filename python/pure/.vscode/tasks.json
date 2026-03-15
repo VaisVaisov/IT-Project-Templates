@@ -76,6 +76,54 @@
         "clear": true,
         "focus": false
       }
+    },
+    {
+      "label": "Profile: Python cProfile",
+      "type": "shell",
+      "command": "tools/profiler/profile-python.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Profile: Python memory",
+      "type": "shell",
+      "command": "tools/profiler/profile-memory.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Profile: Python py-spy",
+      "type": "shell",
+      "command": "tools/profiler/profile-spy.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
+    },
+    {
+      "label": "Profile: Run all",
+      "type": "shell",
+      "command": "scripts/profile.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      }
     }
   ]
 }
