@@ -40,11 +40,9 @@ RUN pacman -Sy --noconfirm \
         python-virtualenv \
         python-pytest \
         python-sphinx \
-        python-black \
-        python-isort \
+        ruff \
         python-pylint \
         mypy \
-        flake8 \
         python-pre-commit && \
     pacman -Scc --noconfirm
 

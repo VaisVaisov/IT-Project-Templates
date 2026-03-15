@@ -59,8 +59,7 @@ RUN pacman -Sy --noconfirm \
         python-numpy \
         python-pytest \
         python-sphinx \
-        python-black \
-        python-isort \
+        ruff \
         python-pylint \
         mypy \
         python-pre-commit && \
