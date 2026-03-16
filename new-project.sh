@@ -10,29 +10,70 @@ TEMPLATES_DIR="$(cd "$(dirname "$(realpath "$0")")" && pwd)"
 # ========================================
 
 show_usage() {
-    echo "Usage: new-project [flags] <path>"
-    echo ""
-    echo "Language flags:"
-    echo "  --c-cpp            C/C++ project"
-    echo "  --python           Python project"
-    echo ""
-    echo "Project types:"
-    echo "  --pure             Pure C/C++ or Python"
-    echo "  --hybrid           Hybrid (Cython + C/C++)"
-    echo "  --platformio       Embedded (Arduino, ESP32, etc.)"
-    echo ""
-    echo "PlatformIO devices:"
-    echo "  --arduino-nano"
-    echo "  --arduino-pro-micro"
-    echo "  --esp32-devkit"
-    echo "  --stm32f411"
-    echo ""
-    echo "Examples:"
-    echo "  new-project --c-cpp --pure ./Projects/new-cpp"
-    echo "  new-project --python --pure /home/user/Projects/my-app"
-    echo "  new-project --c-cpp --hybrid ../../work/hybrid-project"
-    echo "  new-project --c-cpp --platformio --esp32-devkit ./embedded/sensor-node"
-    exit 1
+    local exit_code="${1:-1}"
+    cat <<'EOF'
+new-project — scaffold a new project from template
+
+USAGE
+  new-project [--help] <language> <type> [device] <path>
+
+LANGUAGE FLAGS
+  --c-cpp       C/C++ project (pure, hybrid, or PlatformIO embedded)
+  --python      Python project (pure only)
+
+PROJECT TYPES
+  --pure        Standalone C/C++ or Python project
+                  C/C++:  CMake + GoogleTest + Google Benchmark + Doxygen
+                  Python: pytest + ruff + mypy + Sphinx
+  --hybrid      C/C++ + Python bridge via Cython
+                  Includes everything from --pure (both C++ and Python sides)
+  --platformio  Embedded firmware project (Arduino framework)
+                  Requires a device flag (see below)
+
+PLATFORMIO DEVICES
+  Arduino (AVR):
+    --arduino-nano          Arduino Nano (ATmega328P)
+    --arduino-pro-micro     Arduino Pro Micro (ATmega32U4, USB HID)
+
+  ESP32 (Xtensa / RISC-V):
+    --esp32-devkit          ESP32 DevKit V1 (Xtensa LX6, WiFi + BT)
+    --esp32-s2-saola        ESP32-S2 Saola (Xtensa LX7, USB OTG)
+    --esp32-s3-devkitc      ESP32-S3 DevKitC (Xtensa LX7, AI+IoT)
+    --esp32-c3-devkitm      ESP32-C3 DevKitM (RISC-V, WiFi + BT)
+    --esp32-c6-devkitc      ESP32-C6 DevKitC (RISC-V, WiFi 6 + Zigbee)
+    --esp32-h2-devkitm      ESP32-H2 DevKitM (RISC-V, Zigbee + Thread)
+
+  ESP8266:
+    --esp8266-wemos-d1-mini Wemos D1 Mini (ESP8266, WiFi) — build only, no Wokwi
+
+  Raspberry Pi:
+    --rpi-pico              Raspberry Pi Pico (RP2040, dual-core ARM Cortex-M0+)
+
+  STM32 (ARM Cortex-M):
+    --stm32f411-blackpill   STM32F411 Black Pill (Cortex-M4, 100 MHz)
+    --stm32f103-bluepill    STM32F103 Blue Pill (Cortex-M3, 72 MHz)
+
+OPTIONS
+  --help, -h    Show this help page and exit
+
+WHAT GETS CREATED
+  - Project files copied from the chosen template
+  - Placeholders replaced with your project name
+  - Git repository initialized with initial commit
+  - GoogleTest submodule added (C/C++ pure/hybrid only)
+  - Python virtual environment created via uv (hybrid/python only)
+  - AI agent context symlinks: CLAUDE.md, QWEN.md, AGENTS.md
+
+EXAMPLES
+  new-project --c-cpp --pure ./Projects/my-lib
+  new-project --python --pure /home/user/Projects/my-app
+  new-project --c-cpp --hybrid ../../work/bridge-project
+  new-project --c-cpp --platformio --esp32-devkit ./embedded/sensor-node
+  new-project --c-cpp --platformio --rpi-pico ./embedded/pico-blink
+  new-project --c-cpp --platformio --esp32-c3-devkitm ~/Projects/iot-device
+
+EOF
+    exit "$exit_code"
 }
 
 validate_path() {
@@ -110,8 +151,10 @@ trap cleanup INT TERM ERR
 check_deps
 
 if [[ $# -lt 1 ]]; then
-    echo "Error: Project path not specified."
-    show_usage
+    echo "Error: No arguments provided."
+    show_usage 1
+elif [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]]; then
+    show_usage 0
 fi
 
 DEST_ARG="${@: -1}"
@@ -159,9 +202,44 @@ while [[ $# -gt 0 ]]; do
             DEVICE="esp32-devkit"
             shift
             ;;
-        --stm32f411)
-            DEVICE="stm32f411"
+        --esp32-s2-saola)
+            DEVICE="esp32-s2-saola"
             shift
+            ;;
+        --esp32-s3-devkitc)
+            DEVICE="esp32-s3-devkitc"
+            shift
+            ;;
+        --esp32-c3-devkitm)
+            DEVICE="esp32-c3-devkitm"
+            shift
+            ;;
+        --esp32-c6-devkitc)
+            DEVICE="esp32-c6-devkitc"
+            shift
+            ;;
+        --esp32-h2-devkitm)
+            DEVICE="esp32-h2-devkitm"
+            shift
+            ;;
+        --esp8266-wemos-d1-mini)
+            DEVICE="esp8266-wemos-d1-mini"
+            shift
+            ;;
+        --rpi-pico)
+            DEVICE="rpi-pico"
+            shift
+            ;;
+        --stm32f411-blackpill)
+            DEVICE="stm32f411-blackpill"
+            shift
+            ;;
+        --stm32f103-bluepill)
+            DEVICE="stm32f103-bluepill"
+            shift
+            ;;
+        --help|-h)
+            show_usage 0
             ;;
         -*)
             echo "Error: Unknown flag: $1"
@@ -200,7 +278,7 @@ elif $PLATFORMIO && [ -n "$DEVICE" ]; then
     fi
     TEMPLATE="$TEMPLATE_BASE/platformio/$DEVICE"
 elif $PLATFORMIO; then
-    echo "Error: Specify device: --arduino-nano, --esp32-devkit, etc."
+    echo "Error: Specify a device flag (see --help for full list)"
     show_usage
 else
     echo "Error: Specify project type: --pure, --hybrid, or --platformio"
@@ -273,10 +351,8 @@ if [ "$LANG_TYPE" = "c-cpp" ]; then
         echo "   pio device monitor"
     else
         echo "Tips for C/C++:"
-        echo "   mkdir build && cd build"
-        echo "   cmake .."
-        echo "   make"
-        echo "   ctest"
+        echo "   cmake --preset linux-debug && cmake --build --preset linux-debug"
+        echo "   cd cmake-build-linux-debug && ctest --output-on-failure"
     fi
 fi
 

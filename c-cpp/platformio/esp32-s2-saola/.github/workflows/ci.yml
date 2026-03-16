@@ -1,0 +1,77 @@
+name: ESP32-S2 CI
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+    - name: Setup Arch Linux
+      run: |
+        pacman -Syu --noconfirm git python python-pre-commit nodejs npm
+
+    - uses: actions/checkout@v6
+
+    - name: Run pre-commit checks
+      run: pre-commit run --all-files
+
+  build:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    needs: lint
+    steps:
+    - name: Setup Arch Linux
+      run: |
+        pacman -Syu --noconfirm git python python-pip
+
+    - uses: actions/checkout@v6
+
+    - name: Install PlatformIO Core
+      run: |
+        pip install --upgrade pip --break-system-packages
+        pip install platformio --break-system-packages
+
+    - name: Build firmware
+      run: pio run
+
+    - name: Run tests (if available)
+      run: |
+        if [ -d "test" ]; then
+          pio test
+        else
+          echo "No tests found"
+        fi
+
+    - name: Check firmware size
+      run: pio run --target size
+
+    - name: Static analysis
+      run: pio check --fail-on-defect high
+
+  wokwi:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Wokwi CI simulation
+      uses: wokwi/wokwi-ci-action@v1
+      with:
+        token: ${{ secrets.WOKWI_CLI_TOKEN }}
+        timeout: 10000
+
+  security:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Run Trivy security scan
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        severity: 'HIGH,CRITICAL'
+        exit-code: '1'
+        ignore-unfixed: true
