@@ -100,6 +100,106 @@ jobs:
         git commit -m "Auto-update documentation" || exit 0
         git subtree push --prefix docs/_site origin gh-pages
 
+  sanitize-asan:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    needs: build
+    steps:
+    - name: Setup Arch Linux
+      run: pacman -Syu --noconfirm git
+
+    - uses: actions/checkout@v6
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: pacman -Sy --noconfirm clang cmake ninja
+
+    - name: Build with ASan + UBSan + LSan
+      run: |
+        cmake -B cmake-build-asan -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_C_FLAGS="-fsanitize=address,undefined,leak" \
+          -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined,leak" \
+          -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address,undefined,leak"
+        cmake --build cmake-build-asan
+
+    - name: Run tests under ASan
+      run: cd cmake-build-asan && ASAN_OPTIONS=detect_leaks=1 ctest --output-on-failure
+
+  sanitize-msan:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    needs: build
+    steps:
+    - name: Setup Arch Linux
+      run: pacman -Syu --noconfirm git
+
+    - uses: actions/checkout@v6
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: pacman -Sy --noconfirm clang cmake ninja
+
+    - name: Build with MSan
+      run: |
+        cmake -B cmake-build-msan -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+          -DCMAKE_C_FLAGS="-fsanitize=memory -fno-omit-frame-pointer" \
+          -DCMAKE_CXX_FLAGS="-fsanitize=memory -fno-omit-frame-pointer" \
+          -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=memory"
+        cmake --build cmake-build-msan
+
+    - name: Run tests under MSan
+      run: cd cmake-build-msan && MSAN_OPTIONS=halt_on_error=1 ctest --output-on-failure
+
+  sanitize-tsan:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    needs: build
+    steps:
+    - name: Setup Arch Linux
+      run: pacman -Syu --noconfirm git
+
+    - uses: actions/checkout@v6
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: pacman -Sy --noconfirm clang cmake ninja
+
+    - name: Build with TSan
+      run: |
+        cmake -B cmake-build-tsan -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_C_FLAGS="-fsanitize=thread" \
+          -DCMAKE_CXX_FLAGS="-fsanitize=thread" \
+          -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=thread"
+        cmake --build cmake-build-tsan
+
+    - name: Run tests under TSan
+      run: cd cmake-build-tsan && TSAN_OPTIONS=halt_on_error=1 ctest --output-on-failure
+
+  valgrind:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    needs: build
+    steps:
+    - name: Setup Arch Linux
+      run: pacman -Syu --noconfirm git
+
+    - uses: actions/checkout@v6
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: pacman -Sy --noconfirm clang cmake ninja valgrind
+
+    - name: Build Debug
+      run: cmake --preset linux-debug && cmake --build --preset linux-debug
+
+    - name: Run tests under Valgrind memcheck
+      run: cd cmake-build-linux-debug && ctest -T memcheck --output-on-failure
+
   security:
     runs-on: ubuntu-latest
     needs: lint

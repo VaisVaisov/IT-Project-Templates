@@ -25,7 +25,7 @@ repos:
       - id: valgrind
         name: valgrind memcheck
         language: script
-        entry: tools/valgrind-check.sh
+        entry: tools/profiler/run-memcheck.sh
         pass_filenames: false
         types_or: [c++, c]
 
