@@ -52,6 +52,14 @@ jobs:
     - name: Run C++ tests
       run: cd cmake-build-linux-debug && ctest --output-on-failure
 
+    - name: Run benchmarks
+      run: |
+        if [ -d benchmarks ] && compgen -G "benchmarks/*.cpp" > /dev/null; then
+          cmake --preset linux-release && cmake --build --preset linux-release
+          find cmake-build-linux-release -maxdepth 1 -name "bench_*" -executable \
+            -exec {} --benchmark_time_unit=ms \;
+        fi
+
     - name: C++ coverage
       run: |
         cmake --preset linux-coverage && cmake --build --preset linux-coverage

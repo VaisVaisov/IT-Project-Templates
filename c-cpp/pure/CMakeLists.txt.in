@@ -35,3 +35,26 @@ endif()
 #     target_link_libraries(test_example GTest::gtest_main your_lib)
 #     add_test(NAME test_example COMMAND test_example)
 # endif()
+
+# Setup Google Benchmark
+if(EXISTS ${CMAKE_SOURCE_DIR}/libraries/googlebenchmark)
+    set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
+    add_subdirectory(libraries/googlebenchmark)
+else()
+    include(FetchContent)
+    FetchContent_Declare(
+        googlebenchmark
+        URL https://github.com/google/benchmark/archive/refs/tags/v1.9.1.zip
+    )
+    set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(googlebenchmark)
+endif()
+
+# Benchmarks — add your benchmark executables in benchmarks/
+if(EXISTS ${CMAKE_SOURCE_DIR}/benchmarks/bench_example.cpp)
+    add_executable(bench_example benchmarks/bench_example.cpp)
+    target_link_libraries(bench_example benchmark::benchmark)
+endif()
+# Example for your own benchmarks:
+# add_executable(bench_foo benchmarks/bench_foo.cpp)
+# target_link_libraries(bench_foo benchmark::benchmark your_lib)
