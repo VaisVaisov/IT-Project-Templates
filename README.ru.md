@@ -11,7 +11,7 @@
 
 *Arch Linux · Clang toolchain · AI-агенты предустановлены*
 
-[Шаблоны](#доступные-шаблоны) • [Быстрый старт](#быстрый-старт) • [Установка](#установка) • [Dev Containers](#возможности-dev-container) • [CI/CD](#качество-кода--cicd)
+[Шаблоны](#доступные-шаблоны) • [Быстрый старт](#быстрый-старт) • [Установка](#установка) • [Dev Containers](#возможности-dev-container) • [CI/CD](#качество-кода--cicd) • [PlatformIO](#platformio-шаблоны) • [Возможности](#возможности-и-использование)
 
 **[🇬🇧 English](README.md) · [🇩🇪 Deutsch](README.de.md) · [🇫🇷 Français](README.fr.md) · [🇪🇸 Español](README.es.md) · [🇨🇳 中文](README.zh.md) · [🇯🇵 日本語](README.ja.md) · [🇵🇹 Português](README.pt.md) · [🇰🇷 한국어](README.ko.md) · [🇮🇹 Italiano](README.it.md)**
 
@@ -40,9 +40,9 @@
 
 | Шаблон | Описание |
 | --- | --- |
-| `pure` | C/C++ с CMake, Ninja, GoogleTest, Doxygen, покрытие через lcov |
+| `pure` | C/C++ с CMake, Ninja, GoogleTest, Google Benchmark, Doxygen, покрытие через lcov |
 | `hybrid` | C/C++ + Python/Cython — оба языка в одном проекте, Sphinx + ReadTheDocs |
-| `platformio/` | Разработка для встраиваемых систем: Arduino, ESP32, STM32 |
+| `platformio/` | Разработка для встраиваемых систем (Arduino, ESP32, ESP8266, Pico, STM32) |
 
 ### Python (`python/`)
 
@@ -52,12 +52,22 @@
 
 ### Устройства PlatformIO (`c-cpp/platformio/`)
 
-| Устройство | Плата |
-| --- | --- |
-| `arduino-nano` | ATmega328P |
-| `arduino-pro-micro` | ATmega32U4 |
-| `esp32-devkit` | ESP32 DevKit |
-| `stm32f411` | STM32F411 BlackPill |
+| Директория | Плата | Архитектура | Wokwi CI |
+| --- | --- | --- | --- |
+| `arduino-nano` | Arduino Nano | ATmega328P (AVR) | ✓ |
+| `arduino-pro-micro` | Arduino Pro Micro | ATmega32U4 (AVR, USB HID) | ✓ |
+| `esp32-devkit` | ESP32 DevKit V1 | Xtensa LX6, WiFi + BT | ✓ |
+| `esp32-s2-saola` | ESP32-S2 Saola | Xtensa LX7, USB OTG | ✓ |
+| `esp32-s3-devkitc` | ESP32-S3 DevKitC | Xtensa LX7, AI+IoT | ✓ |
+| `esp32-c3-devkitm` | ESP32-C3 DevKitM | RISC-V, WiFi + BT | ✓ |
+| `esp32-c6-devkitc` | ESP32-C6 DevKitC | RISC-V, WiFi 6 + Zigbee | ✓ |
+| `esp32-h2-devkitm` | ESP32-H2 DevKitM | RISC-V, Zigbee + Thread | ✓ |
+| `esp8266-wemos-d1-mini` | Wemos D1 Mini | ESP8266, WiFi | — |
+| `rpi-pico` | Raspberry Pi Pico | RP2040, ARM Cortex-M0+ | ✓ |
+| `stm32f411-blackpill` | STM32F411 Black Pill | Cortex-M4, 100 MHz | ✓ * |
+| `stm32f103-bluepill` | STM32F103 Blue Pill | Cortex-M3, 72 MHz | ✓ |
+
+> \* STM32F411: Wokwi не поддерживает BlackPill напрямую — используется `board-st-nucleo-f411re` (тот же MCU, другой пинаут). ESP8266: Wokwi не поддерживает — только сборка.
 
 ---
 
@@ -110,10 +120,8 @@ new-project --c-cpp --platformio --esp32-devkit ~/Projects/sensor_node
 
 ## Справка по флагам
 
-### Linux / macOS
-
 ```
-new-project [язык] [тип] [устройство] <путь>
+new-project [--help] <язык> <тип> [устройство] <путь>
 
 Язык:
   --c-cpp            C/C++ проект
@@ -124,11 +132,26 @@ new-project [язык] [тип] [устройство] <путь>
   --hybrid           Гибридный C/C++ + Python/Cython  (только --c-cpp)
   --platformio       Встраиваемые системы             (только --c-cpp)
 
-Устройства PlatformIO:
-  --arduino-nano
-  --arduino-pro-micro
-  --esp32-devkit
-  --stm32f411
+Устройства PlatformIO (Arduino):
+  --arduino-nano          Arduino Nano (ATmega328P)
+  --arduino-pro-micro     Arduino Pro Micro (ATmega32U4, USB HID)
+
+Устройства PlatformIO (ESP32):
+  --esp32-devkit          ESP32 DevKit V1 (Xtensa LX6, WiFi + BT)
+  --esp32-s2-saola        ESP32-S2 Saola (Xtensa LX7, USB OTG)
+  --esp32-s3-devkitc      ESP32-S3 DevKitC (Xtensa LX7, AI+IoT)
+  --esp32-c3-devkitm      ESP32-C3 DevKitM (RISC-V, WiFi + BT)
+  --esp32-c6-devkitc      ESP32-C6 DevKitC (RISC-V, WiFi 6 + Zigbee)
+  --esp32-h2-devkitm      ESP32-H2 DevKitM (RISC-V, Zigbee + Thread)
+
+Устройства PlatformIO (прочие):
+  --esp8266-wemos-d1-mini Wemos D1 Mini (ESP8266, WiFi) — только сборка, без Wokwi
+  --rpi-pico              Raspberry Pi Pico (RP2040, dual-core ARM Cortex-M0+)
+  --stm32f411-blackpill   STM32F411 Black Pill (Cortex-M4, 100 MHz)
+  --stm32f103-bluepill    STM32F103 Blue Pill (Cortex-M3, 72 MHz)
+
+Опции:
+  --help, -h         Показать эту справку и выйти
 ```
 
 ---
@@ -182,15 +205,13 @@ IT-Project-Templates/
 │   └── dependabot.yml          # Автообновление зависимостей (Actions + pre-commit)
 ├── c-cpp/
 │   ├── pure/                   # Чистый C/C++ шаблон
-│   │   ├── .devcontainer/      # Clang + CMake + Ninja + GDB + lcov
+│   │   ├── .devcontainer/      # Clang + CMake + Ninja + GDB + lcov + valgrind
 │   │   ├── .github/
 │   │   │   ├── workflows/      # ci.yml + release.yml
 │   │   │   └── ISSUE_TEMPLATE/
 │   │   ├── .vscode/
-│   │   ├── .editorconfig
-│   │   ├── .gitattributes
-│   │   ├── .pre-commit-config.yaml
-│   │   ├── commitlint.config.js
+│   │   ├── benchmarks/         # Google Benchmark примеры
+│   │   ├── tools/profiler/     # Valgrind + perf скрипты
 │   │   └── ...
 │   ├── hybrid/                 # C/C++ + Python/Cython шаблон
 │   │   ├── .devcontainer/      # Clang + Python + Cython + ruff + pylint
@@ -198,11 +219,8 @@ IT-Project-Templates/
 │   │   │   ├── workflows/      # ci.yml + release.yml
 │   │   │   └── ISSUE_TEMPLATE/
 │   │   ├── .vscode/
-│   │   ├── .readthedocs.yaml
-│   │   ├── .editorconfig
-│   │   ├── .gitattributes
-│   │   ├── .pre-commit-config.yaml
-│   │   ├── commitlint.config.js
+│   │   ├── benchmarks/         # Google Benchmark примеры
+│   │   ├── tools/profiler/     # Valgrind + perf + Python профилировщики
 │   │   └── ...
 │   └── platformio/             # Шаблоны для встраиваемых систем
 │       ├── .devcontainer/      # Общий devcontainer (PlatformIO + Clang)
@@ -210,7 +228,15 @@ IT-Project-Templates/
 │       ├── arduino-nano/
 │       ├── arduino-pro-micro/
 │       ├── esp32-devkit/
-│       └── stm32f411/
+│       ├── esp32-s2-saola/
+│       ├── esp32-s3-devkitc/
+│       ├── esp32-c3-devkitm/
+│       ├── esp32-c6-devkitc/
+│       ├── esp32-h2-devkitm/
+│       ├── esp8266-wemos-d1-mini/
+│       ├── rpi-pico/
+│       ├── stm32f411-blackpill/
+│       └── stm32f103-bluepill/
 ├── python/
 │   └── pure/                   # Чистый Python шаблон
 │       ├── .devcontainer/      # Python + ruff + pylint + mypy
@@ -218,11 +244,7 @@ IT-Project-Templates/
 │       │   ├── workflows/      # ci.yml + release.yml
 │       │   └── ISSUE_TEMPLATE/
 │       ├── .vscode/
-│       ├── .readthedocs.yaml
-│       ├── .editorconfig
-│       ├── .gitattributes
-│       ├── .pre-commit-config.yaml
-│       ├── commitlint.config.js
+│       ├── tools/profiler/     # Python профилировщики
 │       └── ...
 ├── meta-template/              # Основа для создания новых шаблонов
 ├── new-project.sh              # Скрипт для Linux / macOS / Windows (WSL2)
@@ -260,6 +282,7 @@ IT-Project-Templates/
 - pytest, pytest-cov
 - ruff, pylint, mypy
 - Sphinx, furo, breathe (документация)
+- py-spy, memory-profiler (профилирование Python)
 
 ### Python контейнеры
 
@@ -363,7 +386,12 @@ IT-Project-Templates/
 - **Lint**: pre-commit проверки (clang-format, clang-tidy, cppcheck, commitlint)
 - **Build**: сборка CMake Debug + Release пресетами
 - **Test**: тесты GoogleTest через ctest
+- **Benchmark**: запуск Google Benchmark бинарей (если есть в `benchmarks/`)
 - **Coverage**: gcov + lcov — HTML отчёт + summary в GitHub Actions UI + coverage badge на GitHub Pages
+- **Sanitize ASan**: AddressSanitizer + UBSan + LeakSanitizer — обнаружение ошибок памяти и UB
+- **Sanitize MSan**: MemorySanitizer (Clang) — неинициализированная память
+- **Sanitize TSan**: ThreadSanitizer — гонки данных и проблемы многопоточности
+- **Valgrind**: `ctest -T memcheck` — детальный анализ памяти на весь набор тестов
 - **Matrix**: тестирование на Python 3.10–3.13 (только hybrid)
 - **Security**: Trivy — сканирование на CVE (HIGH/CRITICAL, блокирует merge)
 - **Docs**: Doxygen (pure) или Doxygen + Sphinx/furo (hybrid) → GitHub Pages при пуше в `main`
@@ -377,19 +405,6 @@ IT-Project-Templates/
 - **Security**: Trivy — сканирование на CVE (HIGH/CRITICAL, блокирует merge)
 - **Docs**: Sphinx + furo → GitHub Pages (`main`) + ReadTheDocs (все ветки/теги)
 - **Release**: на тег `v*` — git-cliff генерирует CHANGELOG, собирает wheel + sdist, создаёт GitHub Release
-
-#### PlatformIO
-- **Lint**: pre-commit проверки (clang-format, cppcheck, commitlint)
-- **Build**: `pio run` — компиляция прошивки
-- **Test**: `pio test` (если есть директория test)
-- **Size**: `pio run --target size` — отчёт о размере прошивки
-- **Static analysis**: `pio check --fail-on-defect high`
-- **Wokwi CI**: симуляция прошивки в облаке — проверяет вывод в Serial без реального железа (требует `WOKWI_CLI_TOKEN` в GitHub Secrets, 50 мин/месяц бесплатно)
-- **Release**: на тег `v*` — загружает `.elf`/`.hex`/`.bin` в GitHub Release
-
-> **Wokwi CI и VS Code расширение** используют один и тот же `diagram.json` — схему, нарисованную на [wokwi.com](https://wokwi.com). Подробнее — в `@PROJECT_NAME@.md` сгенерированного проекта.
->
-> **Примечание для STM32F411**: Wokwi не поддерживает BlackPill напрямую — в `diagram.json` используется `board-st-nucleo-f411re` (тот же MCU STM32F411, но другой пинаут). Скорректируйте схему под реальное железо.
 
 Все воркфлоу запускаются на **Arch Linux контейнерах** — для полного соответствия окружению разработки.
 
@@ -408,19 +423,405 @@ IT-Project-Templates/
 
 ---
 
-## Документация
+## PlatformIO шаблоны
 
-### C/C++ Pure
+### Поддерживаемые платы
 
-Документация генерируется через **Doxygen** и автоматически публикуется на **GitHub Pages** при каждом пуше в `main`.
+| Директория | Плата | Архитектура | Wokwi CI |
+| --- | --- | --- | --- |
+| `arduino-nano` | Arduino Nano | ATmega328P (AVR) | ✓ |
+| `arduino-pro-micro` | Arduino Pro Micro | ATmega32U4 (AVR, USB HID) | ✓ |
+| `esp32-devkit` | ESP32 DevKit V1 | Xtensa LX6, WiFi + BT | ✓ |
+| `esp32-s2-saola` | ESP32-S2 Saola | Xtensa LX7, USB OTG | ✓ |
+| `esp32-s3-devkitc` | ESP32-S3 DevKitC | Xtensa LX7, AI+IoT | ✓ |
+| `esp32-c3-devkitm` | ESP32-C3 DevKitM | RISC-V, WiFi + BT | ✓ |
+| `esp32-c6-devkitc` | ESP32-C6 DevKitC | RISC-V, WiFi 6 + Zigbee | ✓ |
+| `esp32-h2-devkitm` | ESP32-H2 DevKitM | RISC-V, Zigbee + Thread | ✓ |
+| `esp8266-wemos-d1-mini` | Wemos D1 Mini | ESP8266, WiFi | — |
+| `rpi-pico` | Raspberry Pi Pico | RP2040, ARM Cortex-M0+ | ✓ |
+| `stm32f411-blackpill` | STM32F411 Black Pill | Cortex-M4, 100 MHz | ✓ * |
+| `stm32f103-bluepill` | STM32F103 Blue Pill | Cortex-M3, 72 MHz | ✓ |
 
-### C/C++ Hybrid & Python Pure
+> \* STM32F411: Wokwi не поддерживает BlackPill напрямую — `diagram.json` использует `board-st-nucleo-f411re` (тот же MCU STM32F411, другой пинаут). ESP8266: Wokwi не поддерживает — только сборка.
 
-Документация собирается через **Sphinx** с темой **furo** (поддержка тёмной темы) и публикуется в **двух местах**:
+### Wokwi: симулятор без железа
+
+Wokwi позволяет запускать прошивку в браузере или VS Code без физического устройства.
+
+**Настройка в VS Code:**
+1. Установи расширение **Wokwi Simulator**
+2. Активируй лицензию (бесплатно для личных проектов) через `Ctrl+Shift+P` → "Wokwi: Request Free License"
+3. Открой `diagram.json` в корне проекта — схема откроется в редакторе Wokwi
+4. Нажми ▶ для запуска симуляции
+
+**Настройка Wokwi CI (GitHub Actions):**
+1. Получи токен на [wokwi.com/ci](https://wokwi.com/ci)
+2. Добавь в GitHub Secrets: `Settings` → `Secrets and variables` → `Actions` → `New repository secret` → `WOKWI_CLI_TOKEN`
+3. CI автоматически запустит симуляцию и проверит вывод в Serial
+
+**Схема `diagram.json`:**
+Нарисуй схему на [wokwi.com](https://wokwi.com), скачай `diagram.json` и замени файл в проекте. Wokwi CI и расширение VS Code используют один и тот же файл.
+
+### Базовые команды
+
+```bash
+pio run                        # Сборка прошивки
+pio run -t upload              # Сборка и загрузка на устройство
+pio device monitor             # Открыть Serial Monitor
+pio device monitor --baud 115200
+pio test                       # Запуск юнит-тестов на устройстве
+pio run --target size          # Статистика размера прошивки
+pio check                      # Статический анализ кода
+```
+
+### Выбор фреймворка
+
+По умолчанию все шаблоны используют `framework = arduino`. Это можно изменить в `platformio.ini`:
+
+```ini
+[env:esp32dev]
+platform = espressif32
+board    = esp32dev
+framework = arduino      ; стандартный — богатая экосистема библиотек
+
+; Альтернативы (раскомментировать нужное):
+; framework = espidf     ; ESP-IDF — полный контроль, нативный SDK Espressif
+; framework = arduino    ; можно совмещать с ESP-IDF компонентами
+```
+
+| Фреймворк | Платформа | Когда использовать |
+| --- | --- | --- |
+| `arduino` | Все | Максимум готовых библиотек, быстрый старт |
+| `espidf` | ESP32 | Полный контроль, Bluetooth/WiFi stack, FreeRTOS |
+| `arduino` (с ESP-IDF) | ESP32 | Библиотеки Arduino + ESP-IDF компоненты |
+| `pico-sdk` | Raspberry Pi Pico | Прямой доступ к RP2040 SDK |
+| `arduino` | Pico | Совместимость с Arduino экосистемой |
+
+### Загрузка прошивки
+
+Протокол загрузки указывается в `platformio.ini`:
+
+```ini
+; upload_protocol = esptool     ; ESP32/ESP8266 — USB UART (по умолчанию)
+; upload_protocol = espota      ; ESP32/ESP8266 — OTA (по воздуху)
+; upload_protocol = esp-prog    ; ESP32 — JTAG отладчик
+; upload_protocol = stlink      ; STM32 — ST-Link программатор
+; upload_protocol = picotool    ; Raspberry Pi Pico — USB (hold BOOTSEL)
+; upload_protocol = arduino     ; Arduino AVR — через bootloader
+; upload_protocol = usbasp      ; Arduino AVR — программатор USBasp
+```
+
+### CI/CD
+
+- **Lint**: pre-commit проверки (clang-format, cppcheck, commitlint)
+- **Build**: `pio run` — компиляция прошивки
+- **Test**: `pio test` (если есть директория test)
+- **Size**: `pio run --target size` — отчёт о размере прошивки
+- **Static analysis**: `pio check --fail-on-defect high`
+- **Wokwi CI**: симуляция прошивки в облаке (кроме ESP8266) — настройка в разделе [Wokwi](#wokwi-симулятор-без-железа) выше
+- **Release**: на тег `v*` — загружает `.elf`/`.hex`/`.bin` в GitHub Release
+
+Воркфлоу запускаются на **Arch Linux контейнерах** — для полного соответствия окружению разработки.
+
+---
+
+## Возможности и использование
+
+### Тесты
+
+#### C/C++ (GoogleTest)
+
+```bash
+# Сборка и запуск всех тестов
+cmake --preset linux-debug && cmake --build --preset linux-debug
+cd cmake-build-linux-debug && ctest --output-on-failure
+
+# Запуск конкретного теста
+ctest -R MyTest --output-on-failure
+
+# Verbose вывод
+ctest -V
+```
+
+Тесты находятся в `test/`. Каждый `*_test.cpp` автоматически подхватывается CMake.
+
+#### Python (pytest)
+
+```bash
+# Запуск всех тестов
+python -m pytest -v
+
+# Конкретный файл или тест
+python -m pytest tests/test_module.py::test_function -v
+
+# С подробным выводом при падении
+python -m pytest -v --tb=short
+```
+
+---
+
+### Покрытие кода (Coverage)
+
+#### C++ — lcov
+
+```bash
+# Сборка с покрытием
+cmake --preset linux-coverage && cmake --build --preset linux-coverage
+
+# Запуск тестов и генерация отчёта
+cd cmake-build-linux-coverage
+ctest --output-on-failure
+lcov --capture --directory . --output-file coverage.info
+lcov --remove coverage.info '/usr/*' '*/libraries/*' '*/test/*' --output-file coverage.info
+genhtml coverage.info --output-directory coverage-html
+
+# Открыть отчёт в браузере
+xdg-open coverage-html/index.html
+```
+
+HTML-отчёт показывает покрытие по файлам, функциям и строкам. Зелёный — покрыто, красный — нет.
+
+#### Python — pytest-cov
+
+```bash
+# Покрытие с выводом в терминал
+python -m pytest --cov --cov-report=term
+
+# HTML-отчёт
+python -m pytest --cov --cov-report=html
+xdg-open htmlcov/index.html
+
+# Показывать непокрытые строки
+python -m pytest --cov --cov-report=term-missing
+```
+
+#### Badges и PR-комментарии
+
+После пуша в `main` GitHub Actions автоматически публикует coverage badge на GitHub Pages. При каждом PR в комментарии появляется текущий процент покрытия.
+
+---
+
+### Google Benchmark
+
+Google Benchmark позволяет измерять производительность отдельных функций с наносекундной точностью.
+
+```bash
+# Сборка в Release (обязательно — Debug искажает результаты)
+cmake --preset linux-release && cmake --build --preset linux-release
+
+# Запуск всех бенчмарков
+./cmake-build-linux-release/bench_example  # или название твоего бинаря
+
+# Фильтрация по имени
+./cmake-build-linux-release/bench_example --benchmark_filter=BM_MyFunction
+
+# Вывод в JSON для последующего анализа
+./cmake-build-linux-release/bench_example --benchmark_out=results.json --benchmark_out_format=json
+
+# Сравнение двух запусков
+benchmark_compare results_before.json results_after.json
+```
+
+Пример вывода:
+```
+Benchmark                Time        CPU      Iterations
+--------------------------------------------------------
+BM_VectorPushBack       45.2 ns    45.1 ns    15000000
+BM_MapInsert           120.5 ns   120.3 ns     5800000
+```
+
+Бенчмарки находятся в `benchmarks/`. Добавляй новые по образцу `bench_example.cpp`.
+
+---
+
+### Санитайзеры
+
+Санитайзеры — это инструменты компилятора, которые обнаруживают ошибки во время выполнения: переполнения буфера, гонки данных, утечки памяти, неопределённое поведение.
+
+#### ASan + UBSan + LSan — ошибки памяти и UB
+
+```bash
+cmake --preset linux-asan && cmake --build --preset linux-asan
+cd cmake-build-linux-asan && ctest --output-on-failure
+```
+
+Что ловит:
+- **ASan** (AddressSanitizer) — выход за границы массива, use-after-free, double-free
+- **UBSan** (UndefinedBehaviorSanitizer) — переполнение целых чисел, сдвиг на отрицательное число, нулевые указатели
+- **LSan** (LeakSanitizer) — утечки памяти
+
+#### MSan — неинициализированная память
+
+```bash
+cmake --preset linux-msan && cmake --build --preset linux-msan
+cd cmake-build-linux-msan && ctest --output-on-failure
+```
+
+Ловит чтение из неинициализированной памяти. **Только Clang.**
+
+#### TSan — гонки данных
+
+```bash
+cmake --preset linux-tsan && cmake --build --preset linux-tsan
+cd cmake-build-linux-tsan && ctest --output-on-failure
+```
+
+Ловит data race в многопоточном коде.
+
+> Санитайзеры нельзя комбинировать друг с другом — каждый запускается отдельно. В CI они идут параллельными джобами.
+
+---
+
+### Valgrind
+
+Valgrind работает без перекомпиляции — анализирует уже собранный Debug-бинарь.
+
+#### Memcheck — ошибки памяти
+
+```bash
+# Все тесты через ctest (режим CI и pre-commit)
+tools/profiler/run-memcheck.sh
+
+# Конкретный бинарь
+tools/profiler/run-memcheck.sh my_binary
+```
+
+Что ловит: выход за границы массива, use-after-free, утечки памяти, некорректные системные вызовы.
+
+#### Helgrind — гонки данных
+
+```bash
+# Все тесты
+tools/profiler/run-helgrind.sh
+
+# Конкретный бинарь
+tools/profiler/run-helgrind.sh my_binary
+```
+
+Аналог TSan, но без перекомпиляции. Медленнее, зато не нужен специальный билд.
+
+#### DRD — гонки данных (альтернатива)
+
+```bash
+tools/profiler/run-drd.sh          # все тесты
+tools/profiler/run-drd.sh my_binary
+```
+
+Менее точен, чем Helgrind, но быстрее.
+
+> **Когда что использовать:** Sanitizers — быстрее, удобнее в разработке. Valgrind — для финальной проверки или когда нет возможности перекомпилировать.
+
+---
+
+### Профилирование C++
+
+#### Callgrind — граф вызовов и время CPU
+
+```bash
+tools/profiler/run-callgrind.sh my_binary
+# Результат: profiles/callgrind.out
+```
+
+Визуализировать: загрузи `callgrind.out` на [speedscope.app](https://speedscope.app) — интерактивный flamegraph в браузере.
+
+Показывает: какие функции потребляют больше всего CPU, граф вызовов, количество инструкций.
+
+#### Cachegrind — промахи кэша
+
+```bash
+tools/profiler/run-cachegrind.sh my_binary
+# Результат: profiles/cachegrind.out
+```
+
+Показывает: количество промахов L1/L2/L3 кэша, промахи предсказания ветвлений. Помогает оптимизировать доступ к памяти.
+
+#### Massif — использование кучи
+
+```bash
+tools/profiler/run-massif.sh my_binary
+# Результат: profiles/massif.out (с текстовым отчётом в stdout)
+```
+
+Показывает: рост и спад использования кучи во времени, пики аллокаций.
+
+#### perf — системное профилирование
+
+```bash
+tools/profiler/run-perf.sh my_binary
+```
+
+Быстрый sampling profiler Linux. Показывает горячие точки с минимальным оверхедом.
+
+---
+
+### Профилирование Python (hybrid + python/pure)
+
+#### cProfile — статистика вызовов функций
+
+```bash
+tools/profiler/profile-python.sh
+# Результат: profiles/profile.prof — визуализировать: snakeviz profiles/profile.prof
+```
+
+Показывает: количество вызовов каждой функции, суммарное и среднее время. Визуализация через snakeviz открывает интерактивный граф в браузере.
+
+#### tracemalloc — использование памяти
+
+```bash
+tools/profiler/profile-memory.sh
+# Результат: profiles/memory_stats.txt
+```
+
+Показывает: топ-10 аллокаций памяти по строкам кода.
+
+#### py-spy — sampling profiler без изменения кода
+
+```bash
+tools/profiler/profile-spy.sh
+# Результат: profiles/pyspy.svg — открыть в браузере
+```
+
+Работает без изменений в коде, минимальный оверхед. SVG-flamegraph: открой в браузере, кликай по блокам для zoom.
+
+---
+
+### Документация
+
+#### C/C++ Pure — Doxygen
+
+```bash
+# Генерация документации
+doxygen Doxyfile
+
+# Открыть в браузере
+xdg-open docs/html/index.html
+```
+
+Документируй код через комментарии:
+```cpp
+/// @brief Вычисляет сумму двух чисел
+/// @param a первое слагаемое
+/// @param b второе слагаемое
+/// @return сумма a и b
+int add(int a, int b);
+```
+
+#### Hybrid & Python Pure — Sphinx
+
+```bash
+# Сборка документации
+cd docs && make html
+
+# Открыть в браузере
+xdg-open docs/_build/html/index.html
+```
+
+Гибридный шаблон использует **Breathe** для импорта C++ API из Doxygen в Sphinx — документация C++ и Python собирается в единый сайт с темой **furo** (поддержка тёмной темы).
+
+#### Публикация
+
 - **GitHub Pages** — автоматически при каждом пуше в `main`
 - **ReadTheDocs** — автоматически при каждом пуше (все ветки и теги, с версионированием)
-
-Гибридный шаблон дополнительно использует **Breathe** для импорта C++ API из Doxygen в Sphinx.
 
 Для подключения ReadTheDocs:
 1. Подключи репозиторий на [readthedocs.org](https://readthedocs.org)

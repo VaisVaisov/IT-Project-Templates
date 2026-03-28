@@ -9,9 +9,9 @@
 
 **Ready-to-use project templates with VS Code Dev Containers**
 
-*Arch Linux base · Clang toolchain · AI coding agents pre-installed*
+*Arch Linux · Clang toolchain · AI coding agents pre-installed*
 
-[Templates](#available-templates) • [Quick Start](#quick-start) • [Installation](#installation) • [Dev Containers](#dev-container-features) • [CI/CD](#code-quality--cicd)
+[Templates](#available-templates) • [Quick Start](#quick-start) • [Installation](#installation) • [Dev Containers](#dev-container-features) • [CI/CD](#code-quality--cicd) • [PlatformIO](#platformio-templates) • [Features](#features--how-to-use)
 
 **[🇷🇺 Русский](README.ru.md) · [🇩🇪 Deutsch](README.de.md) · [🇫🇷 Français](README.fr.md) · [🇪🇸 Español](README.es.md) · [🇨🇳 中文](README.zh.md) · [🇯🇵 日本語](README.ja.md) · [🇵🇹 Português](README.pt.md) · [🇰🇷 한국어](README.ko.md) · [🇮🇹 Italiano](README.it.md)**
 
@@ -21,16 +21,16 @@
 
 ## What is this?
 
-A collection of opinionated project templates designed to get you from zero to coding in minutes. Each template ships with a fully configured **VS Code Dev Container** running Arch Linux — same environment on every machine, regardless of your host OS.
+A collection of project templates that let you start developing in minutes. Each template ships with a fully configured **VS Code Dev Container** based on Arch Linux — the same environment on any machine, regardless of the host OS.
 
-### Why this over a blank project?
+### Why use this?
 
-- 🚀 **No setup time**: open in VS Code, click "Reopen in Container", start coding
+- 🚀 **Zero setup**: open in VS Code, click "Reopen in Container" — start coding immediately
 - 🤖 **AI-ready**: Claude Code, Qwen Code and Kilo Code pre-installed in every container
-- 🔒 **Quality gates**: pre-commit hooks catch issues before they hit the repo
-- ⚙️ **CI/CD included**: GitHub Actions workflows for lint, build, test, coverage, docs and releases
-- 📝 **Conventional Commits**: commitlint enforces commit message format out of the box
-- 🌍 **Cross-platform**: the same script works on Linux, macOS, and Windows (via WSL2)
+- 🔒 **Quality gates**: pre-commit hooks catch issues before they reach the repository
+- ⚙️ **CI/CD included**: GitHub Actions for linting, building, testing, coverage, docs and releases
+- 📝 **Conventional Commits**: commitlint enforces commit message format
+- 🌍 **Cross-platform**: one script works on Linux, macOS and Windows (via WSL2)
 
 ---
 
@@ -40,9 +40,9 @@ A collection of opinionated project templates designed to get you from zero to c
 
 | Template | Description |
 | --- | --- |
-| `pure` | C/C++ with CMake, Ninja, GoogleTest, Doxygen, lcov coverage |
+| `pure` | C/C++ with CMake, Ninja, GoogleTest, Google Benchmark, Doxygen, lcov coverage |
 | `hybrid` | C/C++ + Python/Cython — both languages in one project, Sphinx + ReadTheDocs |
-| `platformio/` | Embedded development for Arduino, ESP32, STM32 |
+| `platformio/` | Embedded development (Arduino, ESP32, ESP8266, Pico, STM32) |
 
 ### Python (`python/`)
 
@@ -52,12 +52,22 @@ A collection of opinionated project templates designed to get you from zero to c
 
 ### PlatformIO Devices (`c-cpp/platformio/`)
 
-| Device | Board |
-| --- | --- |
-| `arduino-nano` | ATmega328P |
-| `arduino-pro-micro` | ATmega32U4 |
-| `esp32-devkit` | ESP32 DevKit |
-| `stm32f411` | STM32F411 BlackPill |
+| Directory | Board | Architecture | Wokwi CI |
+| --- | --- | --- | --- |
+| `arduino-nano` | Arduino Nano | ATmega328P (AVR) | ✓ |
+| `arduino-pro-micro` | Arduino Pro Micro | ATmega32U4 (AVR, USB HID) | ✓ |
+| `esp32-devkit` | ESP32 DevKit V1 | Xtensa LX6, WiFi + BT | ✓ |
+| `esp32-s2-saola` | ESP32-S2 Saola | Xtensa LX7, USB OTG | ✓ |
+| `esp32-s3-devkitc` | ESP32-S3 DevKitC | Xtensa LX7, AI+IoT | ✓ |
+| `esp32-c3-devkitm` | ESP32-C3 DevKitM | RISC-V, WiFi + BT | ✓ |
+| `esp32-c6-devkitc` | ESP32-C6 DevKitC | RISC-V, WiFi 6 + Zigbee | ✓ |
+| `esp32-h2-devkitm` | ESP32-H2 DevKitM | RISC-V, Zigbee + Thread | ✓ |
+| `esp8266-wemos-d1-mini` | Wemos D1 Mini | ESP8266, WiFi | — |
+| `rpi-pico` | Raspberry Pi Pico | RP2040, ARM Cortex-M0+ | ✓ |
+| `stm32f411-blackpill` | STM32F411 Black Pill | Cortex-M4, 100 MHz | ✓ * |
+| `stm32f103-bluepill` | STM32F103 Blue Pill | Cortex-M3, 72 MHz | ✓ |
+
+> \* STM32F411: Wokwi uses `board-st-nucleo-f411re` (same MCU, different pinout) — see [PlatformIO](#platformio-templates) section. ESP8266: Wokwi not supported — build only.
 
 ---
 
@@ -102,18 +112,16 @@ new-project --c-cpp --platformio --esp32-devkit ~/Projects/sensor_node
 ### After creating a project
 
 1. Open the project folder in VS Code
-2. Click **"Reopen in Container"** when prompted (or `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
-3. Wait for the container to build on first launch
-4. Pre-commit hooks install automatically — you're good to go!
+2. Click **"Reopen in Container"** (or `Ctrl+Shift+P` → "Dev Containers: Reopen in Container")
+3. The container builds automatically on first launch
+4. Pre-commit hooks install themselves — you're ready to go!
 
 ---
 
 ## Usage Reference
 
-### Linux / macOS flags
-
 ```
-new-project [language] [type] [device] <path>
+new-project [--help] <language> <type> [device] <path>
 
 Language:
   --c-cpp            C/C++ project
@@ -122,13 +130,28 @@ Language:
 Type:
   --pure             Pure C/C++ or Python
   --hybrid           Hybrid C/C++ + Python/Cython  (--c-cpp only)
-  --platformio       Embedded development          (--c-cpp only)
+  --platformio       Embedded development           (--c-cpp only)
 
-PlatformIO devices:
-  --arduino-nano
-  --arduino-pro-micro
-  --esp32-devkit
-  --stm32f411
+PlatformIO devices (Arduino):
+  --arduino-nano          Arduino Nano (ATmega328P)
+  --arduino-pro-micro     Arduino Pro Micro (ATmega32U4, USB HID)
+
+PlatformIO devices (ESP32):
+  --esp32-devkit          ESP32 DevKit V1 (Xtensa LX6, WiFi + BT)
+  --esp32-s2-saola        ESP32-S2 Saola (Xtensa LX7, USB OTG)
+  --esp32-s3-devkitc      ESP32-S3 DevKitC (Xtensa LX7, AI+IoT)
+  --esp32-c3-devkitm      ESP32-C3 DevKitM (RISC-V, WiFi + BT)
+  --esp32-c6-devkitc      ESP32-C6 DevKitC (RISC-V, WiFi 6 + Zigbee)
+  --esp32-h2-devkitm      ESP32-H2 DevKitM (RISC-V, Zigbee + Thread)
+
+PlatformIO devices (other):
+  --esp8266-wemos-d1-mini Wemos D1 Mini (ESP8266, WiFi) — build only, no Wokwi
+  --rpi-pico              Raspberry Pi Pico (RP2040, dual-core ARM Cortex-M0+)
+  --stm32f411-blackpill   STM32F411 Black Pill (Cortex-M4, 100 MHz)
+  --stm32f103-bluepill    STM32F103 Blue Pill (Cortex-M3, 72 MHz)
+
+Options:
+  --help, -h         Show this help and exit
 ```
 
 ---
@@ -170,7 +193,7 @@ source ~/.zshrc
 | **uv** | For hybrid/python templates — [astral.sh/uv](https://astral.sh/uv) | For hybrid/python templates — install in WSL2 |
 | **Git** | Required | Required — install in WSL2 |
 
-> **GitHub CLI tip:** authenticate once on the host (for Windows — in WSL2) with `gh auth login`. The container bind-mounts `~/.config/gh` from your host — no re-authentication needed inside Dev Containers.
+> **GitHub CLI tip:** authenticate once on the host (for Windows — in WSL2) with `gh auth login`. The container mounts `~/.config/gh` from the host — no re-authentication needed inside Dev Containers.
 
 ---
 
@@ -182,15 +205,13 @@ IT-Project-Templates/
 │   └── dependabot.yml          # Automated dependency updates (Actions + pre-commit)
 ├── c-cpp/
 │   ├── pure/                   # Pure C/C++ template
-│   │   ├── .devcontainer/      # Clang + CMake + Ninja + GDB + lcov
+│   │   ├── .devcontainer/      # Clang + CMake + Ninja + GDB + lcov + valgrind
 │   │   ├── .github/
 │   │   │   ├── workflows/      # ci.yml + release.yml
 │   │   │   └── ISSUE_TEMPLATE/
 │   │   ├── .vscode/
-│   │   ├── .editorconfig
-│   │   ├── .gitattributes
-│   │   ├── .pre-commit-config.yaml
-│   │   ├── commitlint.config.js
+│   │   ├── benchmarks/         # Google Benchmark examples
+│   │   ├── tools/profiler/     # Valgrind + perf scripts
 │   │   └── ...
 │   ├── hybrid/                 # C/C++ + Python/Cython template
 │   │   ├── .devcontainer/      # Clang + Python + Cython + ruff + pylint
@@ -198,11 +219,8 @@ IT-Project-Templates/
 │   │   │   ├── workflows/      # ci.yml + release.yml
 │   │   │   └── ISSUE_TEMPLATE/
 │   │   ├── .vscode/
-│   │   ├── .readthedocs.yaml
-│   │   ├── .editorconfig
-│   │   ├── .gitattributes
-│   │   ├── .pre-commit-config.yaml
-│   │   ├── commitlint.config.js
+│   │   ├── benchmarks/         # Google Benchmark examples
+│   │   ├── tools/profiler/     # Valgrind + perf + Python profilers
 │   │   └── ...
 │   └── platformio/             # Embedded templates
 │       ├── .devcontainer/      # Shared devcontainer (PlatformIO + Clang)
@@ -210,7 +228,15 @@ IT-Project-Templates/
 │       ├── arduino-nano/
 │       ├── arduino-pro-micro/
 │       ├── esp32-devkit/
-│       └── stm32f411/
+│       ├── esp32-s2-saola/
+│       ├── esp32-s3-devkitc/
+│       ├── esp32-c3-devkitm/
+│       ├── esp32-c6-devkitc/
+│       ├── esp32-h2-devkitm/
+│       ├── esp8266-wemos-d1-mini/
+│       ├── rpi-pico/
+│       ├── stm32f411-blackpill/
+│       └── stm32f103-bluepill/
 ├── python/
 │   └── pure/                   # Pure Python template
 │       ├── .devcontainer/      # Python + ruff + pylint + mypy
@@ -218,14 +244,10 @@ IT-Project-Templates/
 │       │   ├── workflows/      # ci.yml + release.yml
 │       │   └── ISSUE_TEMPLATE/
 │       ├── .vscode/
-│       ├── .readthedocs.yaml
-│       ├── .editorconfig
-│       ├── .gitattributes
-│       ├── .pre-commit-config.yaml
-│       ├── commitlint.config.js
+│       ├── tools/profiler/     # Python profilers
 │       └── ...
 ├── meta-template/              # Base for creating new templates
-├── new-project.sh              # Linux / macOS / Windows (WSL2) script
+├── new-project.sh              # Script for Linux / macOS / Windows (WSL2)
 ├── LICENSE
 └── README.md
 ```
@@ -241,7 +263,7 @@ Every container is built on **Arch Linux (latest)** and includes:
 - **VCS**: Git, git-delta, GitHub CLI
 - **AI agents**: Claude Code, Qwen Code, Kilo Code CLI (from AUR) — all available as CLI tools
 - **Docker**: Docker + Docker Buildx + Lazydocker (for running containers inside containers)
-- **GitHub auth**: `~/.config/gh` bind-mounted from the host — no re-authentication needed
+- **GitHub auth**: `~/.config/gh` mounted from the host — no re-authentication needed
 
 ### C/C++ containers
 
@@ -251,7 +273,7 @@ Every container is built on **Arch Linux (latest)** and includes:
 - cppcheck, lcov
 - pre-commit
 
-### C/C++ hybrid containers
+### Hybrid containers (C/C++ + Python)
 
 Everything from C/C++, plus:
 
@@ -260,6 +282,7 @@ Everything from C/C++, plus:
 - pytest, pytest-cov
 - ruff, pylint, mypy
 - Sphinx, furo, breathe (documentation)
+- py-spy, memory-profiler (Python profiling)
 
 ### Python containers
 
@@ -272,7 +295,7 @@ Everything from C/C++, plus:
 ### PlatformIO containers
 
 - PlatformIO Core + udev rules
-- Clang, cppcheck (for static analysis)
+- Clang, cppcheck (static analysis)
 - Python 3, pip
 - pre-commit
 - USB device access (container runs with `--privileged`)
@@ -281,7 +304,7 @@ Everything from C/C++, plus:
 
 ## VS Code Extensions
 
-All templates auto-install extensions when opening in a Dev Container, and show them as recommendations when opening without Docker.
+All templates auto-install extensions when opening in a Dev Container and show them as recommendations when opening without Docker.
 
 ### Common (all templates)
 
@@ -291,7 +314,7 @@ All templates auto-install extensions when opening in a Dev Container, and show 
 | | TONGYI Lingma | AI assistant and code completion |
 | | Kilo Code | AI agent supporting 400+ models |
 | **Git** | GitLens | Advanced Git features (blame, history) |
-| | Git Graph | Visual commit history |
+| | Git Graph | Visual commit graph |
 | **Code Quality** | Better Comments | Colorful TODO/FIXME/NOTE comments |
 | | Code Spell Checker | Spell checking in code and comments |
 | **Docker** | Docker | Container management |
@@ -363,7 +386,12 @@ Each template includes two workflows: `ci.yml` (runs on every push/PR) and `rele
 - **Lint**: pre-commit checks (clang-format, clang-tidy, cppcheck, commitlint)
 - **Build**: CMake Debug + Release presets
 - **Test**: GoogleTest suites via ctest
+- **Benchmark**: runs Google Benchmark binaries (if present in `benchmarks/`)
 - **Coverage**: gcov + lcov — HTML report + summary in GitHub Actions UI + coverage badge on GitHub Pages
+- **Sanitize ASan**: AddressSanitizer + UBSan + LeakSanitizer — memory errors and UB detection
+- **Sanitize MSan**: MemorySanitizer (Clang) — uninitialized memory reads
+- **Sanitize TSan**: ThreadSanitizer — data races in multithreaded code
+- **Valgrind**: `ctest -T memcheck` — detailed memory analysis across the full test suite
 - **Matrix**: Python 3.10–3.13 (hybrid only)
 - **Security**: Trivy — CVE scanning (HIGH/CRITICAL, blocks merge)
 - **Docs**: Doxygen (pure) or Doxygen + Sphinx/furo (hybrid) → GitHub Pages on `main`
@@ -378,20 +406,7 @@ Each template includes two workflows: `ci.yml` (runs on every push/PR) and `rele
 - **Docs**: Sphinx + furo → GitHub Pages (`main`) + ReadTheDocs (all branches/tags)
 - **Release**: on `v*` tag — git-cliff generates CHANGELOG, builds wheel + sdist, creates GitHub Release
 
-#### PlatformIO
-- **Lint**: pre-commit checks (clang-format, cppcheck, commitlint)
-- **Build**: `pio run` — firmware compilation
-- **Test**: `pio test` (if test directory exists)
-- **Size**: `pio run --target size` — firmware size report
-- **Static analysis**: `pio check --fail-on-defect high`
-- **Wokwi CI**: cloud firmware simulation — verifies Serial output without physical hardware (requires `WOKWI_CLI_TOKEN` in GitHub Secrets, 50 min/month free)
-- **Release**: on `v*` tag — uploads `.elf`/`.hex`/`.bin` to GitHub Release
-
-> **Wokwi CI and the VS Code extension** share the same `diagram.json` — the circuit drawn on [wokwi.com](https://wokwi.com). See `@PROJECT_NAME@.md` in your generated project for setup details.
->
-> **Note for STM32F411**: Wokwi does not support BlackPill directly — `diagram.json` uses `board-st-nucleo-f411re` (same STM32F411 MCU, different pinout). Adjust the schematic to match your actual hardware.
-
-All workflows run on **Arch Linux containers** for consistency with the dev environment.
+All workflows run on **Arch Linux containers** for full consistency with the development environment.
 
 ### Dependabot
 
@@ -408,21 +423,407 @@ Every generated project includes a `@PROJECT_NAME@.md` file — a single source 
 
 ---
 
-## Documentation
+## PlatformIO Templates
 
-### C/C++ Pure
+### Supported Boards
 
-Documentation is generated with **Doxygen** and automatically published to **GitHub Pages** on every push to `main`.
+| Directory | Board | Architecture | Wokwi CI |
+| --- | --- | --- | --- |
+| `arduino-nano` | Arduino Nano | ATmega328P (AVR) | ✓ |
+| `arduino-pro-micro` | Arduino Pro Micro | ATmega32U4 (AVR, USB HID) | ✓ |
+| `esp32-devkit` | ESP32 DevKit V1 | Xtensa LX6, WiFi + BT | ✓ |
+| `esp32-s2-saola` | ESP32-S2 Saola | Xtensa LX7, USB OTG | ✓ |
+| `esp32-s3-devkitc` | ESP32-S3 DevKitC | Xtensa LX7, AI+IoT | ✓ |
+| `esp32-c3-devkitm` | ESP32-C3 DevKitM | RISC-V, WiFi + BT | ✓ |
+| `esp32-c6-devkitc` | ESP32-C6 DevKitC | RISC-V, WiFi 6 + Zigbee | ✓ |
+| `esp32-h2-devkitm` | ESP32-H2 DevKitM | RISC-V, Zigbee + Thread | ✓ |
+| `esp8266-wemos-d1-mini` | Wemos D1 Mini | ESP8266, WiFi | — |
+| `rpi-pico` | Raspberry Pi Pico | RP2040, ARM Cortex-M0+ | ✓ |
+| `stm32f411-blackpill` | STM32F411 Black Pill | Cortex-M4, 100 MHz | ✓ * |
+| `stm32f103-bluepill` | STM32F103 Blue Pill | Cortex-M3, 72 MHz | ✓ |
 
-### C/C++ Hybrid & Python Pure
+> \* STM32F411: Wokwi does not support BlackPill directly — `diagram.json` uses `board-st-nucleo-f411re` (same STM32F411 MCU, different pinout). ESP8266: Wokwi not supported — build only.
 
-Documentation is built with **Sphinx** using the **furo** theme (dark mode support) and published to **two places**:
-- **GitHub Pages** — automatically on every push to `main`
-- **ReadTheDocs** — automatically on every push (all branches and tags, with versioning)
+### Wokwi: Simulation Without Hardware
 
-The hybrid template additionally uses **Breathe** to import the C++ API from Doxygen into Sphinx.
+Wokwi lets you run firmware in the browser or VS Code without physical hardware.
 
-To set up ReadTheDocs:
+**VS Code setup:**
+1. Install the **Wokwi Simulator** extension
+2. Activate the license (free for personal projects) via `Ctrl+Shift+P` → "Wokwi: Request Free License"
+3. Open `diagram.json` in the project root — the schematic opens in the Wokwi editor
+4. Press ▶ to start simulation
+
+**Wokwi CI setup (GitHub Actions):**
+1. Get a token at [wokwi.com/ci](https://wokwi.com/ci)
+2. Add to GitHub Secrets: `Settings` → `Secrets and variables` → `Actions` → `New repository secret` → `WOKWI_CLI_TOKEN`
+3. CI will automatically run the simulation and verify Serial output
+
+**`diagram.json` schematic:**
+Draw your circuit on [wokwi.com](https://wokwi.com), download `diagram.json` and replace the file in your project. Wokwi CI and the VS Code extension share the same file.
+
+### Basic Commands
+
+```bash
+pio run                        # Build firmware
+pio run -t upload              # Build and upload to device
+pio device monitor             # Open Serial Monitor
+pio device monitor --baud 115200
+pio test                       # Run unit tests on device
+pio run --target size          # Firmware size report
+pio check                      # Static analysis
+```
+
+### Framework Selection
+
+All templates use `framework = arduino` by default. Change it in `platformio.ini`:
+
+```ini
+[env:esp32dev]
+platform = espressif32
+board    = esp32dev
+framework = arduino      ; default — rich library ecosystem
+
+; Alternatives (uncomment as needed):
+; framework = espidf     ; ESP-IDF — full control, native Espressif SDK
+; framework = arduino    ; can be combined with ESP-IDF components
+```
+
+| Framework | Platform | When to use |
+| --- | --- | --- |
+| `arduino` | All | Maximum ready-made libraries, fast start |
+| `espidf` | ESP32 | Full control, Bluetooth/WiFi stack, FreeRTOS |
+| `arduino` (with ESP-IDF) | ESP32 | Arduino libraries + ESP-IDF components |
+| `pico-sdk` | Raspberry Pi Pico | Direct access to RP2040 SDK |
+| `arduino` | Pico | Arduino ecosystem compatibility |
+
+### Uploading Firmware
+
+The upload protocol is set in `platformio.ini`:
+
+```ini
+; upload_protocol = esptool     ; ESP32/ESP8266 — USB UART (default)
+; upload_protocol = espota      ; ESP32/ESP8266 — OTA (over the air)
+; upload_protocol = esp-prog    ; ESP32 — JTAG debugger
+; upload_protocol = stlink      ; STM32 — ST-Link programmer
+; upload_protocol = picotool    ; Raspberry Pi Pico — USB (hold BOOTSEL)
+; upload_protocol = arduino     ; Arduino AVR — via bootloader
+; upload_protocol = usbasp      ; Arduino AVR — USBasp programmer
+```
+
+### CI/CD
+
+- **Lint**: pre-commit checks (clang-format, cppcheck, commitlint)
+- **Build**: `pio run` — firmware compilation
+- **Test**: `pio test` (if test directory exists)
+- **Size**: `pio run --target size` — firmware size report
+- **Static analysis**: `pio check --fail-on-defect high`
+- **Wokwi CI**: cloud firmware simulation (except ESP8266) — setup in the [Wokwi](#wokwi-simulation-without-hardware) section above
+- **Release**: on `v*` tag — uploads `.elf`/`.hex`/`.bin` to GitHub Release
+
+Workflows run on **Arch Linux containers** for full consistency with the development environment.
+
+---
+
+## Features & How to Use
+
+### Tests
+
+#### C/C++ (GoogleTest)
+
+```bash
+# Build and run all tests
+cmake --preset linux-debug && cmake --build --preset linux-debug
+cd cmake-build-linux-debug && ctest --output-on-failure
+
+# Run a specific test
+ctest -R MyTest --output-on-failure
+
+# Verbose output
+ctest -V
+```
+
+Tests live in `test/`. Every `*_test.cpp` is picked up by CMake automatically.
+
+#### Python (pytest)
+
+```bash
+# Run all tests
+python -m pytest -v
+
+# Specific file or test
+python -m pytest tests/test_module.py::test_function -v
+
+# Short traceback on failure
+python -m pytest -v --tb=short
+```
+
+---
+
+### Code Coverage
+
+#### C++ — lcov
+
+```bash
+# Build with coverage
+cmake --preset linux-coverage && cmake --build --preset linux-coverage
+
+# Run tests and generate report
+cd cmake-build-linux-coverage
+ctest --output-on-failure
+lcov --capture --directory . --output-file coverage.info
+lcov --remove coverage.info '/usr/*' '*/libraries/*' '*/test/*' --output-file coverage.info
+genhtml coverage.info --output-directory coverage-html
+
+# Open report in browser
+xdg-open coverage-html/index.html
+```
+
+The HTML report shows coverage per file, function, and line. Green = covered, red = not covered.
+
+#### Python — pytest-cov
+
+```bash
+# Coverage with terminal output
+python -m pytest --cov --cov-report=term
+
+# HTML report
+python -m pytest --cov --cov-report=html
+xdg-open htmlcov/index.html
+
+# Show uncovered lines
+python -m pytest --cov --cov-report=term-missing
+```
+
+#### Badges and PR Comments
+
+After pushing to `main`, GitHub Actions automatically publishes a coverage badge to GitHub Pages. On every PR, a comment shows the current coverage percentage.
+
+---
+
+### Google Benchmark
+
+Google Benchmark measures the performance of individual functions with nanosecond precision.
+
+```bash
+# Build in Release (required — Debug distorts results)
+cmake --preset linux-release && cmake --build --preset linux-release
+
+# Run all benchmarks
+./cmake-build-linux-release/bench_example  # or your binary name
+
+# Filter by name
+./cmake-build-linux-release/bench_example --benchmark_filter=BM_MyFunction
+
+# Output as JSON for later analysis
+./cmake-build-linux-release/bench_example --benchmark_out=results.json --benchmark_out_format=json
+
+# Compare two runs
+benchmark_compare results_before.json results_after.json
+```
+
+Sample output:
+```
+Benchmark                Time        CPU      Iterations
+--------------------------------------------------------
+BM_VectorPushBack       45.2 ns    45.1 ns    15000000
+BM_MapInsert           120.5 ns   120.3 ns     5800000
+```
+
+Benchmarks live in `benchmarks/`. Add new ones following `bench_example.cpp`.
+
+---
+
+### Sanitizers
+
+Sanitizers are compiler-based tools that detect runtime errors: buffer overflows, data races, memory leaks, and undefined behaviour.
+
+#### ASan + UBSan + LSan — memory errors and UB
+
+```bash
+cmake --preset linux-asan && cmake --build --preset linux-asan
+cd cmake-build-linux-asan && ctest --output-on-failure
+```
+
+What it catches:
+- **ASan** (AddressSanitizer) — out-of-bounds access, use-after-free, double-free
+- **UBSan** (UndefinedBehaviorSanitizer) — integer overflow, negative shift, null pointer dereference
+- **LSan** (LeakSanitizer) — memory leaks
+
+#### MSan — uninitialized memory
+
+```bash
+cmake --preset linux-msan && cmake --build --preset linux-msan
+cd cmake-build-linux-msan && ctest --output-on-failure
+```
+
+Catches reads from uninitialized memory. **Clang only.**
+
+#### TSan — data races
+
+```bash
+cmake --preset linux-tsan && cmake --build --preset linux-tsan
+cd cmake-build-linux-tsan && ctest --output-on-failure
+```
+
+Catches data races in multithreaded code.
+
+> Sanitizers cannot be combined with each other — each runs separately. In CI they run as parallel jobs.
+
+---
+
+### Valgrind
+
+Valgrind works without recompilation — it analyses an already-built Debug binary.
+
+#### Memcheck — memory errors
+
+```bash
+# All tests via ctest (CI and pre-commit mode)
+tools/profiler/run-memcheck.sh
+
+# Specific binary
+tools/profiler/run-memcheck.sh my_binary
+```
+
+Catches: out-of-bounds access, use-after-free, memory leaks, invalid syscalls.
+
+#### Helgrind — data races
+
+```bash
+# All tests
+tools/profiler/run-helgrind.sh
+
+# Specific binary
+tools/profiler/run-helgrind.sh my_binary
+```
+
+Similar to TSan, but no recompilation needed. Slower, but works on any binary.
+
+#### DRD — data races (alternative)
+
+```bash
+tools/profiler/run-drd.sh          # all tests
+tools/profiler/run-drd.sh my_binary
+```
+
+Less precise than Helgrind, but faster.
+
+> **When to use what:** Sanitizers — faster, convenient during development. Valgrind — for final verification or when recompilation is not possible.
+
+---
+
+### C++ Profiling
+
+#### Callgrind — call graph and CPU time
+
+```bash
+tools/profiler/run-callgrind.sh my_binary
+# Output: profiles/callgrind.out
+```
+
+Visualize: upload `callgrind.out` to [speedscope.app](https://speedscope.app) — interactive flamegraph in the browser.
+
+Shows: which functions consume the most CPU, call graph, instruction counts.
+
+#### Cachegrind — cache misses
+
+```bash
+tools/profiler/run-cachegrind.sh my_binary
+# Output: profiles/cachegrind.out
+```
+
+Shows: L1/L2/L3 cache miss counts, branch misprediction. Helps optimize memory access patterns.
+
+#### Massif — heap usage
+
+```bash
+tools/profiler/run-massif.sh my_binary
+# Output: profiles/massif.out (with text report in stdout)
+```
+
+Shows: heap growth and shrinkage over time, allocation peaks.
+
+#### perf — system profiling
+
+```bash
+tools/profiler/run-perf.sh my_binary
+```
+
+Fast Linux sampling profiler. Shows hot spots with minimal overhead.
+
+---
+
+### Python Profiling (hybrid + python/pure)
+
+#### cProfile — function call statistics
+
+```bash
+tools/profiler/profile-python.sh
+# Output: profiles/profile.prof — visualize: snakeviz profiles/profile.prof
+```
+
+Shows: call count per function, total and average time. Visualise interactively with snakeviz in the browser.
+
+#### tracemalloc — memory usage
+
+```bash
+tools/profiler/profile-memory.sh
+# Output: profiles/memory_stats.txt
+```
+
+Shows: top-10 memory allocations by line.
+
+#### py-spy — sampling profiler without code changes
+
+```bash
+tools/profiler/profile-spy.sh
+# Output: profiles/pyspy.svg — open in browser
+```
+
+Works without any code changes, minimal overhead. SVG flamegraph: open in browser, click blocks to zoom.
+
+---
+
+### Documentation
+
+#### C/C++ Pure — Doxygen
+
+```bash
+# Generate documentation
+doxygen Doxyfile
+
+# Open in browser
+xdg-open docs/html/index.html
+```
+
+Document your code with comments:
+```cpp
+/// @brief Computes the sum of two numbers
+/// @param a first operand
+/// @param b second operand
+/// @return sum of a and b
+int add(int a, int b);
+```
+
+#### Hybrid & Python Pure — Sphinx
+
+```bash
+# Build documentation
+cd docs && make html
+
+# Open in browser
+xdg-open docs/_build/html/index.html
+```
+
+The hybrid template uses **Breathe** to import the C++ API from Doxygen into Sphinx — C++ and Python documentation is built into a unified site with the **furo** theme (dark mode support).
+
+#### Publishing
+
+- **GitHub Pages** — all templates: automatically on every push to `main`
+- **ReadTheDocs** — Hybrid and Python Pure only: automatically on every push (all branches and tags, with versioning)
+
+To set up ReadTheDocs (Hybrid / Python Pure):
 1. Connect your repository at [readthedocs.org](https://readthedocs.org)
 2. ReadTheDocs will detect `.readthedocs.yaml` automatically and build on every push
 
