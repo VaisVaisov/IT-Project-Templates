@@ -223,20 +223,16 @@ IT-Project-Templates/
 │   │   ├── tools/profiler/     # Valgrind + perf + Python profilers
 │   │   └── ...
 │   └── platformio/             # Embedded templates
-│       ├── .devcontainer/      # Shared devcontainer (PlatformIO + Clang)
+│       ├── devcontainers/      # Dev containers per board family
+│       │   ├── base/           # Arduino + ESP (PlatformIO + Clang)
+│       │   ├── stm32/          # STM32 (+ ST-Link tools + GDB)
+│       │   └── pico/           # Raspberry Pi Pico (+ picotool)
 │       ├── .vscode/            # Shared VS Code config
-│       ├── arduino-nano/
-│       ├── arduino-pro-micro/
-│       ├── esp32-devkit/
-│       ├── esp32-s2-saola/
-│       ├── esp32-s3-devkitc/
-│       ├── esp32-c3-devkitm/
-│       ├── esp32-c6-devkitc/
-│       ├── esp32-h2-devkitm/
-│       ├── esp8266-wemos-d1-mini/
-│       ├── rpi-pico/
-│       ├── stm32f411-blackpill/
-│       └── stm32f103-bluepill/
+│       ├── arduino/            # Arduino family template
+│       ├── esp32/              # ESP32 family template
+│       ├── esp8266/            # ESP8266 family template
+│       ├── stm32/              # STM32 family template
+│       └── pico/               # Raspberry Pi Pico template
 ├── python/
 │   └── pure/                   # Pure Python template
 │       ├── .devcontainer/      # Python + ruff + pylint + mypy
@@ -292,13 +288,26 @@ Everything from C/C++, plus:
 - Sphinx, furo
 - pre-commit
 
-### PlatformIO containers
+### PlatformIO containers (Arduino + ESP)
 
 - PlatformIO Core + udev rules
 - Clang, cppcheck (static analysis)
 - Python 3, pip
 - pre-commit
 - USB device access (container runs with `--privileged`)
+
+### PlatformIO containers (STM32)
+
+Everything from Arduino + ESP, plus:
+
+- stlink (`st-flash`, `st-info`, `st-util` — flashing and debugging via ST-Link)
+- GDB (debugger for connecting to the `st-util` GDB server)
+
+### PlatformIO containers (Pico)
+
+Everything from Arduino + ESP, plus:
+
+- picotool (Raspberry Pi Pico firmware management without BOOTSEL)
 
 ---
 
@@ -448,6 +457,9 @@ Every generated project includes a `@PROJECT_NAME@.md` file — a single source 
 
 Wokwi lets you run firmware in the browser or VS Code without physical hardware.
 
+**`diagram.json` schematic:**
+Draw your circuit on [wokwi.com](https://wokwi.com), download `diagram.json` and place it in the project root. Wokwi CI and the VS Code extension share the same file.
+
 **VS Code setup:**
 1. Install the **Wokwi Simulator** extension
 2. Activate the license (free for personal projects) via `Ctrl+Shift+P` → "Wokwi: Request Free License"
@@ -458,9 +470,6 @@ Wokwi lets you run firmware in the browser or VS Code without physical hardware.
 1. Get a token at [wokwi.com/ci](https://wokwi.com/ci)
 2. Add to GitHub Secrets: `Settings` → `Secrets and variables` → `Actions` → `New repository secret` → `WOKWI_CLI_TOKEN`
 3. CI will automatically run the simulation and verify Serial output
-
-**`diagram.json` schematic:**
-Draw your circuit on [wokwi.com](https://wokwi.com), download `diagram.json` and replace the file in your project. Wokwi CI and the VS Code extension share the same file.
 
 ### Basic Commands
 

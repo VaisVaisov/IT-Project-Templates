@@ -223,20 +223,16 @@ IT-Project-Templates/
 │   │   ├── tools/profiler/     # Valgrind + perf + Python профилировщики
 │   │   └── ...
 │   └── platformio/             # Шаблоны для встраиваемых систем
-│       ├── .devcontainer/      # Общий devcontainer (PlatformIO + Clang)
+│       ├── devcontainers/      # Dev Container'ы по семействам плат
+│       │   ├── base/           # Arduino + ESP (PlatformIO + Clang)
+│       │   ├── stm32/          # STM32 (+ ST-Link инструменты + GDB)
+│       │   └── pico/           # Raspberry Pi Pico (+ picotool)
 │       ├── .vscode/            # Общая конфигурация VS Code
-│       ├── arduino-nano/
-│       ├── arduino-pro-micro/
-│       ├── esp32-devkit/
-│       ├── esp32-s2-saola/
-│       ├── esp32-s3-devkitc/
-│       ├── esp32-c3-devkitm/
-│       ├── esp32-c6-devkitc/
-│       ├── esp32-h2-devkitm/
-│       ├── esp8266-wemos-d1-mini/
-│       ├── rpi-pico/
-│       ├── stm32f411-blackpill/
-│       └── stm32f103-bluepill/
+│       ├── arduino/            # Шаблон семейства Arduino
+│       ├── esp32/              # Шаблон семейства ESP32
+│       ├── esp8266/            # Шаблон семейства ESP8266
+│       ├── stm32/              # Шаблон семейства STM32
+│       └── pico/               # Шаблон Raspberry Pi Pico
 ├── python/
 │   └── pure/                   # Чистый Python шаблон
 │       ├── .devcontainer/      # Python + ruff + pylint + mypy
@@ -292,13 +288,26 @@ IT-Project-Templates/
 - Sphinx, furo
 - pre-commit
 
-### PlatformIO контейнеры
+### PlatformIO контейнеры (Arduino + ESP)
 
 - PlatformIO Core + udev правила
 - Clang, cppcheck (статический анализ)
 - Python 3, pip
 - pre-commit
 - Доступ к USB-устройствам (контейнер запускается с `--privileged`)
+
+### PlatformIO контейнеры (STM32)
+
+Всё из Arduino + ESP, плюс:
+
+- stlink (`st-flash`, `st-info`, `st-util` — прошивка и отладка через ST-Link)
+- GDB (отладчик для подключения к `st-util` GDB-серверу)
+
+### PlatformIO контейнеры (Pico)
+
+Всё из Arduino + ESP, плюс:
+
+- picotool (работа с прошивкой Raspberry Pi Pico без BOOTSEL)
 
 ---
 
@@ -448,6 +457,9 @@ IT-Project-Templates/
 
 Wokwi позволяет запускать прошивку в браузере или VS Code без физического устройства.
 
+**Схема `diagram.json`:**
+Нарисуй схему на [wokwi.com](https://wokwi.com), скачай `diagram.json` и положи в корень проекта. Wokwi CI и расширение VS Code используют один и тот же файл.
+
 **Настройка в VS Code:**
 1. Установи расширение **Wokwi Simulator**
 2. Активируй лицензию (бесплатно для личных проектов) через `Ctrl+Shift+P` → "Wokwi: Request Free License"
@@ -458,9 +470,6 @@ Wokwi позволяет запускать прошивку в браузере
 1. Получи токен на [wokwi.com/ci](https://wokwi.com/ci)
 2. Добавь в GitHub Secrets: `Settings` → `Secrets and variables` → `Actions` → `New repository secret` → `WOKWI_CLI_TOKEN`
 3. CI автоматически запустит симуляцию и проверит вывод в Serial
-
-**Схема `diagram.json`:**
-Нарисуй схему на [wokwi.com](https://wokwi.com), скачай `diagram.json` и замени файл в проекте. Wokwi CI и расширение VS Code используют один и тот же файл.
 
 ### Базовые команды
 

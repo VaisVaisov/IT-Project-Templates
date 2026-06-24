@@ -223,20 +223,16 @@ IT-Project-Templates/
 │   │   ├── tools/profiler/     # Valgrind + perf + Python プロファイラ
 │   │   └── ...
 │   └── platformio/             # 組み込みテンプレート
-│       ├── .devcontainer/      # 共有 devcontainer（PlatformIO + Clang）
+│       ├── devcontainers/      # ボードファミリー別 Dev コンテナ
+│       │   ├── base/           # Arduino + ESP（PlatformIO + Clang）
+│       │   ├── stm32/          # STM32（+ ST-Link ツール + GDB）
+│       │   └── pico/           # Raspberry Pi Pico（+ picotool）
 │       ├── .vscode/            # 共有 VS Code 設定
-│       ├── arduino-nano/
-│       ├── arduino-pro-micro/
-│       ├── esp32-devkit/
-│       ├── esp32-s2-saola/
-│       ├── esp32-s3-devkitc/
-│       ├── esp32-c3-devkitm/
-│       ├── esp32-c6-devkitc/
-│       ├── esp32-h2-devkitm/
-│       ├── esp8266-wemos-d1-mini/
-│       ├── rpi-pico/
-│       ├── stm32f411-blackpill/
-│       └── stm32f103-bluepill/
+│       ├── arduino/            # Arduino ファミリーテンプレート
+│       ├── esp32/              # ESP32 ファミリーテンプレート
+│       ├── esp8266/            # ESP8266 ファミリーテンプレート
+│       ├── stm32/              # STM32 ファミリーテンプレート
+│       └── pico/               # Raspberry Pi Pico テンプレート
 ├── python/
 │   └── pure/                   # 純粋な Python テンプレート
 │       ├── .devcontainer/      # Python + ruff + pylint + mypy
@@ -292,13 +288,26 @@ C/C++ のすべてに加えて：
 - Sphinx、furo
 - pre-commit
 
-### PlatformIO コンテナ
+### PlatformIO コンテナ（Arduino + ESP）
 
 - PlatformIO Core + udev ルール
 - Clang、cppcheck（静的解析）
 - Python 3、pip
 - pre-commit
 - USB デバイスアクセス（コンテナは `--privileged` で実行）
+
+### PlatformIO コンテナ（STM32）
+
+Arduino + ESP のすべて、加えて：
+
+- stlink（`st-flash`、`st-info`、`st-util` — ST-Link 経由のフラッシュとデバッグ）
+- GDB（`st-util` GDB サーバーに接続するデバッガ）
+
+### PlatformIO コンテナ（Pico）
+
+Arduino + ESP のすべて、加えて：
+
+- picotool（BOOTSEL なしで Raspberry Pi Pico ファームウェアを管理）
 
 ---
 

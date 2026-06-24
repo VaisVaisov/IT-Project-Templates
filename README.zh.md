@@ -223,20 +223,16 @@ IT-Project-Templates/
 │   │   ├── tools/profiler/     # Valgrind + perf + Python 性能分析工具
 │   │   └── ...
 │   └── platformio/             # 嵌入式模板
-│       ├── .devcontainer/      # 共享 devcontainer（PlatformIO + Clang）
+│       ├── devcontainers/      # 按开发板系列分类的 Dev Container
+│       │   ├── base/           # Arduino + ESP（PlatformIO + Clang）
+│       │   ├── stm32/          # STM32（+ ST-Link 工具 + GDB）
+│       │   └── pico/           # Raspberry Pi Pico（+ picotool）
 │       ├── .vscode/            # 共享 VS Code 配置
-│       ├── arduino-nano/
-│       ├── arduino-pro-micro/
-│       ├── esp32-devkit/
-│       ├── esp32-s2-saola/
-│       ├── esp32-s3-devkitc/
-│       ├── esp32-c3-devkitm/
-│       ├── esp32-c6-devkitc/
-│       ├── esp32-h2-devkitm/
-│       ├── esp8266-wemos-d1-mini/
-│       ├── rpi-pico/
-│       ├── stm32f411-blackpill/
-│       └── stm32f103-bluepill/
+│       ├── arduino/            # Arduino 系列模板
+│       ├── esp32/              # ESP32 系列模板
+│       ├── esp8266/            # ESP8266 系列模板
+│       ├── stm32/              # STM32 系列模板
+│       └── pico/               # Raspberry Pi Pico 模板
 ├── python/
 │   └── pure/                   # 纯 Python 模板
 │       ├── .devcontainer/      # Python + ruff + pylint + mypy
@@ -292,13 +288,26 @@ IT-Project-Templates/
 - Sphinx、furo
 - pre-commit
 
-### PlatformIO 容器
+### PlatformIO 容器（Arduino + ESP）
 
 - PlatformIO Core + udev 规则
 - Clang、cppcheck（静态分析）
 - Python 3、pip
 - pre-commit
 - USB 设备访问（容器以 `--privileged` 运行）
+
+### PlatformIO 容器（STM32）
+
+Arduino + ESP 的全部内容，加上：
+
+- stlink（`st-flash`、`st-info`、`st-util` — 通过 ST-Link 烧录和调试）
+- GDB（连接到 `st-util` GDB 服务器的调试器）
+
+### PlatformIO 容器（Pico）
+
+Arduino + ESP 的全部内容，加上：
+
+- picotool（无需 BOOTSEL 管理 Raspberry Pi Pico 固件）
 
 ---
 

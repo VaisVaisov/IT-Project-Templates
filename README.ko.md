@@ -223,20 +223,16 @@ IT-Project-Templates/
 │   │   ├── tools/profiler/     # Valgrind + perf + Python 프로파일러
 │   │   └── ...
 │   └── platformio/             # 임베디드 템플릿
-│       ├── .devcontainer/      # 공유 devcontainer (PlatformIO + Clang)
+│       ├── devcontainers/      # 보드 패밀리별 Dev 컨테이너
+│       │   ├── base/           # Arduino + ESP (PlatformIO + Clang)
+│       │   ├── stm32/          # STM32 (+ ST-Link 도구 + GDB)
+│       │   └── pico/           # Raspberry Pi Pico (+ picotool)
 │       ├── .vscode/            # 공유 VS Code 설정
-│       ├── arduino-nano/
-│       ├── arduino-pro-micro/
-│       ├── esp32-devkit/
-│       ├── esp32-s2-saola/
-│       ├── esp32-s3-devkitc/
-│       ├── esp32-c3-devkitm/
-│       ├── esp32-c6-devkitc/
-│       ├── esp32-h2-devkitm/
-│       ├── esp8266-wemos-d1-mini/
-│       ├── rpi-pico/
-│       ├── stm32f411-blackpill/
-│       └── stm32f103-bluepill/
+│       ├── arduino/            # Arduino 패밀리 템플릿
+│       ├── esp32/              # ESP32 패밀리 템플릿
+│       ├── esp8266/            # ESP8266 패밀리 템플릿
+│       ├── stm32/              # STM32 패밀리 템플릿
+│       └── pico/               # Raspberry Pi Pico 템플릿
 ├── python/
 │   └── pure/                   # 순수 Python 템플릿
 │       ├── .devcontainer/      # Python + ruff + pylint + mypy

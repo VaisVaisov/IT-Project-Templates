@@ -223,20 +223,16 @@ IT-Project-Templates/
 │   │   ├── tools/profiler/     # Valgrind + perf + profiler Python
 │   │   └── ...
 │   └── platformio/             # Template embedded
-│       ├── .devcontainer/      # Devcontainer condiviso (PlatformIO + Clang)
+│       ├── devcontainers/      # Dev container per famiglia di schede
+│       │   ├── base/           # Arduino + ESP (PlatformIO + Clang)
+│       │   ├── stm32/          # STM32 (+ strumenti ST-Link + GDB)
+│       │   └── pico/           # Raspberry Pi Pico (+ picotool)
 │       ├── .vscode/            # Configurazione VS Code condivisa
-│       ├── arduino-nano/
-│       ├── arduino-pro-micro/
-│       ├── esp32-devkit/
-│       ├── esp32-s2-saola/
-│       ├── esp32-s3-devkitc/
-│       ├── esp32-c3-devkitm/
-│       ├── esp32-c6-devkitc/
-│       ├── esp32-h2-devkitm/
-│       ├── esp8266-wemos-d1-mini/
-│       ├── rpi-pico/
-│       ├── stm32f411-blackpill/
-│       └── stm32f103-bluepill/
+│       ├── arduino/            # Template famiglia Arduino
+│       ├── esp32/              # Template famiglia ESP32
+│       ├── esp8266/            # Template famiglia ESP8266
+│       ├── stm32/              # Template famiglia STM32
+│       └── pico/               # Template Raspberry Pi Pico
 ├── python/
 │   └── pure/                   # Template Python puro
 │       ├── .devcontainer/      # Python + ruff + pylint + mypy
@@ -292,13 +288,26 @@ Tutto da C/C++, più:
 - Sphinx, furo
 - pre-commit
 
-### Container PlatformIO
+### Container PlatformIO (Arduino + ESP)
 
 - PlatformIO Core + regole udev
 - Clang, cppcheck (analisi statica)
 - Python 3, pip
 - pre-commit
 - Accesso dispositivi USB (il container gira con `--privileged`)
+
+### Container PlatformIO (STM32)
+
+Tutto da Arduino + ESP, più:
+
+- stlink (`st-flash`, `st-info`, `st-util` — flashing e debug via ST-Link)
+- GDB (debugger per connettersi al server GDB `st-util`)
+
+### Container PlatformIO (Pico)
+
+Tutto da Arduino + ESP, più:
+
+- picotool (gestione firmware Raspberry Pi Pico senza BOOTSEL)
 
 ---
 

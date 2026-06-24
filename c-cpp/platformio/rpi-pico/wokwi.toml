@@ -1,4 +1,0 @@
-[wokwi]
-version = 1
-firmware = ".pio/build/pico/firmware.bin"
-elf = ".pio/build/pico/firmware.elf"

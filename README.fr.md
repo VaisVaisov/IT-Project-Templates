@@ -223,20 +223,16 @@ IT-Project-Templates/
 │   │   ├── tools/profiler/     # Valgrind + perf + profileurs Python
 │   │   └── ...
 │   └── platformio/             # Templates embarqués
-│       ├── .devcontainer/      # Devcontainer partagé (PlatformIO + Clang)
+│       ├── devcontainers/      # Dev-containers par famille de carte
+│       │   ├── base/           # Arduino + ESP (PlatformIO + Clang)
+│       │   ├── stm32/          # STM32 (+ outils ST-Link + GDB)
+│       │   └── pico/           # Raspberry Pi Pico (+ picotool)
 │       ├── .vscode/            # Config VS Code partagée
-│       ├── arduino-nano/
-│       ├── arduino-pro-micro/
-│       ├── esp32-devkit/
-│       ├── esp32-s2-saola/
-│       ├── esp32-s3-devkitc/
-│       ├── esp32-c3-devkitm/
-│       ├── esp32-c6-devkitc/
-│       ├── esp32-h2-devkitm/
-│       ├── esp8266-wemos-d1-mini/
-│       ├── rpi-pico/
-│       ├── stm32f411-blackpill/
-│       └── stm32f103-bluepill/
+│       ├── arduino/            # Template famille Arduino
+│       ├── esp32/              # Template famille ESP32
+│       ├── esp8266/            # Template famille ESP8266
+│       ├── stm32/              # Template famille STM32
+│       └── pico/               # Template Raspberry Pi Pico
 ├── python/
 │   └── pure/                   # Template Python pur
 │       ├── .devcontainer/      # Python + ruff + pylint + mypy

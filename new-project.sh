@@ -95,6 +95,96 @@ replace_placeholders() {
     done < <(find . -type f -name "*@PROJECT_NAME@*")
 }
 
+replace_board_placeholders() {
+    sed -i "s|@BOARD_ENV@|$BOARD_ENV|g" platformio.ini
+    sed -i "s|@PLATFORM@|$PLATFORM|g"   platformio.ini
+    sed -i "s|@BOARD@|$BOARD|g"         platformio.ini
+    find . -type f ! -name "*.json" -exec sed -i "s|@BOARD_NAME@|$BOARD_NAME|g" {} \;
+    if $HAS_WOKWI; then
+        sed -i "s|@WOKWI_BUILD@|$WOKWI_BUILD|g"     wokwi.toml
+        sed -i "s|@FIRMWARE_EXT@|$FIRMWARE_EXT|g"   wokwi.toml
+    else
+        rm -f wokwi.toml
+    fi
+}
+
+set_board_metadata() {
+    case "$DEVICE" in
+        arduino-nano)
+            FAMILY="arduino"; BOARD="nanoatmega328"; BOARD_ENV="nanoatmega328"
+            PLATFORM="atmelavr"; BOARD_NAME="Arduino Nano"
+            WOKWI_BUILD="nanoatmega328new"; FIRMWARE_EXT="hex"; HAS_WOKWI=true
+            DEVCONTAINER="base"
+            ;;
+        arduino-pro-micro)
+            FAMILY="arduino"; BOARD="sparkfun_promicro16"; BOARD_ENV="sparkfun_promicro16"
+            PLATFORM="atmelavr"; BOARD_NAME="Arduino Pro Micro"
+            WOKWI_BUILD="leonardo"; FIRMWARE_EXT="hex"; HAS_WOKWI=true
+            DEVCONTAINER="base"
+            ;;
+        esp32-devkit)
+            FAMILY="esp32"; BOARD="esp32dev"; BOARD_ENV="esp32dev"
+            PLATFORM="espressif32"; BOARD_NAME="ESP32 DevKit V1"
+            WOKWI_BUILD="esp32dev"; FIRMWARE_EXT="bin"; HAS_WOKWI=true
+            DEVCONTAINER="base"
+            ;;
+        esp32-s2-saola)
+            FAMILY="esp32"; BOARD="esp32-s2-saola-1"; BOARD_ENV="esp32-s2-saola-1"
+            PLATFORM="espressif32"; BOARD_NAME="ESP32-S2 Saola"
+            WOKWI_BUILD="esp32-s2-saola-1"; FIRMWARE_EXT="bin"; HAS_WOKWI=true
+            DEVCONTAINER="base"
+            ;;
+        esp32-s3-devkitc)
+            FAMILY="esp32"; BOARD="esp32-s3-devkitc-1"; BOARD_ENV="esp32-s3-devkitc-1"
+            PLATFORM="espressif32"; BOARD_NAME="ESP32-S3 DevKitC"
+            WOKWI_BUILD="esp32-s3-devkitc-1"; FIRMWARE_EXT="bin"; HAS_WOKWI=true
+            DEVCONTAINER="base"
+            ;;
+        esp32-c3-devkitm)
+            FAMILY="esp32"; BOARD="esp32-c3-devkitm-1"; BOARD_ENV="esp32-c3-devkitm-1"
+            PLATFORM="espressif32"; BOARD_NAME="ESP32-C3 DevKitM"
+            WOKWI_BUILD="esp32-c3-devkitm-1"; FIRMWARE_EXT="bin"; HAS_WOKWI=true
+            DEVCONTAINER="base"
+            ;;
+        esp32-c6-devkitc)
+            FAMILY="esp32"; BOARD="esp32-c6-devkitc-1"; BOARD_ENV="esp32-c6-devkitc-1"
+            PLATFORM="espressif32"; BOARD_NAME="ESP32-C6 DevKitC"
+            WOKWI_BUILD="esp32-c6-devkitc-1"; FIRMWARE_EXT="bin"; HAS_WOKWI=true
+            DEVCONTAINER="base"
+            ;;
+        esp32-h2-devkitm)
+            FAMILY="esp32"; BOARD="esp32-h2-devkitm-1"; BOARD_ENV="esp32-h2-devkitm-1"
+            PLATFORM="espressif32"; BOARD_NAME="ESP32-H2 DevKitM"
+            WOKWI_BUILD="esp32-h2-devkitm-1"; FIRMWARE_EXT="bin"; HAS_WOKWI=true
+            DEVCONTAINER="base"
+            ;;
+        esp8266-wemos-d1-mini)
+            FAMILY="esp8266"; BOARD="d1_mini"; BOARD_ENV="d1_mini"
+            PLATFORM="espressif8266"; BOARD_NAME="Wemos D1 Mini"
+            WOKWI_BUILD=""; FIRMWARE_EXT=""; HAS_WOKWI=false
+            DEVCONTAINER="base"
+            ;;
+        rpi-pico)
+            FAMILY="pico"; BOARD="pico"; BOARD_ENV="pico"
+            PLATFORM="raspberrypi"; BOARD_NAME="Raspberry Pi Pico"
+            WOKWI_BUILD="pico"; FIRMWARE_EXT="bin"; HAS_WOKWI=true
+            DEVCONTAINER="pico"
+            ;;
+        stm32f411-blackpill)
+            FAMILY="stm32"; BOARD="blackpill_f411ce"; BOARD_ENV="blackpill_f411ce"
+            PLATFORM="ststm32"; BOARD_NAME="STM32F411 Black Pill"
+            WOKWI_BUILD="blackpill_f411ce"; FIRMWARE_EXT="bin"; HAS_WOKWI=true
+            DEVCONTAINER="stm32"
+            ;;
+        stm32f103-bluepill)
+            FAMILY="stm32"; BOARD="bluepill_f103c8"; BOARD_ENV="bluepill_f103c8"
+            PLATFORM="ststm32"; BOARD_NAME="STM32F103 Blue Pill"
+            WOKWI_BUILD="bluepill_f103c8"; FIRMWARE_EXT="bin"; HAS_WOKWI=true
+            DEVCONTAINER="stm32"
+            ;;
+    esac
+}
+
 create_agent_symlinks() {
     local project_name="$1"
     ln -sf "${project_name}.md" CLAUDE.md
@@ -276,7 +366,8 @@ elif $PLATFORMIO && [ -n "$DEVICE" ]; then
         echo "Error: --platformio is only available for --c-cpp"
         show_usage
     fi
-    TEMPLATE="$TEMPLATE_BASE/platformio/$DEVICE"
+    set_board_metadata
+    TEMPLATE="$TEMPLATE_BASE/platformio/$FAMILY"
 elif $PLATFORMIO; then
     echo "Error: Specify a device flag (see --help for full list)"
     show_usage
@@ -302,9 +393,9 @@ mkdir -p "$DEST"
 CREATED=true
 cp -r "$TEMPLATE/." "$DEST/"
 
-# For PlatformIO, also copy common .devcontainer and .vscode
+# For PlatformIO, also copy family devcontainer and shared .vscode
 if $PLATFORMIO; then
-    cp -r "$TEMPLATE_BASE/platformio/.devcontainer" "$DEST/"
+    cp -r "$TEMPLATE_BASE/platformio/devcontainers/$DEVCONTAINER/." "$DEST/.devcontainer"
     cp -r "$TEMPLATE_BASE/platformio/.vscode" "$DEST/"
 fi
 
@@ -312,6 +403,9 @@ cd "$DEST" || exit 1
 
 # Replace placeholders
 replace_placeholders "$PROJECT_NAME"
+if $PLATFORMIO; then
+    replace_board_placeholders
+fi
 
 # Create AI agent symlinks
 create_agent_symlinks "$PROJECT_NAME"

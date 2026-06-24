@@ -222,21 +222,17 @@ IT-Project-Templates/
 │   │   ├── benchmarks/         # Google Benchmark Beispiele
 │   │   ├── tools/profiler/     # Valgrind + perf + Python Profiler
 │   │   └── ...
-│   └── platformio/             # Embedded Templates
-│       ├── .devcontainer/      # Gemeinsamer Devcontainer (PlatformIO + Clang)
-│       ├── .vscode/            # Gemeinsame VS Code Konfiguration
-│       ├── arduino-nano/
-│       ├── arduino-pro-micro/
-│       ├── esp32-devkit/
-│       ├── esp32-s2-saola/
-│       ├── esp32-s3-devkitc/
-│       ├── esp32-c3-devkitm/
-│       ├── esp32-c6-devkitc/
-│       ├── esp32-h2-devkitm/
-│       ├── esp8266-wemos-d1-mini/
-│       ├── rpi-pico/
-│       ├── stm32f411-blackpill/
-│       └── stm32f103-bluepill/
+│   └── platformio/             # Embedded-Templates
+│       ├── devcontainers/      # Dev-Container nach Board-Familie
+│       │   ├── base/           # Arduino + ESP (PlatformIO + Clang)
+│       │   ├── stm32/          # STM32 (+ ST-Link-Tools + GDB)
+│       │   └── pico/           # Raspberry Pi Pico (+ picotool)
+│       ├── .vscode/            # Gemeinsame VS Code-Konfiguration
+│       ├── arduino/            # Arduino-Familien-Template
+│       ├── esp32/              # ESP32-Familien-Template
+│       ├── esp8266/            # ESP8266-Familien-Template
+│       ├── stm32/              # STM32-Familien-Template
+│       └── pico/               # Raspberry Pi Pico Template
 ├── python/
 │   └── pure/                   # Reines Python Template
 │       ├── .devcontainer/      # Python + ruff + pylint + mypy
