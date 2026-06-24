@@ -79,9 +79,8 @@
 # 어디든 클론
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-# PATH에 추가 (한 번만)
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc  # 또는 ~/.bashrc
-source ~/.zshrc
+# ~/.local/bin에 심볼릭 링크 생성
+ln -s ~/IT-Project-Templates/new-project.sh ~/.local/bin/new-project
 
 # 새 프로젝트 생성
 new-project --c-cpp --pure ~/Projects/my_cpp_app
@@ -98,9 +97,8 @@ Windows에서는 전체 생태계가 WSL2를 통해 동작합니다. WSL2를 설
 # WSL2 홈에 클론
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-# PATH에 추가 (WSL2에서 한 번만)
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc  # 또는 ~/.bashrc
-source ~/.zshrc
+# ~/.local/bin에 심볼릭 링크 생성 (WSL2에서)
+ln -s ~/IT-Project-Templates/new-project.sh ~/.local/bin/new-project
 
 # 새 프로젝트 생성 (WSL2에서)
 new-project --c-cpp --pure ~/Projects/my_cpp_app
@@ -165,18 +163,10 @@ PlatformIO 디바이스 (기타):
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 ```
 
-### 2. PATH에 추가
+### 2. 심볼릭 링크 생성
 
-**Bash:**
 ```bash
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-```
-
-**Zsh:**
-```bash
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc
-source ~/.zshrc
+ln -s ~/IT-Project-Templates/new-project.sh ~/.local/bin/new-project
 ```
 
 > **참고:** 클론 후 `new-project.sh`는 이미 실행 가능합니다. 그렇지 않다면: `chmod +x new-project.sh`

@@ -79,9 +79,8 @@ Eine Sammlung von Projektvorlagen, mit denen du in wenigen Minuten mit der Entwi
 # Irgendwo klonen
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-# Zum PATH hinzufügen (einmalig)
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc  # oder ~/.bashrc
-source ~/.zshrc
+# Symlink in ~/.local/bin erstellen
+ln -s ~/IT-Project-Templates/new-project.sh ~/.local/bin/new-project
 
 # Neues Projekt erstellen
 new-project --c-cpp --pure ~/Projects/my_cpp_app
@@ -98,9 +97,8 @@ Unter Windows läuft das gesamte Ökosystem über WSL2. WSL2 installieren und da
 # In WSL2 Home klonen
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-# Zum PATH hinzufügen (einmalig, in WSL2)
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc  # oder ~/.bashrc
-source ~/.zshrc
+# Symlink in ~/.local/bin erstellen (in WSL2)
+ln -s ~/IT-Project-Templates/new-project.sh ~/.local/bin/new-project
 
 # Neues Projekt erstellen (aus WSL2)
 new-project --c-cpp --pure ~/Projects/my_cpp_app
@@ -165,18 +163,10 @@ Optionen:
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 ```
 
-### 2. Zum PATH hinzufügen
+### 2. Symlink erstellen
 
-**Bash:**
 ```bash
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-```
-
-**Zsh:**
-```bash
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc
-source ~/.zshrc
+ln -s ~/IT-Project-Templates/new-project.sh ~/.local/bin/new-project
 ```
 
 > **Hinweis:** `new-project.sh` ist nach dem Klonen bereits ausführbar. Falls nicht: `chmod +x new-project.sh`

@@ -79,9 +79,8 @@
 # Клонировать в любое место
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-# Добавить в PATH (один раз)
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc  # или ~/.bashrc
-source ~/.zshrc
+# Создать симлинк в ~/.local/bin (один раз)
+ln -s ~/IT-Project-Templates/new-project.sh ~/.local/bin/new-project
 
 # Создать новый проект
 new-project --c-cpp --pure ~/Projects/my_cpp_app
@@ -98,9 +97,8 @@ new-project --c-cpp --platformio --esp32-devkit ~/Projects/sensor_node
 # Клонировать в WSL2 home
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-# Добавить в PATH (один раз, в WSL2)
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc  # или ~/.bashrc
-source ~/.zshrc
+# Создать симлинк в ~/.local/bin (в WSL2)
+ln -s ~/IT-Project-Templates/new-project.sh ~/.local/bin/new-project
 
 # Создать новый проект (из WSL2)
 new-project --c-cpp --pure ~/Projects/my_cpp_app
@@ -165,18 +163,10 @@ new-project [--help] <язык> <тип> [устройство] <путь>
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 ```
 
-### 2. Добавить в PATH
+### 2. Создать симлинк
 
-**Bash:**
 ```bash
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-```
-
-**Zsh:**
-```bash
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc
-source ~/.zshrc
+ln -s ~/IT-Project-Templates/new-project.sh ~/.local/bin/new-project
 ```
 
 > **Примечание:** `new-project.sh` уже исполняемый после клонирования. Если нет: `chmod +x new-project.sh`

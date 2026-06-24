@@ -79,9 +79,8 @@
 # どこにでもクローン
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-# PATH に追加（一度だけ）
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc  # または ~/.bashrc
-source ~/.zshrc
+# ~/.local/bin にシンボリックリンクを作成
+ln -s ~/IT-Project-Templates/new-project.sh ~/.local/bin/new-project
 
 # 新しいプロジェクトを作成
 new-project --c-cpp --pure ~/Projects/my_cpp_app
@@ -98,9 +97,8 @@ Windows では、エコシステム全体が WSL2 を通じて動作します。
 # WSL2 ホームにクローン
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-# PATH に追加（WSL2 内で一度だけ）
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc  # または ~/.bashrc
-source ~/.zshrc
+# ~/.local/bin にシンボリックリンクを作成（WSL2 内）
+ln -s ~/IT-Project-Templates/new-project.sh ~/.local/bin/new-project
 
 # 新しいプロジェクトを作成（WSL2 から）
 new-project --c-cpp --pure ~/Projects/my_cpp_app
@@ -165,18 +163,10 @@ PlatformIO デバイス（その他）：
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 ```
 
-### 2. PATH に追加
+### 2. シンボリックリンクを作成
 
-**Bash：**
 ```bash
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-```
-
-**Zsh：**
-```bash
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc
-source ~/.zshrc
+ln -s ~/IT-Project-Templates/new-project.sh ~/.local/bin/new-project
 ```
 
 > **注意：** クローン後 `new-project.sh` はすでに実行可能です。そうでない場合：`chmod +x new-project.sh`

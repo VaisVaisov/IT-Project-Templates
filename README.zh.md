@@ -79,9 +79,8 @@
 # 克隆到任意位置
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-# 添加到 PATH（一次性设置）
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc  # 或 ~/.bashrc
-source ~/.zshrc
+# 在 ~/.local/bin 创建符号链接
+ln -s ~/IT-Project-Templates/new-project.sh ~/.local/bin/new-project
 
 # 创建新项目
 new-project --c-cpp --pure ~/Projects/my_cpp_app
@@ -98,9 +97,8 @@ new-project --c-cpp --platformio --esp32-devkit ~/Projects/sensor_node
 # 克隆到 WSL2 主目录
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 
-# 添加到 PATH（在 WSL2 中，一次性）
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc  # 或 ~/.bashrc
-source ~/.zshrc
+# 在 ~/.local/bin 创建符号链接（在 WSL2 中）
+ln -s ~/IT-Project-Templates/new-project.sh ~/.local/bin/new-project
 
 # 创建新项目（从 WSL2）
 new-project --c-cpp --pure ~/Projects/my_cpp_app
@@ -165,18 +163,10 @@ PlatformIO 设备（其他）：
 git clone https://github.com/VaisVaisov/IT-Project-Templates.git ~/IT-Project-Templates
 ```
 
-### 2. 添加到 PATH
+### 2. 创建符号链接
 
-**Bash：**
 ```bash
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-```
-
-**Zsh：**
-```bash
-echo 'export PATH="$HOME/IT-Project-Templates:$PATH"' >> ~/.zshrc
-source ~/.zshrc
+ln -s ~/IT-Project-Templates/new-project.sh ~/.local/bin/new-project
 ```
 
 > **注意：** 克隆后 `new-project.sh` 已具有可执行权限。若没有：`chmod +x new-project.sh`
